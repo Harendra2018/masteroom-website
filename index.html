@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masteroom - 3D Virtual Tours</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/Logo.svg" alt="Masteroom Logo">
+      </div>
+      <div class="search-bar">
+        <form id="searchForm" action="properties.html" method="get">
+          <input type="text" name="search" placeholder="Search properties by name..." id="searchInput">
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+      </div>
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li><a href="#home">Home</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+  <!--  <video class="hero-video" autoplay muted loop playsinline>
+      <source src="assets/7578544-uhd_3840_2160_30fps.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video> -->
+
+<div class="hero-image">
+	<div class="slide active" style="background-image: url('assets/bg1.jpg')">
+		<div class="slide-content">
+			<h1 class="slide-title">Revolutionize Appraisals with<br>3D Tours</h1>
+			<p class="slide-subtitle">Immersive 3D Virtual Tours For Premium Real Estate</p>
+		</div>
+	</div>
+	<div class="slide" style="background-image: url('assets/bg2.jpg')">
+		<div class="slide-content">
+			<h1 class="slide-title">Explore Every Detail<br>Before You Visit</h1>
+			<p class="slide-subtitle">Immersive Virtual Experiences</p>
+		</div>
+	</div>
+	<div class="slide" style="background-image: url('assets/bg3.jpg')">
+		<div class="slide-content">
+			<h1 class="slide-title">Locate Properties<br>with Precision</h1>
+			<p class="slide-subtitle">Find Your Perfect Location</p>
+		</div>
+	</div>
+	<div class="slide" style="background-image: url('assets/bg4.jpg')">
+		<div class="slide-content">
+			<h1 class="slide-title">All-in-One Digital<br>Appraisal Platform</h1>
+			<p class="slide-subtitle">Complete Property Solutions</p>
+		</div>
+	</div>
+</div>
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <a href="#gallery" class="cta-button">Explore Gallery</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="gallery">
+    <div class="container">
+      <h2>Featured Properties</h2>
+      <div class="gallery-grid">
+        <!-- Property 1 -->
+        <div class="property-card" data-property="property1">
+          <div class="property-image">
+            <img src="assets/interior-design-neoclassical-style-with-furnishings-decor.jpg" alt="Modern Living Room">
+            <div class="property-overlay">
+              <button class="tour-button" onclick="open3DTour('property1')">3D Tour</button>
+            </div>
+          </div>
+          <div class="property-info">
+            <h3>Luxury Villa</h3>
+            <div class="property-price">$1,200,000</div>
+            <div class="property-location">Beverly Hills</div>
+            <p>Spacious modern home with panoramic views</p>
+            <div class="property-details">
+              <span>4 Beds</span>
+              <span>3 Baths</span>
+              <span>2,500 sq ft</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property 2 -->
+        <div class="property-card" data-property="property2">
+          <div class="property-image">
+            <img src="assets/modern-minimalist-office.jpg" alt="Gourmet Kitchen">
+            <div class="property-overlay">
+              <button class="tour-button" onclick="open3DTour('property2')">3D Tour</button>
+            </div>
+          </div>
+          <div class="property-info">
+            <h3>Urban Apartment</h3>
+            <div class="property-price">$650,000</div>
+            <div class="property-location">Downtown LA</div>
+            <p>Contemporary living in the heart of the city</p>
+            <div class="property-details">
+              <span>2 Beds</span>
+              <span>2 Baths</span>
+              <span>1,200 sq ft</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property 3 -->
+        <div class="property-card" data-property="property3">
+          <div class="property-image">
+            <img src="assets/2150683483.jpg" alt="Master Bedroom">
+            <div class="property-overlay">
+              <button class="tour-button" onclick="open3DTour('property3')">3D Tour</button>
+            </div>
+          </div>
+          <div class="property-info">
+            <h3>Suburban Home</h3>
+            <div class="property-price">$850,000</div>
+            <div class="property-location">Pasadena</div>
+            <p>Perfect family home with modern amenities</p>
+            <div class="property-details">
+              <span>3 Beds</span>
+              <span>2 Baths</span>
+              <span>1,800 sq ft</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Image Section -->
+  <section class="feature-image-section">
+    <div class="container">
+      <div class="feature-image">
+        <img src="assets/Frame 23.png" alt="Masteroom 3D Technology">
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2>About Masteroom</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p>We specialize in creating immersive 3D virtual tours that bring properties to life. Our technology allows potential buyers to explore homes remotely with unprecedented detail and realism.</p>
+          <p>Experience the future of real estate marketing with interactive 3D tours that engage and convert.</p>
+        </div>
+        <div class="about-features">
+          <div class="feature">
+            <h3>360° Views</h3>
+            <p>Complete panoramic exploration</p>
+          </div>
+          <div class="feature">
+            <h3>Interactive Hotspots</h3>
+            <p>Click to navigate between rooms</p>
+          </div>
+          <div class="feature">
+            <h3>Multi-floor Support</h3>
+            <p>Explore entire buildings</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <div class="contact-content">
+        <div class="contact-info">
+          <p>Ready to showcase your property with immersive 3D tours?</p>
+          <p>Get in touch to learn more about our services.</p>
+          <div class="contact-details">
+            <p><strong>Email:</strong> info@masteroom.com</p>
+            <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+          </div>
+        </div>
+        <form class="contact-form">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <textarea name="message" placeholder="Your Message" required></textarea>
+          <button type="submit" class="cta-button">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/Logo_white.svg" alt="Masteroom Logo">
+        </div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <p>&copy; 2024 Masteroom. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 3D Tour Modal -->
+  <div id="tourModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close-modal" onclick="close3DTour()">&times;</span>
+      </div>
+      <iframe id="tourFrame" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <!-- Property → TaskID mapping -->
+  <script>
+    const propertyTaskMap = {
+      "property1": "TaskID_101",
+      "property2": "TaskID_102",
+      "property3": "TaskID_103"
+    };
+  </script>
+
+  <script src="properties.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

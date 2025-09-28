@@ -1,0 +1,762 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.header-container {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none; /* let clicks pass to canvas */
+}
+
+.header-title {
+  color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0,0,0,0.7);
+  margin: 0;
+}
+
+.header-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9em;
+  font-weight: normal;
+  text-shadow: 0 0 3px rgba(0,0,0,0.5);
+  margin: 5px 0 0 0;
+}
+
+.controls-container {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 200;
+}
+
+.bottom-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 5, 0.4);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  font-size: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.control-btn:hover {
+  background: rgba(0, 34, 106, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  
+}
+
+.control-icon {
+  font-size: 12px;
+  width: 28px;
+  text-align: center;
+}
+
+/* Floor Selector Dropdown Styles */
+.floor-selector {
+  position: relative;
+  width: 130px;
+  margin-bottom: 5px;
+}
+
+.floor-dropdown-toggle {
+  width: 100%;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.floor-dropdown-toggle:hover {
+  background: rgba(0, 34, 106, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.floor-dropdown-toggle.active {
+  border-radius: 0px 0px 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.floor-dropdown-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floor-dropdown-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  color: #ffffff;
+}
+
+.floor-dropdown-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.floor-dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 8px 8px 0px 0px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.floor-dropdown-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.floor-dropdown-item {
+  width: 100%;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  gap: 8px;
+}
+
+.floor-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.floor-dropdown-item:hover {
+  background: rgba(74, 144, 226, 0.1);
+  color: #00226D;
+}
+
+.floor-dropdown-item.active {
+  background: #00226D;
+  color: white;
+  font-weight: 600;
+}
+
+.floor-dropdown-item.active:hover {
+  background: #001033;
+}
+
+.floor-icon {
+  font-size: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.fullscreen-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  z-index: 200;
+  font-size: 18px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.fullscreen-btn:hover {
+  background: rgba(0, 34, 106, 1);
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.fullscreen-btn:active {
+  transform: translateY(-50%) translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.fullscreen-icon {
+  font-size: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.pano-hint {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 25;
+  display: none;
+  pointer-events: none;
+}
+
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 30;
+  display: none;
+  font-size: 16px;
+}
+
+.hotspot-tooltip {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 30;
+  pointer-events: none;
+  display: none;
+  white-space: nowrap;
+}
+
+/* Hotspot Label Styles - Fixed for visibility issues */
+.hotspot-label {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  border-left: 3px solid transparent;
+  user-select: none;
+  mix-blend-mode: normal;
+  isolation: isolate;
+}
+
+/* Optional: Different colors for different floors */
+.hotspot-label[data-floor="floor1"] {
+  border-left-color: #4ecdc4;
+}
+
+.hotspot-label[data-floor="floor2"] {
+  border-left-color: #45b7d1;
+}
+
+.hotspot-label[data-floor="floor3"] {
+  border-left-color: #96ceb4;
+}
+
+/* Hover effects for parent hotspot cylinders */
+.hotspot-label:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Animation for when labels appear */
+@keyframes labelFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.hotspot-label.fade-in {
+  animation: labelFadeIn 0.3s ease-out;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .hotspot-label {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid white;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .hotspot-label {
+    transition: none;
+  }
+  
+  .hotspot-label.fade-in {
+    animation: none;
+  }
+}
+
+.info-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 35px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  z-index: 200;
+  font-size: 18px;
+  color:#ffffff; 
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.info-btn:hover {
+  background: rgba(0, 34, 106, .7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  
+}
+
+.info-icon {
+  font-size: 12px;
+  width: 24px;
+  text-align: center;
+}
+	
+/* Updated Info Panel Styles with Tabs and Map Support */
+.info-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.info-content {
+  padding: 20px;
+  max-height: calc(80vh - 40px);
+  overflow-y: auto;
+}
+
+/* Tab Navigation */
+.info-tabs {
+  display: flex;
+  margin: -20px -20px 20px -20px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  background: rgba(74, 144, 226, 0.05);
+  color: #4A90E2;
+}
+
+.tab-btn.active {
+  color: #4A90E2;
+  border-bottom-color: #4A90E2;
+  background: rgba(74, 144, 226, 0.05);
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.tab-content h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.tab-content ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tab-content li {
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.tab-content strong {
+  color: #333;
+}
+
+/* Location Info */
+.location-info {
+  margin-bottom: 15px;
+}
+
+.location-info p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Map Container */
+.map-container {
+  width: 100%;
+  height: 250px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+
+.close-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+  z-index: 1;
+}
+
+.close-info:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .info-panel {
+    width: 95%;
+    max-width: none;
+  }
+  
+  .map-container {
+    height: 200px;
+  }
+}
+
+/* Bottom-right logo */
+.logo-container {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  z-index: 20;
+}
+
+.logo-container img {
+  width: 100px;   /* Adjust size as needed */
+  height: auto;
+  opacity: 0.9;  /* Slight transparency */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logo-container img:hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+/* Updated Panorama Carousel Styles - Carousel without expand button */
+.pano-carousel {
+  position: absolute;
+  bottom: 4px; /* Moved up to make room for external expand button */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding-left: 10px; /* Add left gap to balance with right side */
+  /* Remove min-height since expand button is external now */
+}
+
+/* External Expand Button Styles - Now positioned outside the carousel */
+.carousel-expand-btn {
+  width: 40px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  /* Position will be set via JavaScript in the createCarousel method */
+  /* position: absolute, bottom: 15px, left: 50%, transform: translateX(-50%) */
+}
+
+.carousel-expand-btn:hover {
+  background: rgba(74, 144, 226, 0.8);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.carousel-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+.carousel-container {
+  width: calc(100vw - 120px);
+  max-width: 1200px;
+  overflow: hidden;
+  border-radius: 10px;
+  
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item {
+  flex: 0 0 130px;
+  height: 90px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 0 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 20px;
+  color: white;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  overflow: hidden;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.carousel-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.carousel-item.active {
+  border: 3px solid #4A90E2;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+  transform: scale(1);
+}
+
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.carousel-arrow {
+  width: 30px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-arrow:hover {
+  background: rgba(74, 144, 226, 0.8);
+  transform: scale(1.1);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Side Panel Styles */
+.side-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 300px;
+  height: 50vh;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+  display: none;
+  overflow-y: auto;
+}
+
+.side-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.side-tab-btn {
+  flex: 1;
+  padding: 15px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.side-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.side-tab-btn.active {
+  background: rgba(74, 144, 226, 0.3);
+  border-bottom: 2px solid #4A90E2;
+}
+
+.side-tab-content {
+  display: none;
+  padding: 0px;
+}
+
+.side-tab-content.active {
+  display: flex;
+}
+
+.exit-3d-btn {
+  width: 100%;
+  padding: 15px;
+  background: #4A90E2;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.side-tab-content iframe {
+  margin-bottom: 0;
+}
+
+.mini-3d-content {
+  padding: 0;
+}

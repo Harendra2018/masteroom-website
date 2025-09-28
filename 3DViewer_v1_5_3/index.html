@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masteroom 3D Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="textures/favicon.svg">
+
+  <!-- Google Maps API -->
+  <script>
+    // Google Maps initialization
+    let map;
+
+    function initMap() {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMap);
+        return;
+      }
+
+      const mapElement = document.getElementById("map");
+      if (!mapElement) {
+        console.warn('Map element not found, skipping Google Maps initialization');
+        return;
+      }
+
+      // Property coordinates
+      const propertyLocation = { lat: currentProperty.lat, lng: currentProperty.lng };
+
+      map = new google.maps.Map(mapElement, {
+        zoom: 15,
+        center: propertyLocation,
+        mapTypeId: 'hybrid', // Shows satellite view with labels
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
+      });
+
+      // Add a marker for the property
+      const marker = new google.maps.Marker({
+        position: propertyLocation,
+        map: map,
+        title: currentProperty.name,
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" fill="#4A90E2" stroke="white" stroke-width="3"/>
+              <circle cx="20" cy="20" r="8" fill="white"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 20)
+        }
+      });
+
+      // Add info window
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 10px;">
+            <h4 style="margin: 0 0 8px 0;">${currentProperty.name}</h4>
+            <p style="margin: 0; color: #666;">${currentProperty.neighborhood}</p>
+          </div>
+        `
+      });
+
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+      });
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiEqMWbJBbanIKXigpYX-c7Qzusw_nf4o&callback=initMap" async defer></script>
+</head>
+<body>
+  <div class="header-container">
+    <div class="header-title" id="headerTitle"></div>
+    <div class="header-subtitle">3D Virtual Tour</div>
+  </div>
+
+  <!-- Updated controls container with floor selector above main controls -->
+  <div class="controls-container">
+    <!-- Floor Selector Dropdown -->
+    <div class="floor-selector">
+      <button class="floor-dropdown-toggle" id="floorDropdownToggle">
+        <span class="floor-dropdown-text">
+          <img src="textures/floor_sel.svg" class="floor-icon">
+          <span id="currentFloorText">All Floors</span>
+        </span>
+        <span class="floor-dropdown-arrow">▼</span>
+      </button>
+      <div class="floor-dropdown-menu" id="floorDropdownMenu">
+        <button class="floor-dropdown-item active" data-floor="all">
+          <img src="textures/floor_sel.svg" class="floor-icon">
+          All Floors
+        </button>
+        <button class="floor-dropdown-item" data-floor="floor1">
+          <span class="floor-icon"></span>
+          Floor 1
+        </button>
+        <button class="floor-dropdown-item" data-floor="floor2">
+          <span class="floor-icon"></span>
+          Floor 2
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Control Buttons -->
+	<div class="bottom-controls">
+	  <button class="control-btn" id="homeBtn">
+		<img src="textures/home.svg" alt="Home" class="control-icon">
+	  </button>
+	  <button class="control-btn" id="dollhouseBtn">
+		<img src="textures/dollhouse.svg" alt="Dollhouse" class="control-icon">
+	  </button>
+	  <button class="control-btn" id="floorPlanBtn">
+		<img src="textures/floor_plan.svg" alt="Floor Plan" class="control-icon">
+	  </button>
+	</div>
+  </div>
+
+  <!--<div class="pano-hint" id="panoHint"></div>-->
+  <div class="loading-indicator" id="loadingIndicator">Loading panorama...</div>
+  <div class="hotspot-tooltip" id="hotspotTooltip"></div>
+
+  <div class="info-panel" id="infoPanel">
+    <div class="info-content">
+      <!-- Tab navigation -->
+      <div class="info-tabs">
+        <button class="tab-btn active" data-tab="navigation">Navigation</button>
+        <button class="tab-btn" data-tab="location">Location</button>
+      </div>
+      
+      <!-- Navigation tab content -->
+      <div class="tab-content active" id="navigationTab">
+        <h3>Navigation Controls</h3>
+        <ul>
+          <li><strong>Mouse:</strong> Click and drag to look around</li>
+          <li><strong>Scroll:</strong> Zoom in/out</li>
+          <li><strong>Hotspots:</strong> Click blue cylinders to enter panoramas</li>
+          <li><strong>Controls:</strong> Home, Dollhouse, Floor Plan views</li>
+          <li><strong>Floor Selection:</strong> Dropdown menu to choose floors</li>
+          <li><strong>Keyboard:</strong> H (Home), D (Dollhouse), F (Floor Plan), 1/2 (Floor), A (All), Esc (Exit)</li>
+        </ul>
+      </div>
+      
+      <!-- Location tab content -->
+      <div class="tab-content" id="locationTab">
+        <h3>Property Location</h3>
+        <div class="location-info">
+          <p><strong>Address:</strong> <span id="propertyAddress"></span></p>
+          <p><strong>Neighborhood:</strong> <span id="propertyNeighborhood"></span></p>
+        </div>
+        <!-- Google Map container -->
+        <div id="map" class="map-container"></div>
+      </div>
+    </div>
+    <button class="close-info" id="closeInfoBtn">×</button>
+  </div>
+
+  <button class="info-btn" id="infoBtn">
+	<img src="textures/info.svg" alt="Info" class="info-icon">
+	</button>
+
+  <button class="fullscreen-btn" id="fullscreenBtn">
+	<img src="textures/fullscreen.svg" alt="Full Screen" class="fullscreen-icon">
+	</button>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.163.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <script>
+  // Get taskId from URL query string (?taskId=property1)
+  const urlParams = new URLSearchParams(window.location.search);
+  const taskFolder = urlParams.get("taskId") || "TaskID_default";
+
+  // Property information mapping
+  const propertyInfo = {
+    "TaskID_101": {
+      name: "Luxury Villa",
+      address: "123 Oak Street, Monte Sereno, CA 95030",
+      neighborhood: "Silicon Valley",
+      lat: 37.2358,
+      lng: -122.0453
+    },
+    "TaskID_102": {
+      name: "Urban Apartment",
+      address: "456 Pine Avenue, San Jose, CA 95110",
+      neighborhood: "Downtown San Jose",
+      lat: 37.3382,
+      lng: -121.8863
+    },
+    "TaskID_103": {
+      name: "Suburban Home",
+      address: "789 Elm Drive, Los Gatos, CA 95032",
+      neighborhood: "South Bay",
+      lat: 37.2266,
+      lng: -121.9747
+    }
+  };
+
+  // Get current property info
+  const currentProperty = propertyInfo[taskFolder] || {
+    name: "Property",
+    address: "Monte Sereno, CA",
+    neighborhood: "Silicon Valley",
+    lat: 37.2358,
+    lng: -122.0453
+  };
+
+  // Expose base path globally so FloorManager/HotspotManager can use it
+  window.PANO_BASE_PATH = `../${taskFolder}/panos/`;
+  console.log("Using pano path:", window.PANO_BASE_PATH);
+
+  // Function to update location info
+  function updateLocationInfo() {
+    const propertyAddress = document.getElementById('propertyAddress');
+    const propertyNeighborhood = document.getElementById('propertyNeighborhood');
+    if (propertyAddress) {
+      propertyAddress.textContent = currentProperty.address;
+    }
+    if (propertyNeighborhood) {
+      propertyNeighborhood.textContent = currentProperty.neighborhood;
+    }
+  }
+
+  // Set header title and location info
+  document.addEventListener('DOMContentLoaded', function() {
+    const headerTitle = document.getElementById('headerTitle');
+    if (headerTitle) {
+      headerTitle.textContent = currentProperty.name;
+      headerTitle.dataset.originalTitle = currentProperty.name;
+    }
+
+    updateLocationInfo();
+  });
+</script>
+
+
+  <script type="module" src="main.js"></script>
+  
+  <script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetTab = button.dataset.tab;
+
+          // Remove active class from all tabs and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+
+          // Add active class to clicked tab and corresponding content
+          button.classList.add('active');
+          document.getElementById(targetTab + 'Tab').classList.add('active');
+
+          // If switching to location tab, resize map and update location info
+          if (targetTab === 'location') {
+            updateLocationInfo();
+            if (window.google && map) {
+              setTimeout(() => {
+                google.maps.event.trigger(map, 'resize');
+                map.setCenter({ lat: currentProperty.lat, lng: currentProperty.lng });
+              }, 100);
+            }
+          }
+        });
+      });
+    });
+  </script>
+  
+  <div class="logo-container">
+    <img src="textures/Logo.svg" alt="Logo">
+  </div>
+</body>
+</html>

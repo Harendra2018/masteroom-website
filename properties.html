@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties - Masteroom</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/Logo.svg" alt="Masteroom Logo">
+      </div>
+      <div class="search-bar">
+        <form id="searchForm" action="properties.html" method="get">
+          <input type="text" name="search" placeholder="Search properties by name..." id="searchInput">
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+      </div>
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="properties.html" class="active">Properties</a></li>
+          <li><a href="index.html#gallery">Gallery</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="container">
+      <h2>Find Your Perfect Property</h2>
+      <div class="filters">
+        <div class="filter-group">
+          <label for="priceMin">Min Price:</label>
+          <input type="number" id="priceMin" placeholder="0">
+        </div>
+        <div class="filter-group">
+          <label for="priceMax">Max Price:</label>
+          <input type="number" id="priceMax" placeholder="2000000">
+        </div>
+        <div class="filter-group">
+          <label for="location">Location:</label>
+          <select id="location">
+            <option value="">All Locations</option>
+            <option value="Beverly Hills">Beverly Hills</option>
+            <option value="Downtown LA">Downtown LA</option>
+            <option value="Pasadena">Pasadena</option>
+            <option value="Santa Monica">Santa Monica</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="bedrooms">Bedrooms:</label>
+          <select id="bedrooms">
+            <option value="">Any</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sizeMin">Min Size (sq ft):</label>
+          <input type="number" id="sizeMin" placeholder="0">
+        </div>
+        <div class="filter-group">
+          <label for="sizeMax">Max Size (sq ft):</label>
+          <input type="number" id="sizeMax" placeholder="5000">
+        </div>
+        <button id="applyFilters" class="cta-button">Apply Filters</button>
+        <button id="clearFilters" class="cta-button secondary">Clear Filters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Section -->
+  <section class="properties-section">
+    <div class="container">
+      <div id="propertiesGrid" class="gallery-grid">
+        <!-- Properties will be loaded here by JavaScript -->
+      </div>
+      <div id="noResults" class="no-results" style="display: none;">
+        <p>No properties found matching your criteria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/Logo_white.svg" alt="Masteroom Logo">
+        </div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="index.html#gallery">Gallery</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <p>&copy; 2024 Masteroom. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 3D Tour Modal -->
+  <div id="tourModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close-modal" onclick="close3DTour()">&times;</span>
+      </div>
+      <iframe id="tourFrame" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <script src="properties.js"></script>
+  <script src="properties-script.js"></script>
+</body>
+</html>
