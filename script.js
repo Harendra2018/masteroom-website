@@ -90,22 +90,68 @@ document.addEventListener('DOMContentLoaded', function() {
 let currentImageIndex = 0;
 const heroImageElement = document.querySelector('.hero-image');
 const slides = document.querySelectorAll('.slide');
+const paginationDots = document.querySelectorAll('.pagination-dot');
 const totalImages = 4;
+let autoSlideInterval;
 
-function changeHeroImage() {
+function updateActiveDot() {
+    // Update pagination dots
+    paginationDots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentImageIndex);
+    });
+}
+
+function changeHeroImage(newIndex = null) {
     // Remove active class from current slide
     slides[currentImageIndex].classList.remove('active');
 
-    currentImageIndex = (currentImageIndex + 1) % totalImages;
+    if (newIndex !== null) {
+        currentImageIndex = newIndex;
+    } else {
+        currentImageIndex = (currentImageIndex + 1) % totalImages;
+    }
 
     // Add active class to new slide
     slides[currentImageIndex].classList.add('active');
 
+    // Update transform
     heroImageElement.style.transform = `translateX(-${currentImageIndex * 25}%)`;
+
+    // Update active dot
+    updateActiveDot();
 }
 
-// Change image every 5 seconds
-setInterval(changeHeroImage, 5000);
+function startAutoSlide() {
+    autoSlideInterval = setInterval(() => {
+        changeHeroImage();
+    }, 5000);
+}
+
+function stopAutoSlide() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+    }
+}
+
+function resetAutoSlide() {
+    stopAutoSlide();
+    startAutoSlide();
+}
+
+// Add click event listeners to pagination dots
+paginationDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        if (index !== currentImageIndex) {
+            changeHeroImage(index);
+            resetAutoSlide(); // Reset timer when manually navigating
+        }
+    });
+});
+
+// Initialize
+updateActiveDot();
+startAutoSlide();
 
 // Close modal when clicking outside the content
 window.onclick = function(event) {
