@@ -454,6 +454,16 @@ createCarouselItems() {
 
     if (this.loadingIndicator) {
       this.loadingIndicator.style.display = 'block';
+      // Update loading text for panorama loading
+      const loadingText = document.getElementById('loadingText');
+      if (loadingText) {
+        loadingText.textContent = 'Loading panorama...';
+      }
+      // Hide progress bar elements for panorama loading
+      const progressBar = this.loadingIndicator.querySelector('.progress-bar');
+      const progressText = document.getElementById('progressText');
+      if (progressBar) progressBar.style.display = 'none';
+      if (progressText) progressText.style.display = 'none';
     }
 
     this.hotspotManager.hideLabels();
@@ -472,6 +482,11 @@ createCarouselItems() {
 
         if (this.loadingIndicator) {
           this.loadingIndicator.style.display = 'none';
+          // Restore progress bar elements for future floor loading
+          const progressBar = this.loadingIndicator.querySelector('.progress-bar');
+          const progressText = document.getElementById('progressText');
+          if (progressBar) progressBar.style.display = 'block';
+          if (progressText) progressText.style.display = 'block';
         }
 
         if (this.panoramaMesh) {
@@ -573,6 +588,11 @@ createCarouselItems() {
       (err) => {
         if (this.loadingIndicator) {
           this.loadingIndicator.style.display = 'none';
+          // Restore progress bar elements for future floor loading
+          const progressBar = this.loadingIndicator.querySelector('.progress-bar');
+          const progressText = document.getElementById('progressText');
+          if (progressBar) progressBar.style.display = 'block';
+          if (progressText) progressText.style.display = 'block';
         }
         console.error('Panorama load error:', err);
         alert(`Failed to load panorama: ${imageUrl}.`);

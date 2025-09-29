@@ -7,16 +7,19 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 
 export class FloorManager {
-  constructor(scene) {
-    this.scene = scene;
-    this.floors = {};
-    this.allRotNodes = [];
-    this.currentFloorView = 'all';
-    this.loader = new GLTFLoader();
-    this.loadingCallbacks = [];
+   constructor(scene) {
+     this.scene = scene;
+     this.floors = {};
+     this.allRotNodes = [];
+     this.currentFloorView = 'all';
+     this.loader = new GLTFLoader();
+     this.loadingCallbacks = [];
+     this.progressCallbacks = [];
 
-    this.defaultFloorHeight = 3.3; // Height between floors
-  }
+     this.defaultFloorHeight = 3.3; // Height between floors
+     this.totalFloors = 0;
+     this.loadedFloors = 0;
+   }
 
   async initializeFloors(floorConfigs) {
     this.clearFloors();
@@ -52,11 +55,16 @@ export class FloorManager {
   }
 
   async loadAllFloors() {
+    this.totalFloors = Object.keys(this.floors).length;
+    this.loadedFloors = 0;
+    this.emitProgress({ loaded: 0, total: this.totalFloors, percentage: 0 });
+
     const loadPromises = Object.keys(this.floors).map(floorKey => this.loadFloor(floorKey));
 
     try {
       await Promise.all(loadPromises);
       console.log('All floors loaded successfully');
+      this.emitProgress({ loaded: this.totalFloors, total: this.totalFloors, percentage: 100 });
       setTimeout(() => this.onAllFloorsLoaded(), 100);
     } catch (error) {
       console.error('Error loading floors:', error);
@@ -83,7 +91,10 @@ export class FloorManager {
 
           this.processFloorModel(floorKey);
           floor.loaded = true;
-          console.log(`Floor ${floorKey} loaded successfully`);
+          this.loadedFloors++;
+          const percentage = Math.round((this.loadedFloors / this.totalFloors) * 100);
+          this.emitProgress({ loaded: this.loadedFloors, total: this.totalFloors, percentage });
+          console.log(`Floor ${floorKey} loaded successfully (${this.loadedFloors}/${this.totalFloors})`);
           resolve(gltf);
         },
         (progress) => {
@@ -119,7 +130,6 @@ export class FloorManager {
 
     floor.hotspotNodes = rotNodes;
     this.allRotNodes = this.allRotNodes.concat(rotNodes);
-    this.scene.add(floor.model);
 
     this.createWireframeForFloor(floorKey);
   }
@@ -180,7 +190,6 @@ export class FloorManager {
     });
 
     floor.wireframe.position.copy(floor.model.position);
-    this.scene.add(floor.wireframe);
     floor.wireframe.visible = false;
   }
 
@@ -202,6 +211,18 @@ export class FloorManager {
   }
 
   onAllFloorsLoaded() {
+    // Add all floors to the scene at once
+    Object.values(this.floors).forEach(floor => {
+      if (floor.model) {
+        this.scene.add(floor.model);
+      }
+      if (floor.wireframe) {
+        this.scene.add(floor.wireframe);
+      }
+    });
+
+    console.log('All floors added to scene at once');
+
     this.loadingCallbacks.forEach(callback => {
       try {
         callback(this.allRotNodes, this.floors);
@@ -214,6 +235,21 @@ export class FloorManager {
   onLoaded(callback) {
     if (typeof callback !== 'function') throw new Error('Callback must be a function');
     this.loadingCallbacks.push(callback);
+  }
+
+  onProgress(callback) {
+    if (typeof callback !== 'function') throw new Error('Callback must be a function');
+    this.progressCallbacks.push(callback);
+  }
+
+  emitProgress(progress) {
+    this.progressCallbacks.forEach(callback => {
+      try {
+        callback(progress);
+      } catch (error) {
+        console.error('Error in progress callback:', error);
+      }
+    });
   }
 
   updateFloorVisibility(floorPlanView = false) {

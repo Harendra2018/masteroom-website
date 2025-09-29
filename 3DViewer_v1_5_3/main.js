@@ -250,6 +250,9 @@ class RoomViewer {
   console.log('Initializing floors for task:', taskId, 'with config:', floorConfig);
 
   try {
+    // Show loading indicator
+    this.showLoadingIndicator();
+
     // Preload essential textures before loading floors
     console.log('Preloading textures...');
     const textureLoader = new THREE.TextureLoader();
@@ -271,9 +274,17 @@ class RoomViewer {
     // Set the preloaded texture in hotspot manager
     this.hotspotManager.setAlphaMap(transparentTexture);
 
+    // Set up progress callback
+    this.floorManager.onProgress((progress) => {
+      this.updateLoadingProgress(progress);
+    });
+
     // Set up callback BEFORE initializing floors
     this.floorManager.onLoaded((allRotNodes, floors) => {
       console.log('All floors loaded, creating hotspots...', allRotNodes.length, 'nodes found');
+
+      // Hide loading indicator
+      this.hideLoadingIndicator();
 
       // Debug: log node names to ensure we have the right nodes
       allRotNodes.forEach((node, index) => {
@@ -289,16 +300,17 @@ class RoomViewer {
       this.generateFloorDropdownOptions();
 
       console.log('Hotspot creation complete');
+
+      // Now that floors are loaded, detect panos in background (don't await)
+      this.detectPanosForCurrentTask();
     });
 
     // Initialize floors with the selected configuration
     await this.floorManager.initializeFloors(floorConfig);
 
-    // Now that floors are loaded, detect panos
-    await this.detectPanosForCurrentTask();
-
   } catch (error) {
     console.error('Failed to initialize floors:', error);
+    this.hideLoadingIndicator();
   }
 }
 
@@ -975,6 +987,43 @@ class RoomViewer {
     this.renderer.dispose();
     if (this.gradientTexture) {
       this.gradientTexture.dispose();
+    }
+  }
+
+  showLoadingIndicator() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+      indicator.style.display = 'block';
+      // Set loading text for floor loading
+      const loadingText = document.getElementById('loadingText');
+      if (loadingText) {
+        loadingText.textContent = 'Loading floors...';
+      }
+      // Ensure progress bar elements are visible for floor loading
+      const progressBar = indicator.querySelector('.progress-bar');
+      const progressText = document.getElementById('progressText');
+      if (progressBar) progressBar.style.display = 'block';
+      if (progressText) progressText.style.display = 'block';
+    }
+  }
+
+  hideLoadingIndicator() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+      indicator.style.display = 'none';
+    }
+  }
+
+  updateLoadingProgress(progress) {
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+
+    if (progressFill) {
+      progressFill.style.width = `${progress.percentage}%`;
+    }
+
+    if (progressText) {
+      progressText.textContent = `${progress.percentage}% (${progress.loaded}/${progress.total} floors)`;
     }
   }
 }
