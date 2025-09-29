@@ -303,6 +303,11 @@ class RoomViewer {
 
       // Now that floors are loaded, detect panos in background (don't await)
       this.detectPanosForCurrentTask();
+
+      // Automatically click the home button once after 3D model loading is complete
+      setTimeout(() => {
+        document.getElementById('homeBtn').click();
+      }, 500);
     });
 
     // Initialize floors with the selected configuration

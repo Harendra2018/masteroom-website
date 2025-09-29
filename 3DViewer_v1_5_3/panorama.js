@@ -242,8 +242,9 @@ export class PanoramaManager {
     }
   }
 toggleCarousel() {
-  this.carouselExpanded = !this.carouselExpanded;
-  const content = this.carouselElement.querySelector('.carousel-content');
+this.carouselExpanded = !this.carouselExpanded;
+if (!this.carouselElement) return;
+const content = this.carouselElement.querySelector('.carousel-content');
 
   if (this.carouselExpanded) {
     content.style.display = 'flex';
@@ -326,9 +327,13 @@ toggleCarousel() {
     this.panoList = panoList;
     this.currentPanoIndex = 0;
     this.createCarouselItems();
-    // Always display carousel in both 3D and pano viewers
-    this.carouselElement.style.display = 'flex';
-    this.expandBtn.style.display = 'block';
+    // Always display carousel in both 3D and pano viewers (if they exist)
+    if (this.carouselElement) {
+      this.carouselElement.style.display = 'flex';
+    }
+    if (this.expandBtn) {
+      this.expandBtn.style.display = 'block';
+    }
   }
 
 createCarouselItems() {
@@ -529,8 +534,12 @@ createCarouselItems() {
         }
 
         // Show panorama carousel and expand button
-        this.carouselElement.style.display = 'flex';
-        this.expandBtn.style.display = 'block';
+        if (this.carouselElement) {
+          this.carouselElement.style.display = 'flex';
+        }
+        if (this.expandBtn) {
+          this.expandBtn.style.display = 'block';
+        }
         // Expand carousel only when entering from 3D view, not when switching panoramas
         if (!this.panoramaActive && !this.carouselExpanded) {
           this.toggleCarousel();
@@ -658,13 +667,17 @@ createCarouselItems() {
     }
     
     // Hide expand button but keep carousel always visible
-    this.expandBtn.style.display = 'none';
+    if (this.expandBtn) {
+      this.expandBtn.style.display = 'none';
+    }
 
     // Reset carousel to collapsed state when exiting panorama
     this.carouselExpanded = false;
-    const content = this.carouselElement.querySelector('.carousel-content');
-    if (content) {
-      content.style.display = 'none';
+    if (this.carouselElement) {
+      const content = this.carouselElement.querySelector('.carousel-content');
+      if (content) {
+        content.style.display = 'none';
+      }
     }
     if (this.expandBtn) {
       this.expandBtn.style.display = 'block';
