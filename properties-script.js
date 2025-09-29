@@ -169,19 +169,38 @@ document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get('search');
   if (searchQuery) {
-    document.getElementById('searchInput').value = searchQuery;
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = searchQuery;
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    if (mobileSearchInput) mobileSearchInput.value = searchQuery;
     searchProperties(searchQuery);
   }
 
   // Search form submission
-  document.getElementById('searchForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const query = document.getElementById('searchInput').value.trim();
-    searchProperties(query);
-    // Update URL
-    const newUrl = query ? `${window.location.pathname}?search=${encodeURIComponent(query)}` : window.location.pathname;
-    window.history.pushState({}, '', newUrl);
-  });
+  const searchForm = document.getElementById('searchForm');
+  if (searchForm) {
+    searchForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const query = document.getElementById('searchInput').value.trim();
+      searchProperties(query);
+      // Update URL
+      const newUrl = query ? `${window.location.pathname}?search=${encodeURIComponent(query)}` : window.location.pathname;
+      window.history.pushState({}, '', newUrl);
+    });
+  }
+
+  // Mobile search form submission
+  const mobileSearchForm = document.getElementById('mobile-search-form');
+  if (mobileSearchForm) {
+    mobileSearchForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const query = document.getElementById('mobile-search-input').value.trim();
+      searchProperties(query);
+      // Update URL
+      const newUrl = query ? `${window.location.pathname}?search=${encodeURIComponent(query)}` : window.location.pathname;
+      window.history.pushState({}, '', newUrl);
+    });
+  }
 });
 
 // Close modal when clicking outside

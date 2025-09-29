@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
 </head>
-<body>
+<body class="properties-page">
   <!-- Header -->
   <header class="header">
     <div class="container">
@@ -41,6 +41,12 @@
   <section class="filters-section">
     <div class="container">
       <h2>Find Your Perfect Property</h2>
+      <div class="mobile-search-bar">
+        <form id="mobile-search-form" action="properties.html" method="get">
+          <input type="text" name="search" placeholder="Search properties by name..." id="mobile-search-input">
+          <button type="submit" class="mobile-search-btn">Search</button>
+        </form>
+      </div>
       <div class="filters">
         <div class="filter-group">
           <label for="priceMin">Min Price:</label>

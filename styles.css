@@ -93,6 +93,46 @@ ul {
   background: #1d4ed8;
 }
 
+.mobile-search-bar {
+  display: none;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.mobile-search-bar form {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px 0 0 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.mobile-search-bar input:focus {
+  border-color: #2563eb;
+}
+
+.mobile-search-btn {
+  padding: 10px 15px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.mobile-search-btn:hover {
+  background: #1d4ed8;
+}
+
 .nav {
   position: relative;
 }
@@ -784,6 +824,14 @@ ul {
 
   .search-bar {
     display: none; /* Hide search bar on mobile for simplicity */
+  }
+
+  .properties-page .search-bar {
+    display: none;
+  }
+
+  .properties-page .mobile-search-bar {
+    display: block;
   }
 
   /* Hamburger positioning */
