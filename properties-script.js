@@ -224,4 +224,3 @@ window.onclick = function(event) {
   if (event.target === modal) {
     close3DTour();
   }
-}
