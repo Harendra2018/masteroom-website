@@ -3221,7 +3221,7 @@ float calcFresnelReflectance(vec3 rayDirection, vec3 n, float etaI, float etaT, 
 	float cosThetaI = clamp(dot(-rayDirection, n), -1.0, 1.0);
 	float temp = etaI;
 	if (cosThetaI < 0.0)
-	{
+	{	
 		etaI = etaT;
 		etaT = temp;
 	}
@@ -3229,52 +3229,12 @@ float calcFresnelReflectance(vec3 rayDirection, vec3 n, float etaI, float etaT, 
 	cosThetaI = abs(cosThetaI);
 	float sin2ThetaT = (IoR_ratio * IoR_ratio) * (1.0 - (cosThetaI * cosThetaI));
 	if (sin2ThetaT >= 1.0) // handle total internal reflection
-		return 1.0;
+		return 1.0; 
 	float cosThetaT = sqrt(1.0 - sin2ThetaT);
 
 	float Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) / ((etaT * cosThetaI) + (etaI * cosThetaT));
     	float Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) / ((etaI * cosThetaI) + (etaT * cosThetaT));
     	return clamp(0.5 * ((Rparl * Rparl) + (Rperp * Rperp)), 0.0, 1.0);
-}
-`;
-
-THREE.ShaderChunk[ 'pathtracing_ggx_functions' ] = `
-float GGX_D(float NoH, float roughness)
-{
-	float a = roughness * roughness;
-	float a2 = a * a;
-	float NoH2 = NoH * NoH;
-	float denom = NoH2 * (a2 - 1.0) + 1.0;
-	return a2 / (PI * denom * denom);
-}
-
-vec3 Fresnel_Schlick(vec3 F0, float cosTheta)
-{
-	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
-}
-
-float GGX_G1(float NoV, float k)
-{
-	return NoV / (NoV * (1.0 - k) + k);
-}
-
-float GGX_G(float NoV, float NoL, float k)
-{
-	return GGX_G1(NoV, k) * GGX_G1(NoL, k);
-}
-
-vec3 sampleGGX(vec3 V, float roughness, float u1, float u2)
-{
-	float a = roughness * roughness;
-	float phi = 2.0 * PI * u1;
-	float cosTheta = sqrt((1.0 - u2) / (1.0 + (a*a - 1.0) * u2));
-	float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
-	vec3 H = vec3(sinTheta * cos(phi), sinTheta * sin(phi), cosTheta);
-	// Transform to world space
-	vec3 up = abs(V.z) < 0.999 ? vec3(0,0,1) : vec3(1,0,0);
-	vec3 tangent = normalize(cross(up, V));
-	vec3 bitangent = cross(V, tangent);
-	return tangent * H.x + bitangent * H.y + V * H.z;
 }
 `;
 

@@ -7,19 +7,16 @@ precision highp sampler2D;
 uniform vec3 uSunDirection;
 uniform sampler2D tTriangleTexture;
 uniform sampler2D tAABBTexture;
-uniform sampler2D tAlbedoTextures[8]; // 8 = max number of diffuse albedo textures per model
+uniform sampler2D tAlbedoTextures[8];
 uniform sampler2D tHDRTexture;
 uniform float uSkyLightIntensity;
 uniform float uSunLightIntensity;
 uniform vec3 uSunColor;
 uniform float uRoughness;
-uniform float uSpecularIntensity;
 
-// (1 / 2048 texture width)
 #define INV_TEXTURE_WIDTH 0.00048828125
 
 vec3 rayOrigin, rayDirection;
-// recorded intersection data:
 vec3 hitNormal, hitEmission, hitColor;
 vec2 hitUV;
 float hitObjectID = -INFINITY;
@@ -33,58 +30,36 @@ struct Box { vec3 minCorner; vec3 maxCorner; vec3 emission; vec3 color; int type
 Box box;
 
 #include <pathtracing_random_functions>
-
 #include <pathtracing_calc_fresnel_reflectance>
-
-#include <pathtracing_ggx_functions>
-
 #include <pathtracing_sphere_intersect>
-
 #include <pathtracing_box_intersect>
-
 #include <pathtracing_boundingbox_intersect>
-
 #include <pathtracing_bvhTriangle_intersect>
-
 
 vec2 stackLevels[28];
 
-//vec4 boxNodeData0 corresponds to .x = idTriangle,  .y = aabbMin.x, .z = aabbMin.y, .w = aabbMin.z
-//vec4 boxNodeData1 corresponds to .x = idRightChild .y = aabbMax.x, .z = aabbMax.y, .w = aabbMax.z
-
 void GetBoxNodeData(const in float i, inout vec4 boxNodeData0, inout vec4 boxNodeData1)
 {
-	// each bounding box's data is encoded in 2 rgba(or xyzw) texture slots 
 	float ix2 = i * 2.0;
-	// (ix2 + 0.0) corresponds to .x = idTriangle,  .y = aabbMin.x, .z = aabbMin.y, .w = aabbMin.z 
-	// (ix2 + 1.0) corresponds to .x = idRightChild .y = aabbMax.x, .z = aabbMax.y, .w = aabbMax.z 
-
-	ivec2 uv0 = ivec2( mod(ix2 + 0.0, 2048.0), (ix2 + 0.0) * INV_TEXTURE_WIDTH ); // data0
-	ivec2 uv1 = ivec2( mod(ix2 + 1.0, 2048.0), (ix2 + 1.0) * INV_TEXTURE_WIDTH ); // data1
-	
+	ivec2 uv0 = ivec2( mod(ix2 + 0.0, 2048.0), (ix2 + 0.0) * INV_TEXTURE_WIDTH );
+	ivec2 uv1 = ivec2( mod(ix2 + 1.0, 2048.0), (ix2 + 1.0) * INV_TEXTURE_WIDTH );
 	boxNodeData0 = texelFetch(tAABBTexture, uv0, 0);
 	boxNodeData1 = texelFetch(tAABBTexture, uv1, 0);
 }
 
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 float SceneIntersect( )
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 {
 	vec4 currentBoxNodeData0, nodeAData0, nodeBData0, tmpNodeData0;
 	vec4 currentBoxNodeData1, nodeAData1, nodeBData1, tmpNodeData1;
-	
 	vec4 vd0, vd1, vd2, vd3, vd4, vd5, vd6, vd7;
-
 	vec3 inverseDir = 1.0 / rayDirection;
 	vec3 normal, n;
-
 	vec2 currentStackData, stackDataA, stackDataB, tmpStackData;
 	ivec2 uv0, uv1, uv2, uv3, uv4, uv5, uv6, uv7;
 
 	float d;
 	float t = INFINITY;
-        float stackptr = 0.0;
+	float stackptr = 0.0;
 	float id = 0.0;
 	float tu, tv;
 	float triangleID = 0.0;
@@ -93,88 +68,68 @@ float SceneIntersect( )
 	float triangleW = 0.0;
 
 	int objectCount = 0;
-	
 	hitObjectID = -INFINITY;
-
 	int skip = FALSE;
 	int triangleLookupNeeded = FALSE;
 	int isRayExiting = FALSE;
 
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	// glTF
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	// BVH Traversal
 	GetBoxNodeData(stackptr, currentBoxNodeData0, currentBoxNodeData1);
 	currentStackData = vec2(stackptr, BoundingBoxIntersect(currentBoxNodeData0.yzw, currentBoxNodeData1.yzw, rayOrigin, inverseDir));
 	stackLevels[0] = currentStackData;
 	skip = (currentStackData.y < t) ? TRUE : FALSE;
 
 	while (true)
-        {
+	{
 		if (skip == FALSE) 
-                {
-                        // decrease pointer by 1 (0.0 is root level, 27.0 is maximum depth)
-                        if (--stackptr < 0.0) // went past the root level, terminate loop
-                                break;
-
-                        currentStackData = stackLevels[int(stackptr)];
-			
+		{
+			if (--stackptr < 0.0)
+				break;
+			currentStackData = stackLevels[int(stackptr)];
 			if (currentStackData.y >= t)
 				continue;
-			
 			GetBoxNodeData(currentStackData.x, currentBoxNodeData0, currentBoxNodeData1);
-                }
-		skip = FALSE; // reset skip
+		}
+		skip = FALSE;
 		
-		if (currentBoxNodeData0.x < 0.0) // // < 0.0 signifies an inner node 
+		if (currentBoxNodeData0.x < 0.0)
 		{
 			GetBoxNodeData(currentStackData.x + 1.0, nodeAData0, nodeAData1);
 			GetBoxNodeData(currentBoxNodeData1.x, nodeBData0, nodeBData1);
 			stackDataA = vec2(currentStackData.x + 1.0, BoundingBoxIntersect(nodeAData0.yzw, nodeAData1.yzw, rayOrigin, inverseDir));
 			stackDataB = vec2(currentBoxNodeData1.x, BoundingBoxIntersect(nodeBData0.yzw, nodeBData1.yzw, rayOrigin, inverseDir));
 			
-			// first sort the branch node data so that 'a' is the smallest
 			if (stackDataB.y < stackDataA.y)
 			{
 				tmpStackData = stackDataB;
 				stackDataB = stackDataA;
 				stackDataA = tmpStackData;
+				tmpNodeData0 = nodeBData0; tmpNodeData1 = nodeBData1;
+				nodeBData0 = nodeAData0; nodeBData1 = nodeAData1;
+				nodeAData0 = tmpNodeData0; nodeAData1 = tmpNodeData1;
+			}
 
-				tmpNodeData0 = nodeBData0;   tmpNodeData1 = nodeBData1;
-				nodeBData0   = nodeAData0;   nodeBData1   = nodeAData1;
-				nodeAData0   = tmpNodeData0; nodeAData1   = tmpNodeData1;
-			} // branch 'b' now has the larger rayT value of 'a' and 'b'
-
-			if (stackDataB.y < t) // see if branch 'b' (the larger rayT) needs to be processed
+			if (stackDataB.y < t)
 			{
 				currentStackData = stackDataB;
 				currentBoxNodeData0 = nodeBData0;
 				currentBoxNodeData1 = nodeBData1;
-				skip = TRUE; // this will prevent the stackptr from decreasing by 1
+				skip = TRUE;
 			}
-			if (stackDataA.y < t) // see if branch 'a' (the smaller rayT) needs to be processed 
+			if (stackDataA.y < t)
 			{
-				if (skip == TRUE) // if larger branch 'b' needed to be processed also,
-					stackLevels[int(stackptr++)] = stackDataB; // cue larger branch 'b' for future round
-							// also, increase pointer by 1
-				
+				if (skip == TRUE)
+					stackLevels[int(stackptr++)] = stackDataB;
 				currentStackData = stackDataA;
 				currentBoxNodeData0 = nodeAData0; 
 				currentBoxNodeData1 = nodeAData1;
-				skip = TRUE; // this will prevent the stackptr from decreasing by 1
+				skip = TRUE;
 			}
-
 			continue;
-		} // end if (currentBoxNodeData0.x < 0.0) // inner node
+		}
 
-
-		// else this is a leaf
-
-		// each triangle's data is encoded in 8 rgba(or xyzw) texture slots
-		
+		// Leaf node - triangle intersection
 		id = 8.0 * currentBoxNodeData0.x;
-
 		uv0 = ivec2( mod(id + 0.0, 2048.0), (id + 0.0) * INV_TEXTURE_WIDTH );
 		uv1 = ivec2( mod(id + 1.0, 2048.0), (id + 1.0) * INV_TEXTURE_WIDTH );
 		uv2 = ivec2( mod(id + 2.0, 2048.0), (id + 2.0) * INV_TEXTURE_WIDTH );
@@ -193,10 +148,9 @@ float SceneIntersect( )
 			triangleV = tv;
 			triangleLookupNeeded = TRUE;
 		}
-	      
-        } // end while (TRUE)
+	}
 
-
+	// Full triangle data lookup
 	if (triangleLookupNeeded == TRUE)
 	{
 		uv0 = ivec2( mod(triangleID + 0.0, 2048.0), floor((triangleID + 0.0) * INV_TEXTURE_WIDTH) );
@@ -217,13 +171,9 @@ float SceneIntersect( )
 		vd6 = texelFetch(tTriangleTexture, uv6, 0);
 		vd7 = texelFetch(tTriangleTexture, uv7, 0);
 
-		// face normal for flat-shaded polygon look
-		//hitNormal = ( cross(vec3(vd0.w, vd1.xy) - vec3(vd0.xyz), vec3(vd1.zw, vd2.x) - vec3(vd0.xyz)) );
-
-		// interpolated normal using triangle intersection's uv's
 		triangleW = 1.0 - triangleU - triangleV;
-		hitNormal = (triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
-		hitEmission = vec3(1, 0, 1); // use this if hitType will be LIGHT
+		hitNormal = normalize(triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
+		hitEmission = vec3(1, 0, 1);
 		hitColor = vd6.yzw;
 		hitOpacity = vd7.y;
 		hitUV = triangleW * vec2(vd4.zw) + triangleU * vec2(vd5.xy) + triangleV * vec2(vd5.zw);
@@ -235,13 +185,12 @@ float SceneIntersect( )
 	}
 	objectCount++;
 
-
-	// GROUND Plane (thin, wide box that acts like ground plane)
+	// Ground plane intersection
 	d = BoxIntersect( box.minCorner, box.maxCorner, rayOrigin, rayDirection, n, isRayExiting );
 	if (d < t)
 	{
 		t = d;
-		hitNormal = n;
+		hitNormal = normalize(n);
 		hitEmission = box.emission;
 		hitColor = box.color;
 		hitType = box.type;
@@ -251,13 +200,9 @@ float SceneIntersect( )
 		hitOpacity = 1.0;
 		hitAlbedoTextureID = -1;
 	}
-	
-	
 
 	return t;
-
-} // end float SceneIntersect( )
-
+}
 
 vec3 Get_HDR_Color(vec3 rayDirection)
 {
@@ -266,7 +211,8 @@ vec3 Get_HDR_Color(vec3 rayDirection)
 	sampleUV.y = asin(clamp(rayDirection.y, -1.0, 1.0)) * ONE_OVER_PI + 0.5;
 	
 	vec3 hdr = texture( tHDRTexture, sampleUV ).rgb;
-	// Add sun
+	
+	// Add sun disk
 	float sunSize = 0.0001;
 	float sunDot = dot(rayDirection, uSunDirection);
 	if (sunDot > 1.0 - sunSize) {
@@ -275,156 +221,71 @@ vec3 Get_HDR_Color(vec3 rayDirection)
 	return hdr;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------
 vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float objectID, out float pixelSharpness )
-//-----------------------------------------------------------------------------------------------------------------------------
 {
-	vec3 randVec = vec3(rand() * 2.0 - 1.0, rand() * 2.0 - 1.0, rand() * 2.0 - 1.0);
-
 	vec3 accumCol = vec3(0.0);
 	vec3 mask = vec3(1.0);
-	vec3 reflectionMask = vec3(1);
-	vec3 reflectionRayOrigin = vec3(0);
-	vec3 reflectionRayDirection = vec3(0);
 	vec3 n, nl, x;
-	vec3 firstX = vec3(0);
 
-	float hitDistance;
-	float nc, nt, ratioIoR, Re, Tr;
-	float weight;
 	float t = INFINITY;
-	float epsIntersect = 0.01;
-	float previousObjectID;
-	
-	int reflectionBounces = -1;
+	float epsIntersect = 0.001;
+
 	int diffuseCount = 0;
 	int previousIntersecType = -100;
+	float previousOpacity = 1.0;
 	hitType = -100;
-	
 	int bounceIsSpecular = TRUE;
-	int sampleLight = FALSE;
-	int willNeedReflectionRay = FALSE;
-	int isReflectionTime = FALSE;
-	int reflectionNeedsToBeSharp = FALSE;
 
-
-    	for (int bounces = 0; bounces < 5; bounces++)
+	for (int bounces = 0; bounces < 7; bounces++)
 	{
-		if (isReflectionTime == TRUE)
-			reflectionBounces++;
-
 		previousIntersecType = hitType;
-		previousObjectID = hitObjectID;
-
 		t = SceneIntersect();
 
-		
+		if (t < INFINITY) {
+			previousOpacity = hitOpacity;
+		}
+
 		if (t == INFINITY)
 		{
-			// ray hits sky first
 			if (bounces == 0)
 			{
 				pixelSharpness = 1.0;
-
 				accumCol += Get_HDR_Color(rayDirection);
 				break;
 			}
 
-			// if ray bounced off of diffuse material and hits sky
-			if (previousIntersecType == DIFF)
+			// Sky contributions for bounced rays
+			if (previousIntersecType == DIFF || previousOpacity < 0.99)
 			{
-				if (sampleLight == TRUE)
-					accumCol += mask * uSunColor * uSunLightIntensity * 0.5;
-				else
-					accumCol += mask * Get_HDR_Color(rayDirection) * uSkyLightIntensity * 0.5;
+				vec3 skyContribution = mask * Get_HDR_Color(rayDirection) * uSkyLightIntensity * 0.5;
+				accumCol += clamp(skyContribution, vec3(0.0), vec3(2.0));
 			}
-
-			// if ray bounced off of glass and hits sky
-			if (previousIntersecType == REFR)
+			else if (previousIntersecType == SPEC)
 			{
-				if (diffuseCount == 0) // camera looking through glass, hitting the sky
-				{
+				if (diffuseCount == 0)
 					pixelSharpness = 1.0;
-					mask *= Get_HDR_Color(rayDirection);
-				}
-				else if (sampleLight == TRUE) // sun rays going through glass, hitting another surface
-					mask *= uSunColor * uSunLightIntensity;
-				else  // sky rays going through glass, hitting another surface
-					mask *= Get_HDR_Color(rayDirection) * uSkyLightIntensity;
-
-				if (bounceIsSpecular == TRUE) // prevents sun 'fireflies' on diffuse surfaces
-					accumCol += mask;
-			}
-
-			// if ray bounced off of specular (metal) and hits sky
-			if (previousIntersecType == SPEC)
-			{
-				if (diffuseCount == 0) // camera looking at reflection, hitting the sky
+				if (bounceIsSpecular == TRUE)
 				{
-					pixelSharpness = 1.0;
-					mask *= Get_HDR_Color(rayDirection);
+					vec3 skyContribution = mask * Get_HDR_Color(rayDirection);
+					accumCol += clamp(skyContribution, vec3(0.0), vec3(5.0));
 				}
-				else if (sampleLight == TRUE) // sun rays reflecting off metal, hitting another surface
-					mask *= uSunColor * uSunLightIntensity;
-				else  // sky rays reflecting off metal, hitting another surface
-					mask *= Get_HDR_Color(rayDirection) * uSkyLightIntensity;
-
-				if (bounceIsSpecular == TRUE) // prevents sun 'fireflies' on diffuse surfaces
-					accumCol += mask;
 			}
-
-			if (willNeedReflectionRay == TRUE)
-			{
-				mask = reflectionMask;
-				rayOrigin = reflectionRayOrigin;
-				rayDirection = reflectionRayDirection;
-
-				willNeedReflectionRay = FALSE;
-				bounceIsSpecular = TRUE;
-				sampleLight = FALSE;
-				isReflectionTime = TRUE;
-				continue;
-			}
-			// reached a light, so we can exit
 			break;
+		}
 
-		} // end if (t == INFINITY)
-
-
-		/* // other lights, like houselights, could be added to the scene
-		// if we reached light material, don't spawn any more rays
-		if (hitType == LIGHT)
-		{
-	    		accumCol = mask * hitEmission * 0.5;
-			break;
-		} */
-
-		/* // Since we want fast direct sunlight caustics through windows, we don't use the following early out
-		if (sampleLight == TRUE)
-			break; */
-
-		// useful data
-		n = normalize(hitNormal);
+		// Store first hit for edge detection
+		n = hitNormal;
 		nl = dot(n, rayDirection) < 0.0 ? n : -n;
 		x = rayOrigin + rayDirection * t;
 
-		if (isReflectionTime == FALSE && diffuseCount == 0)// && hitObjectID != previousObjectID)
+		if (bounces == 0)
 		{
-			objectNormal += n;
-			objectColor += hitColor;
-			objectID += hitObjectID;
-		}
-		if (reflectionNeedsToBeSharp == TRUE && reflectionBounces == 0)
-		{
-			objectNormal += n;
-			//objectColor += hitColor;
-			//objectID += hitObjectID;
+			objectNormal = n;
+			objectColor = hitColor;
+			objectID = hitObjectID;
 		}
 
-		// ============================================
-		// CRITICAL FIX: Sample textures IMMEDIATELY after intersection
-		// Store all surface properties BEFORE any material branching
-		// ============================================
+		// Store ALL surface properties immediately after intersection BEFORE any branching
 		vec3 surfaceColor = hitColor;
 		float surfaceMetalness = hitMetalness;
 		float surfaceRoughness = hitRoughness;
@@ -442,159 +303,226 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 			else if (hitAlbedoTextureID == 6) surfaceColor *= texture(tAlbedoTextures[6], hitUV).rgb;
 			else if (hitAlbedoTextureID == 7) surfaceColor *= texture(tAlbedoTextures[7], hitUV).rgb;
 		}
+		
+		// For transparent materials with very dark colors, brighten them so texture shows
+		if (surfaceOpacity < 0.99 && length(surfaceColor) < 0.1) {
+			surfaceColor = max(surfaceColor, vec3(0.9));
+		}
 
-
-		if (hitType == DIFF) // Ideal DIFFUSE reflection
+		// === GLASS/TRANSPARENT MATERIAL HANDLING ===
+		if (surfaceOpacity < 0.99)
 		{
+			bounceIsSpecular = TRUE;
+			
+			float ior = 1.5;
+			float nc = 1.0;
+			float nt = ior;
+			
+			vec3 glassN = nl;
+			vec3 refractionNormal = n;
+			bool entering = dot(n, -rayDirection) > 0.0;
+
+			// Detect thin glass by checking if we immediately hit another surface
+			bool isThinGlass = false;
+			if (entering) {
+				vec3 testRayOrigin = x - refractionNormal * epsIntersect;
+				vec3 testRayDirection = rayDirection;
+				vec3 savedOrigin = rayOrigin;
+				vec3 savedDirection = rayDirection;
+				
+				rayOrigin = testRayOrigin;
+				rayDirection = testRayDirection;
+				float testT = SceneIntersect();
+				
+				rayOrigin = savedOrigin;
+				rayDirection = savedDirection;
+				
+				// If we hit something very close (less than 0.1 units), it's thin glass
+				if (testT < 0.05) {
+					isThinGlass = true;
+				}
+			}
+
+			if (isThinGlass) {
+				// Thin glass approximation - simple blend of reflection and transmission
+				float cosThetaI = abs(dot(-rayDirection, glassN));
+				float Rs = (nc - nt) / (nc + nt);
+				float reflectance = Rs * Rs + (1.0 - Rs * Rs) * pow(1.0 - cosThetaI, 5.0);
+				
+				if (rand() < reflectance) {
+					// Reflect
+					rayDirection = reflect(rayDirection, glassN);
+					rayOrigin = x + glassN * epsIntersect;
+					mask *= surfaceColor * reflectance;
+				} else {
+					// Pass through with minimal refraction
+					rayDirection = rayDirection;
+					rayOrigin = x + rayDirection * (epsIntersect * 3.0);
+					mask *= surfaceColor * (1.0 - reflectance);
+				}
+			}
+			else {
+				// Thick glass - full refraction model
+				if (!entering) {
+					float tmp = nc;
+					nc = nt;
+					nt = tmp;
+				}
+
+				float eta = nc / nt;
+				float cosThetaI = abs(dot(rayDirection, glassN));
+				float sin2ThetaT = eta * eta * (1.0 - cosThetaI * cosThetaI);
+
+				if (sin2ThetaT > 1.0) {
+					// Total internal reflection
+					rayDirection = reflect(rayDirection, glassN);
+					rayOrigin = x + glassN * epsIntersect;
+					mask *= surfaceColor;
+				}
+				else {
+					// Fresnel
+					float cosThetaT = sqrt(1.0 - sin2ThetaT);
+					float Rs = (nc * cosThetaI - nt * cosThetaT) / (nc * cosThetaI + nt * cosThetaT);
+					float Rp = (nt * cosThetaI - nc * cosThetaT) / (nt * cosThetaI + nc * cosThetaT);
+					float reflectance = (Rs * Rs + Rp * Rp) * 0.5;
+					float P = 0.25 + 0.5 * reflectance;
+
+					if (rand() < P) {
+						// Reflect
+						rayDirection = reflect(rayDirection, glassN);
+						rayOrigin = x + glassN * epsIntersect;
+						mask *= surfaceColor * (reflectance / P);
+					}
+					else {
+						// Refract
+						vec3 refracted = refract(rayDirection, refractionNormal, eta);
+						rayDirection = refracted;
+						rayOrigin = x - refractionNormal * epsIntersect;
+						mask *= surfaceColor * ((1.0 - reflectance) / (1.0 - P));
+					}
+				}
+			}
+			continue;
+		}
+
+		// === PRINCIPLED BSDF (for opaque materials) ===
+		vec3 N = nl;
+		vec3 V = -rayDirection;
+		vec3 X = x;
+
+		float rough = clamp(surfaceRoughness + uRoughness, 0.04, 1.0);
+		vec3 F0 = mix(vec3(0.04), surfaceColor, surfaceMetalness);
+
+		// Fresnel
+		float VoN = max(dot(V, N), 0.0);
+		vec3 F = F0 + (1.0 - F0) * pow(1.0 - VoN, 5.0);
+
+		// Energy conservation
+		vec3 kS = F;
+		vec3 kD = (1.0 - kS) * (1.0 - surfaceMetalness);
+
+		float specularProbability = clamp(max(max(F.r, F.g), F.b), 0.05, 0.95);
+
+		// === NEXT EVENT ESTIMATION (Direct Sun Lighting) ===
+		vec3 L = uSunDirection;
+		float LoN = max(dot(L, N), 0.0);
+
+		if (LoN > 0.0 && uSunLightIntensity > 0.0)
+		{
+			// Save ray state
+			vec3 savedRayOrigin = rayOrigin;
+			vec3 savedRayDirection = rayDirection;
+
+			// Cast shadow ray
+			float shadowEpsilon = epsIntersect * 2.0;
+			rayOrigin = X + N * shadowEpsilon;
+			rayDirection = L;
+
+			float shadowT = SceneIntersect();
+
+			// Pass through transparent surfaces in shadow rays
+			int maxTransparentBounces = 3;
+			for (int i = 0; i < maxTransparentBounces; i++) {
+				if (shadowT < INFINITY && hitOpacity < 0.99) {
+					vec3 transparentHitPoint = rayOrigin + rayDirection * shadowT;
+					rayOrigin = transparentHitPoint + rayDirection * epsIntersect;
+					shadowT = SceneIntersect();
+				} else {
+					break;
+				}
+			}
+
+			// Restore ray state
+			rayOrigin = savedRayOrigin;
+			rayDirection = savedRayDirection;
+
+			// Check if surface is light/spec
+			if (surfaceType == LIGHT || surfaceType == SPEC)
+				shadowT = INFINITY;
+
+			vec3 H = normalize(V + L);
+			float HoN = max(dot(H, N), 0.0);
+			float HoV = max(dot(H, V), 0.0);
+
+			// Diffuse BRDF
+			vec3 diffuseBRDF = kD * surfaceColor * ONE_OVER_PI;
+
+			// Specular BRDF (GGX)
+			float alpha = rough * rough;
+			float alpha2 = alpha * alpha;
+			float denom = (HoN * HoN) * (alpha2 - 1.0) + 1.0;
+			float D = alpha2 / (PI * denom * denom);
+
+			vec3 F_H = F0 + (1.0 - F0) * pow(1.0 - HoV, 5.0);
+
+			float k = (rough + 1.0) * (rough + 1.0) / 8.0;
+			float G_V = VoN / (VoN * (1.0 - k) + k);
+			float G_L = LoN / (LoN * (1.0 - k) + k);
+			float G = G_V * G_L;
+
+			vec3 specularBRDF = (D * F_H * G) / max(4.0 * VoN * LoN, 0.001);
+
+			// Combined BRDF
+			vec3 brdf = diffuseBRDF + specularBRDF;
+
+			// Apply shadow
+			if (shadowT == INFINITY)
+			{
+				vec3 directContribution = mask * brdf * uSunColor * uSunLightIntensity * LoN;
+				accumCol += clamp(directContribution, vec3(0.0), vec3(5.0));
+			}
+		}
+
+		// === PATH CONTINUATION (Indirect Lighting) ===
+		if (rand() < specularProbability)
+		{
+			// Specular bounce
+			bounceIsSpecular = TRUE;
+			vec3 R = reflect(-V, N);
+			R = randomDirectionInSpecularLobe(R, rough * rough);
+			rayDirection = normalize(R);
+			rayOrigin = X + N * epsIntersect;
+			mask *= kS / specularProbability;
+		}
+		else
+		{
+			// Diffuse bounce
+			bounceIsSpecular = FALSE;
 			diffuseCount++;
-
-			mask *= surfaceColor;  // USE surfaceColor instead of hitColor
-	    		bounceIsSpecular = FALSE;
-
-			if (diffuseCount == 1 && rand() < 0.5)
-			{
-				mask *= 2.0;
-				// this branch gathers color bleeding / caustics from other surfaces hit in the future
-				// choose random Diffuse sample vector
-				rayDirection = randomCosWeightedDirectionInHemisphere(nl);
-				rayOrigin = x + nl * epsIntersect;
-
-				continue;
-			}
-			
-			// this branch acts like a traditional shadowRay, checking for direct light from the Sun..
-			// if it has a clear path and hits the Sun on the next bounce, sunlight is gathered, otherwise returns black (shadow)
-			
-			rayDirection = normalize(uSunDirection + (randVec * 0.01));
-			rayOrigin = x + nl * epsIntersect;
-
-			weight = max(0.0, dot(rayDirection, nl));
-			mask *= diffuseCount == 1 ? 2.0 : 1.0;
-			mask *= weight;
-			
-			sampleLight = TRUE;
-			continue;
-			
-		} // end if (hitType == DIFF)
-
-		if (hitType == SPEC)  // Ideal SPECULAR reflection
-		{
-			float totalRoughness = surfaceRoughness + uRoughness;  // USE surfaceRoughness
-			totalRoughness = clamp(totalRoughness, 0.0, 1.0);
-			float threshold = uSpecularIntensity > 0.0 ? (totalRoughness * totalRoughness) / uSpecularIntensity : 1.0;
-			threshold = clamp(threshold, 0.0, 1.0);
-			mask *= surfaceColor;  // USE surfaceColor
-
-			if (diffuseCount == 0 && rand() > threshold)
-			{
-				// specular reflection
-				rayDirection = reflect(rayDirection, nl);
-				rayDirection = randomDirectionInSpecularLobe(rayDirection, totalRoughness * 0.8);
-				rayOrigin = x + nl * epsIntersect;
-				continue;
-			}
-			else
-			{
-				// treat as diffuse
-				diffuseCount++;
-
-				bounceIsSpecular = FALSE;
-
-				if (diffuseCount == 1 && rand() < 0.5)
-				{
-					mask *= 2.0;
-					// choose random Diffuse sample vector
-					rayDirection = randomCosWeightedDirectionInHemisphere(nl);
-					rayOrigin = x + nl * epsIntersect;
-
-					continue;
-				}
-
-				// this branch acts like a traditional shadowRay, checking for direct light from the Sun..
-				// if it has a clear path and hits the Sun on the next bounce, sunlight is gathered, otherwise returns black (shadow)
-
-				rayDirection = normalize(uSunDirection + (randVec * 0.01));
-				rayOrigin = x + nl * epsIntersect;
-
-				weight = max(0.0, dot(rayDirection, nl));
-				mask *= diffuseCount == 1 ? 2.0 : 1.0;
-				mask *= weight;
-
-				sampleLight = TRUE;
-				continue;
-			}
+			vec3 D = randomCosWeightedDirectionInHemisphere(N);
+			rayDirection = normalize(D);
+			rayOrigin = X + N * epsIntersect;
+			mask *= (kD * surfaceColor) / (1.0 - specularProbability);
 		}
-
-		if (hitType == REFR)  // Physically-plausible glass
-		{
-			// For shadow rays, just transmit through glass with minimal attenuation
-			if (sampleLight == TRUE)
-			{
-				mask *= mix(vec3(1.0), surfaceColor, 0.05); // USE surfaceColor, slight tint
-				rayOrigin = x + rayDirection * (epsIntersect * 2.0); // push through the glass
-				bounceIsSpecular = TRUE; // keep this as specular to prevent fireflies
-				continue;
-			}
-
-			// --- NON-SHADOW RAY PATH (camera/diffuse bounces) ---
-			
-			// TRANSMISSION (glass lets most light through)
-			mask *= mix(vec3(1.0), surfaceColor, 0.1); // USE surfaceColor, ~90% transmission
-
-			float eta = (dot(rayDirection, nl) < 0.0) ? 1.0 / 1.5 : 1.5;
-			float cosTheta = abs(dot(nl, -rayDirection));
-
-			// Fresnel (Schlick)
-			float r0 = pow((eta - 1.0) / (eta + 1.0), 2.0);
-			float Re = r0 + (1.0 - r0) * pow(1.0 - cosTheta, 5.0);
-
-			if (rand() < Re)
-			{
-				// --- REFLECTION
-				rayDirection = reflect(rayDirection, nl);
-
-				// Optional micro-roughness on reflection
-				float r = max(surfaceRoughness, 0.001);  // USE surfaceRoughness
-				rayDirection = randomDirectionInSpecularLobe(rayDirection, r * r);
-			}
-			else
-			{
-				// --- REFRACTION
-				vec3 refrDir = refract(rayDirection, nl, eta);
-
-				if (length(refrDir) < 0.001) // total internal reflection
-				{
-					rayDirection = reflect(rayDirection, nl);
-				}
-				else
-				{
-					// Rough / frosted glass
-					float r = max(surfaceRoughness, 0.001);  // USE surfaceRoughness
-					refrDir = randomDirectionInSpecularLobe(refrDir, r * r);
-					rayDirection = normalize(refrDir);
-				}
-			}
-
-			bounceIsSpecular = TRUE; // glass is always treated as specular
-			rayOrigin = x + rayDirection * epsIntersect;
-			continue;
-		}
-
-
-	} // end for (int bounces = 0; bounces < 5; bounces++)
+	}
 
 	return max(vec3(0), accumCol);
-
-} // end vec3 CalculateRadiance()
-
-
-//-----------------------------------------------------------------------
-void SetupScene(void)
-//-----------------------------------------------------------------------
-{
-	// Add thin box for the ground (acts like ground plane)
-	box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), vec3(0), vec3(0.45), DIFF);
 }
 
+void SetupScene(void)
+{
+	// Ground plane (thin box)
+	box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), vec3(0), vec3(0.45), DIFF);
+}
 
 #include <pathtracing_main>
