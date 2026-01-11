@@ -84,7 +84,7 @@ let roof_Object = {
 function init_GUI() 
 {
 	hdr_ExposureObject = {
-		hdrExposure: 3.0
+		hdrExposure: 4.0
 	}
 	skyLight_IntensityObject = {
 		skyLightIntensity: 0.6
@@ -93,7 +93,7 @@ function init_GUI()
 		sunAngle: 0.2
 	}
 	sunLight_IntensityObject = {
-		sunLightIntensity: 2.0
+		sunLightIntensity: 4.0
 	}
 	sun_ColorObject = {
 		sunColor: [1.0, 0.98, 0.92]
@@ -109,14 +109,15 @@ function init_GUI()
 		cameraFlightSpeed: 60
 	}
 
-	hdr_ExposureController = gui.add(hdr_ExposureObject, 'hdrExposure', 0, 10).step(10 / 100).onChange(() =>
-	{
-		hdrExposureChanged = true;
-	});
-	skyLight_IntensityController = gui.add(skyLight_IntensityObject, 'skyLightIntensity', 0, 5).step(5 / 100).onChange(() =>
-	{
-		skyLightIntensityChanged = true;
-	});
+	// HDR exposure and skylight intensity are now hardcoded
+	// hdr_ExposureController = gui.add(hdr_ExposureObject, 'hdrExposure', 0, 10).step(10 / 100).onChange(() =>
+	// {
+	// 	hdrExposureChanged = true;
+	// });
+	// skyLight_IntensityController = gui.add(skyLight_IntensityObject, 'skyLightIntensity', 0, 5).step(5 / 100).onChange(() =>
+	// {
+	// 	skyLightIntensityChanged = true;
+	// });
 	sun_AngleController = gui.add(sun_AngleObject, 'sunAngle', 0, Math.PI).step(Math.PI / 100).onChange(() =>
 	{
 		sunAngleChanged = true;
@@ -789,7 +790,7 @@ function initSceneData()
 	cameraFlightSpeed = 60;
 
 	// pixelRatio is resolution - range: 0.5(half resolution) to 1.0(full resolution)
-	pixelRatio = mouseControl ? 0.8 : 0.7; // less demanding on battery-powered mobile devices
+	pixelRatio = mouseControl ? 0.8 : 0.5; // reduced for better performance
 
 	EPS_intersect = 0.001;
 
@@ -820,13 +821,18 @@ function initSceneData()
 	sunDirection.set(Math.cos(sunAngle), Math.sin(sunAngle), 0);
 	sunDirection.normalize();
 	pathTracingUniforms.uSunDirection.value.copy(sunDirection);
-
+	
+	pathTracingUniforms.uSpecularIntensity = { value: 1.0 };
 	pathTracingUniforms.uRoughness = { value: 0.0 };
 
 	// jumpstart the gui variables so that when the demo starts, all the uniforms are up to date
-	hdrExposureChanged = skyLightIntensityChanged = sunAngleChanged =
+	sunAngleChanged =
 		sunLightIntensityChanged = sunColorChanged = apertureChanged =
 		focusChanged = cameraSpeedChanged = true;
+
+	// Hardcode HDR exposure and skylight intensity
+	renderer.toneMappingExposure = 1.0;
+	pathTracingUniforms.uSkyLightIntensity.value = 0.6;
 
 } // end function initSceneData()
 
@@ -836,19 +842,7 @@ function initSceneData()
 // called automatically from within the animate() function (located in InitCommon.js file)
 function updateVariablesAndUniforms()
 {
-	if (hdrExposureChanged)
-	{
-		renderer.toneMappingExposure = hdr_ExposureController.getValue();
-		cameraIsMoving = true;
-		hdrExposureChanged = false;
-	}
-
-	if (skyLightIntensityChanged)
-	{
-		pathTracingUniforms.uSkyLightIntensity.value = skyLight_IntensityController.getValue();
-		cameraIsMoving = true;
-		skyLightIntensityChanged = false;
-	}
+	// HDR exposure and skylight intensity are hardcoded in initSceneData()
 
 	if (sunAngleChanged)
 	{
