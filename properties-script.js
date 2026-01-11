@@ -138,8 +138,6 @@ function open3DTour(propertyId) {
 }
 
 function openPhotorealView(propertyId) {
-  const tourButton = event.target;
-
   const property = properties.find(p => p.id === propertyId);
   if (!property) return;
 
@@ -224,3 +222,4 @@ window.onclick = function(event) {
   if (event.target === modal) {
     close3DTour();
   }
+}

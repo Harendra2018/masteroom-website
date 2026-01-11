@@ -172,4 +172,3 @@ window.onclick = function(event) {
         close3DTour();
     }
 }
-

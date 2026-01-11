@@ -47,3 +47,4 @@ const properties = [
     image: 'assets/interior-design-neoclassical-style-with-furnishings-decor - Copy.jpg',
     taskId: 'TaskID_102'
   }
+];
