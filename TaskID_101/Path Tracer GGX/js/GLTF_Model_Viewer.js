@@ -84,7 +84,7 @@ let roof_Object = {
 function init_GUI() 
 {
 	hdr_ExposureObject = {
-		hdrExposure: 3.0
+		hdrExposure: 1.6
 	}
 	skyLight_IntensityObject = {
 		skyLightIntensity: 0.6
@@ -93,7 +93,7 @@ function init_GUI()
 		sunAngle: 0.2
 	}
 	sunLight_IntensityObject = {
-		sunLightIntensity: 2.0
+		sunLightIntensity: 5.0
 	}
 	sun_ColorObject = {
 		sunColor: [1.0, 0.98, 0.92]
