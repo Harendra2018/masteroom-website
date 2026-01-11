@@ -103,7 +103,7 @@ let currentImageIndex = 0;
 const heroImageElement = document.querySelector('.hero-image');
 const slides = document.querySelectorAll('.slide');
 const paginationDots = document.querySelectorAll('.pagination-dot');
-const totalImages = 4;
+const totalImages = 5;
 let autoSlideInterval;
 
 function updateActiveDot() {
@@ -127,7 +127,7 @@ function changeHeroImage(newIndex = null) {
     slides[currentImageIndex].classList.add('active');
 
     // Update transform
-    heroImageElement.style.transform = `translateX(-${currentImageIndex * 25}%)`;
+    heroImageElement.style.transform = `translateX(-${currentImageIndex * 20}%)`;
 
     // Update active dot
     updateActiveDot();

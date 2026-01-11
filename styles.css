@@ -244,7 +244,7 @@ ul {
     position: absolute;
     top: 0;
     left: 0;
-    width: 400%;
+    width: 500%;
     height: 100%;
     display: flex;
     transition: transform 1s ease;
@@ -252,7 +252,7 @@ ul {
 }
 
 .slide {
-    width: 25%;
+    width: 20%;
     height: 100%;
     background-size: cover;
     background-position: center;
@@ -274,6 +274,10 @@ ul {
 
 .bg4-slide {
     background-image: url('assets/bg4.jpg');
+}
+
+.bg5-slide {
+    background-image: url('assets/bg5.jpg');
 }
 
 .slide-content {
@@ -995,6 +999,11 @@ ul {
     .bg4-slide {
         background-image: url('assets/bg4_m.jpg');
     }
+	
+	.bg5-slide {
+        background-image: url('assets/bg5_m.jpg');
+    }
+
 
     .gallery {
         padding: 80px 0;
