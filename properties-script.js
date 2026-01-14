@@ -12,8 +12,8 @@ function createPropertyCard(property) {
       <div class="property-image">
         <img src="${property.image}" alt="${property.name}">
         <div class="property-overlay">
-          <button class="tour-button" onclick="open3DTour('${property.id}')" title="Captured from the real space using 3D scanning">Real 3D Tour</button>
-          <button class="tour-button photoreal-button" onclick="openPhotorealView('${property.id}')" title="Architecturally accurate 3D model with studio-quality lighting">Photoreal 3D View</button>
+          <button class="tour-button" onclick="open3DTour('${property.id}')">Real 3D Tour</button>
+          <button class="tour-button photoreal-button" onclick="openPhotorealView('${property.id}')">Photoreal 3D View</button>
         </div>
       </div>
       <div class="property-info">
@@ -143,7 +143,7 @@ function openPhotorealView(propertyId) {
 
   const taskFolder = property.taskId;
 
-  const url = `${taskFolder}/Path Tracer GGX/Path Traycer.html`;
+  const url = `${taskFolder}/WIP/index.html`;
 
   // Open in the same tab
   window.location.href = url;
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     navLinks.forEach(link => {
       link.addEventListener('click', function() {
         navMenu.classList.remove('active');
-        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
       });
     });
   }

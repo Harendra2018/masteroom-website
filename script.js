@@ -70,7 +70,7 @@ function openPhotorealView(propertyId) {
 
   const taskFolder = property.taskId;
 
-  const url = `${taskFolder}/Path Tracer GGX/Path Traycer.html`;
+  const url = `${taskFolder}/WIP/index.html`;
 
   // Open in the same tab
   window.location.href = url;
