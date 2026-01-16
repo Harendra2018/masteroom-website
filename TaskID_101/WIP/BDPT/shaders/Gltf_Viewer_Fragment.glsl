@@ -104,6 +104,7 @@ vec3 SampleAreaLight(out int lightIndex)
 
     return v0 + u * edge1 + v * edge2;
 }
+
 /**
  * Intersect ray with all area lights
  * Returns distance to nearest intersection or INFINITY if no hit
@@ -172,7 +173,8 @@ void GetBoxNodeData(const in float i, inout vec4 boxNodeData0, inout vec4 boxNod
 	boxNodeData1 = texelFetch(tAABBTexture, uv1, 0);
 }
 
-float SceneIntersect( )
+// UPDATED: Added sampleLight parameter
+float SceneIntersect(int sampleLight)
 {
 	vec4 currentBoxNodeData0, nodeAData0, nodeBData0, tmpNodeData0;
 	vec4 currentBoxNodeData1, nodeAData1, nodeBData1, tmpNodeData1;
@@ -328,22 +330,23 @@ float SceneIntersect( )
 	objectCount++;
 
 	// UPDATED: Only intersect area lights for camera rays and specular reflections
-// Don't intersect when shooting shadow rays (sampleLight == TRUE)
-if (sampleLight == FALSE)
-{
-    vec3 alNormal, alEmission;
-    d = IntersectAreaLight(rayOrigin, rayDirection, alNormal, alEmission);
-    if (d < t)
-    {
-        t = d;
-        hitNormal = alNormal;
-        hitEmission = alEmission;
-        hitColor = vec3(0);
-        hitType = AREA_LIGHT_TYPE;
-        hitObjectID = float(objectCount);
-    }
-}
-objectCount++;
+	// Don't intersect when shooting shadow rays (sampleLight == TRUE)
+	if (sampleLight == FALSE)
+	{
+		vec3 alNormal, alEmission;
+		d = IntersectAreaLight(rayOrigin, rayDirection, alNormal, alEmission);
+		if (d < t)
+		{
+			t = d;
+			hitNormal = alNormal;
+			hitEmission = alEmission;
+			hitColor = vec3(0);
+			hitType = AREA_LIGHT_TYPE;
+			hitObjectID = float(objectCount);
+		}
+	}
+	objectCount++;
+	
 	return t;
 }
 
@@ -393,7 +396,7 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 	rayDirection = randomCosWeightedDirectionInHemisphere(lightNormal);
 	rayOrigin = randPointOnLight + lightNormal * epsIntersect;
 	
-	t = SceneIntersect();
+	t = SceneIntersect(sampleLight);
 	
 	// If light ray hits diffuse surface, store the position
 	if (hitType == DIFF && t < INFINITY)
@@ -415,7 +418,7 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 		previousIntersecType = hitType;
 		previousObjectID = hitObjectID;
 
-		t = SceneIntersect();
+		t = SceneIntersect(sampleLight);
 
 		if (t < INFINITY) {
 			previousOpacity = hitOpacity;
@@ -558,7 +561,7 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 				
 				rayOrigin = testRayOrigin;
 				rayDirection = testRayDirection;
-				float testT = SceneIntersect();
+				float testT = SceneIntersect(sampleLight);
 				
 				rayOrigin = savedOrigin;
 				rayDirection = savedDirection;
