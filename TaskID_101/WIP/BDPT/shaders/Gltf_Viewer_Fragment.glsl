@@ -92,17 +92,18 @@ void SetupAreaLight()
  */
 vec3 SampleAreaLight(out int lightIndex)
 {
-    // Randomly select one of the active lights
     lightIndex = int(floor(rng() * float(activeAreaLightCount)));
     lightIndex = clamp(lightIndex, 0, activeAreaLightCount - 1);
-    
-    vec3 randPointOnLight;
-    randPointOnLight.x = mix(quads[lightIndex].v0.x, quads[lightIndex].v1.x, rng());
-    randPointOnLight.y = mix(quads[lightIndex].v0.y, quads[lightIndex].v3.y, rng());
-    randPointOnLight.z = mix(quads[lightIndex].v0.z, quads[lightIndex].v1.z, rng());
-    return randPointOnLight;
-}
 
+    float u = rng();
+    float v = rng();
+
+    vec3 v0 = quads[lightIndex].v0;
+    vec3 edge1 = quads[lightIndex].v1 - quads[lightIndex].v0;
+    vec3 edge2 = quads[lightIndex].v3 - quads[lightIndex].v0;
+
+    return v0 + u * edge1 + v * edge2;
+}
 /**
  * Intersect ray with all area lights
  * Returns distance to nearest intersection or INFINITY if no hit
