@@ -327,20 +327,23 @@ float SceneIntersect( )
 	}
 	objectCount++;
 
-	// UPDATED: Intersect with all area lights
-	vec3 alNormal, alEmission;
-	d = IntersectAreaLight(rayOrigin, rayDirection, alNormal, alEmission);
-	if (d < t)
-	{
-		t = d;
-		hitNormal = alNormal;
-		hitEmission = alEmission;
-		hitColor = vec3(0);
-		hitType = AREA_LIGHT_TYPE;
-		hitObjectID = float(objectCount);
-	}
-	objectCount++;
-
+	// UPDATED: Only intersect area lights for camera rays and specular reflections
+// Don't intersect when shooting shadow rays (sampleLight == TRUE)
+if (sampleLight == FALSE)
+{
+    vec3 alNormal, alEmission;
+    d = IntersectAreaLight(rayOrigin, rayDirection, alNormal, alEmission);
+    if (d < t)
+    {
+        t = d;
+        hitNormal = alNormal;
+        hitEmission = alEmission;
+        hitColor = vec3(0);
+        hitType = AREA_LIGHT_TYPE;
+        hitObjectID = float(objectCount);
+    }
+}
+objectCount++;
 	return t;
 }
 
