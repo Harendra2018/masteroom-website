@@ -19,11 +19,11 @@ areaLightManager.addLight(mainAreaLight);
 
 // Add a second area light
 let secondAreaLight = new AreaLight();
-secondAreaLight.setPosition(-10, 38.1, 45.2);
+secondAreaLight.setPosition(-35, 38.1, -40.2);
 secondAreaLight.setRotation(0,0.19,0);
 secondAreaLight.setScale(4,1,4);
-secondAreaLight.setColor(1, 0.6, 0.4); // Red-tinted
-secondAreaLight.setIntensity(18.0);
+secondAreaLight.setColor(1, 0.94, 0.8); // warm light
+secondAreaLight.setIntensity(5.0);
 areaLightManager.addLight(secondAreaLight);
 
 // Add a third area light
