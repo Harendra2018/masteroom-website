@@ -13,7 +13,7 @@ let mainAreaLight = new AreaLight();
 mainAreaLight.setPosition(29.4, 77.1, 38.2);
 mainAreaLight.setRotation(0,0.19,0);
 mainAreaLight.setScale(4,1,4);
-mainAreaLight.setColor(1, 0.6, 0.4); // Red-tinted
+mainAreaLight.setColor(1, 0.7, 0.38); // Red-tinted
 mainAreaLight.setIntensity(18.0);
 areaLightManager.addLight(mainAreaLight);
 
@@ -22,16 +22,16 @@ let secondAreaLight = new AreaLight();
 secondAreaLight.setPosition(-35, 38.1, -40.2);
 secondAreaLight.setRotation(0,0.19,0);
 secondAreaLight.setScale(4,1,4);
-secondAreaLight.setColor(1, 0.94, 0.8); // warm light
+secondAreaLight.setColor(1, 0.7, 0.38); // Red-tinted
 secondAreaLight.setIntensity(5.0);
 areaLightManager.addLight(secondAreaLight);
 
 // Add a third area light
 let thirdAreaLight = new AreaLight();
-thirdAreaLight.setPosition(-10, 90.1, 63.2);
+thirdAreaLight.setPosition(-10, 90, 63.2);
 thirdAreaLight.setRotation(0,0.19,0);
 thirdAreaLight.setScale(4,1,4);
-thirdAreaLight.setColor(1, 0.6, 0.4); // Red-tinted
+thirdAreaLight.setColor(1, 0.7, 0.38); // Red-tinted
 thirdAreaLight.setIntensity(18.0);
 areaLightManager.addLight(thirdAreaLight);
 
@@ -284,36 +284,68 @@ function checkPendingReload() {
 
 function MaterialObject(material, pathTracingMaterialList)
 {
-	// Base color
-	this.color = material.color ? material.color.clone() : new THREE.Color(1, 1, 1);
+    // Base color
+    this.color = material.color ? material.color.clone() : new THREE.Color(1, 1, 1);
 
-	// glTF PBR values
-	this.metalness = material.metalness !== undefined ? material.metalness : 0.0;
-	this.roughness = material.roughness !== undefined ? material.roughness : 0.0;
-	this.opacity = material.opacity !== undefined ? material.opacity : 1.0;
+    // glTF PBR values
+    this.metalness = material.metalness !== undefined ? material.metalness : 0.0;
+    this.roughness = material.roughness !== undefined ? material.roughness : 0.0;
+    this.opacity = material.opacity !== undefined ? material.opacity : 1.0;
+    
+    // Handle emission from glTF materials
+    this.emission = new THREE.Color(0, 0, 0);
+    this.emissiveIntensity = 0.0;
+    
+    if (material.emissive) {
+        this.emission.copy(material.emissive);
+    }
+    
+    if (material.emissiveIntensity !== undefined) {
+        this.emissiveIntensity = material.emissiveIntensity;
+    }
+    
+    // FIX: Check if emission color is non-black AND intensity is > 1
+    // (emissiveIntensity defaults to 1.0 even for non-emissive materials)
+    let totalEmission = this.emission.r + this.emission.g + this.emission.b;
+    let hasEmission = (totalEmission > 0.001 && this.emissiveIntensity > 1.0);
 
-	console.log("Material metalness:", this.metalness, "roughness:", this.roughness, "opacity:", this.opacity);
+    console.log("Material:", {
+        metalness: this.metalness,
+        roughness: this.roughness,
+        opacity: this.opacity,
+        emission: this.emission,
+        emissiveIntensity: this.emissiveIntensity,
+        totalEmission: totalEmission,
+        hasEmission: hasEmission
+    });
 
-	this.albedoTextureID = -1; // which diffuse map to use for model's color, '-1' = no textures are used
+    this.albedoTextureID = -1;
 
-	// =========================
-	// MATERIAL TYPE MAPPING
-	// =========================
-	// 1 = DIFF
-	// 2 = REFR
-	// 3 = SPEC (METAL)
+    // =========================
+    // MATERIAL TYPE MAPPING
+    // =========================
+    // 1 = DIFF
+    // 2 = REFR (GLASS)
+    // 3 = SPEC (METAL)
+    // 4 = EMIT (EMISSIVE)
+    // 5 = AREA_LIGHT (handled separately)
 
-	if (this.metalness > 0.5) {
-		this.type = 3; // METAL
-	}
-	else if (this.opacity < 1.0) {
-		this.type = 2; // GLASS
-	}
-	else {
-		this.type = 1; // DIFFUSE
-	}
+    // Priority order: Emission > Metal > Glass > Diffuse
+    if (hasEmission) {
+        this.type = 4; // EMISSIVE
+        console.log("✨ Emissive material detected! Emission:", this.emission, "Intensity:", this.emissiveIntensity);
+    }
+    else if (this.metalness > 0.5) {
+        this.type = 3; // METAL
+    }
+    else if (this.opacity < 1.0) {
+        this.type = 2; // GLASS
+    }
+    else {
+        this.type = 1; // DIFFUSE
+    }
 
-	pathTracingMaterialList.push(this);
+    pathTracingMaterialList.push(this);
 }
 
 
@@ -618,142 +650,148 @@ function prepareGeometryForPT(meshList, pathTracingMaterialList, triangleMateria
 	let totalWork = new Uint32Array(total_number_of_triangles);
 
 	// Initialize triangle and aabb arrays where 2048 = width and height of texture and 4 are the r, g, b and a components
-	let triangle_array = new Float32Array(2048 * 2048 * 4);
-	aabb_array = new Float32Array(2048 * 2048 * 4);
+let triangle_array = new Float32Array(2048 * 2048 * 4);
+aabb_array = new Float32Array(2048 * 2048 * 4);
 
-	var triangle_b_box_min = new THREE.Vector3();
-	var triangle_b_box_max = new THREE.Vector3();
-	var triangle_b_box_centroid = new THREE.Vector3();
+var triangle_b_box_min = new THREE.Vector3();
+var triangle_b_box_max = new THREE.Vector3();
+var triangle_b_box_centroid = new THREE.Vector3();
 
-	var vpa = new Float32Array(modelMesh.geometry.attributes.position.array);
-	if (modelMesh.geometry.attributes.normal === undefined)
-		modelMesh.geometry.computeVertexNormals();
-	var vna = new Float32Array(modelMesh.geometry.attributes.normal.array);
+var vpa = new Float32Array(modelMesh.geometry.attributes.position.array);
+if (modelMesh.geometry.attributes.normal === undefined)
+	modelMesh.geometry.computeVertexNormals();
+var vna = new Float32Array(modelMesh.geometry.attributes.normal.array);
 
-	var modelHasUVs = false;
-	if (modelMesh.geometry.attributes.uv !== undefined)
+var modelHasUVs = false;
+if (modelMesh.geometry.attributes.uv !== undefined)
+{
+	var vta = new Float32Array(modelMesh.geometry.attributes.uv.array);
+	modelHasUVs = true;
+}
+
+let materialNumber = 0;
+for (let i = 0; i < total_number_of_triangles; i++)
+{
+
+	triangle_b_box_min.set(Infinity, Infinity, Infinity);
+	triangle_b_box_max.set(-Infinity, -Infinity, -Infinity);
+
+	let vt0 = new THREE.Vector3();
+	let vt1 = new THREE.Vector3();
+	let vt2 = new THREE.Vector3();
+	// record vertex texture coordinates (UVs)
+	if (modelHasUVs)
 	{
-		var vta = new Float32Array(modelMesh.geometry.attributes.uv.array);
-		modelHasUVs = true;
+		vt0.set(vta[6 * i + 0], vta[6 * i + 1]);
+		vt1.set(vta[6 * i + 2], vta[6 * i + 3]);
+		vt2.set(vta[6 * i + 4], vta[6 * i + 5]);
+	} else
+	{
+		vt0.set(-1, -1);
+		vt1.set(-1, -1);
+		vt2.set(-1, -1);
 	}
 
-	let materialNumber = 0;
-	for (let i = 0; i < total_number_of_triangles; i++)
-	{
+	// record vertex normals
+	let vn0 = new THREE.Vector3(vna[9 * i + 0], vna[9 * i + 1], vna[9 * i + 2]).normalize();
+	let vn1 = new THREE.Vector3(vna[9 * i + 3], vna[9 * i + 4], vna[9 * i + 5]).normalize();
+	let vn2 = new THREE.Vector3(vna[9 * i + 6], vna[9 * i + 7], vna[9 * i + 8]).normalize();
 
-		triangle_b_box_min.set(Infinity, Infinity, Infinity);
-		triangle_b_box_max.set(-Infinity, -Infinity, -Infinity);
+	// record vertex positions
+	let vp0 = new THREE.Vector3(vpa[9 * i + 0], vpa[9 * i + 1], vpa[9 * i + 2]);
+	let vp1 = new THREE.Vector3(vpa[9 * i + 3], vpa[9 * i + 4], vpa[9 * i + 5]);
+	let vp2 = new THREE.Vector3(vpa[9 * i + 6], vpa[9 * i + 7], vpa[9 * i + 8]);
 
-		let vt0 = new THREE.Vector3();
-		let vt1 = new THREE.Vector3();
-		let vt2 = new THREE.Vector3();
-		// record vertex texture coordinates (UVs)
-		if (modelHasUVs)
-		{
-			vt0.set(vta[6 * i + 0], vta[6 * i + 1]);
-			vt1.set(vta[6 * i + 2], vta[6 * i + 3]);
-			vt2.set(vta[6 * i + 4], vta[6 * i + 5]);
-		} else
-		{
-			vt0.set(-1, -1);
-			vt1.set(-1, -1);
-			vt2.set(-1, -1);
-		}
+	vp0.multiplyScalar(modelScale);
+	vp1.multiplyScalar(modelScale);
+	vp2.multiplyScalar(modelScale);
 
-		// record vertex normals
-		let vn0 = new THREE.Vector3(vna[9 * i + 0], vna[9 * i + 1], vna[9 * i + 2]).normalize();
-		let vn1 = new THREE.Vector3(vna[9 * i + 3], vna[9 * i + 4], vna[9 * i + 5]).normalize();
-		let vn2 = new THREE.Vector3(vna[9 * i + 6], vna[9 * i + 7], vna[9 * i + 8]).normalize();
+	vp0.add(modelPositionOffset);
+	vp1.add(modelPositionOffset);
+	vp2.add(modelPositionOffset);
 
-		// record vertex positions
-		let vp0 = new THREE.Vector3(vpa[9 * i + 0], vpa[9 * i + 1], vpa[9 * i + 2]);
-		let vp1 = new THREE.Vector3(vpa[9 * i + 3], vpa[9 * i + 4], vpa[9 * i + 5]);
-		let vp2 = new THREE.Vector3(vpa[9 * i + 6], vpa[9 * i + 7], vpa[9 * i + 8]);
+	//slot 0
+	triangle_array[36 * i + 0] = vp0.x; // r or x
+	triangle_array[36 * i + 1] = vp0.y; // g or y
+	triangle_array[36 * i + 2] = vp0.z; // b or z
+	triangle_array[36 * i + 3] = vp1.x; // a or w
 
-		vp0.multiplyScalar(modelScale);
-		vp1.multiplyScalar(modelScale);
-		vp2.multiplyScalar(modelScale);
+	//slot 1
+	triangle_array[36 * i + 4] = vp1.y; // r or x
+	triangle_array[36 * i + 5] = vp1.z; // g or y
+	triangle_array[36 * i + 6] = vp2.x; // b or z
+	triangle_array[36 * i + 7] = vp2.y; // a or w
 
-		vp0.add(modelPositionOffset);
-		vp1.add(modelPositionOffset);
-		vp2.add(modelPositionOffset);
+	//slot 2
+	triangle_array[36 * i + 8] = vp2.z; // r or x
+	triangle_array[36 * i + 9] = vn0.x; // g or y
+	triangle_array[36 * i + 10] = vn0.y; // b or z
+	triangle_array[36 * i + 11] = vn0.z; // a or w
 
-		//slot 0
-		triangle_array[32 * i + 0] = vp0.x; // r or x
-		triangle_array[32 * i + 1] = vp0.y; // g or y
-		triangle_array[32 * i + 2] = vp0.z; // b or z
-		triangle_array[32 * i + 3] = vp1.x; // a or w
+	//slot 3
+	triangle_array[36 * i + 12] = vn1.x; // r or x
+	triangle_array[36 * i + 13] = vn1.y; // g or y
+	triangle_array[36 * i + 14] = vn1.z; // b or z
+	triangle_array[36 * i + 15] = vn2.x; // a or w
 
-		//slot 1
-		triangle_array[32 * i + 4] = vp1.y; // r or x
-		triangle_array[32 * i + 5] = vp1.z; // g or y
-		triangle_array[32 * i + 6] = vp2.x; // b or z
-		triangle_array[32 * i + 7] = vp2.y; // a or w
+	//slot 4
+	triangle_array[36 * i + 16] = vn2.y; // r or x
+	triangle_array[36 * i + 17] = vn2.z; // g or y
+	triangle_array[36 * i + 18] = vt0.x; // b or z
+	triangle_array[36 * i + 19] = vt0.y; // a or w
 
-		//slot 2
-		triangle_array[32 * i + 8] = vp2.z; // r or x
-		triangle_array[32 * i + 9] = vn0.x; // g or y
-		triangle_array[32 * i + 10] = vn0.y; // b or z
-		triangle_array[32 * i + 11] = vn0.z; // a or w
+	//slot 5
+	triangle_array[36 * i + 20] = vt1.x; // r or x
+	triangle_array[36 * i + 21] = vt1.y; // g or y
+	triangle_array[36 * i + 22] = vt2.x; // b or z
+	triangle_array[36 * i + 23] = vt2.y; // a or w
 
-		//slot 3
-		triangle_array[32 * i + 12] = vn1.x; // r or x
-		triangle_array[32 * i + 13] = vn1.y; // g or y
-		triangle_array[32 * i + 14] = vn1.z; // b or z
-		triangle_array[32 * i + 15] = vn2.x; // a or w
+	// the remaining slots are used for PBR material properties
 
-		//slot 4
-		triangle_array[32 * i + 16] = vn2.y; // r or x
-		triangle_array[32 * i + 17] = vn2.z; // g or y
-		triangle_array[32 * i + 18] = vt0.x; // b or z
-		triangle_array[32 * i + 19] = vt0.y; // a or w
+	if (i >= triangleMaterialMarkers[materialNumber])
+		materialNumber++;
 
-		//slot 5
-		triangle_array[32 * i + 20] = vt1.x; // r or x
-		triangle_array[32 * i + 21] = vt1.y; // g or y
-		triangle_array[32 * i + 22] = vt2.x; // b or z
-		triangle_array[32 * i + 23] = vt2.y; // a or w
+	//slot 6
+	triangle_array[36 * i + 24] = pathTracingMaterialList[materialNumber].type; // r or x
+	triangle_array[36 * i + 25] = pathTracingMaterialList[materialNumber].color.r; // g or y
+	triangle_array[36 * i + 26] = pathTracingMaterialList[materialNumber].color.g; // b or z
+	triangle_array[36 * i + 27] = pathTracingMaterialList[materialNumber].color.b; // a or w
 
-		// the remaining slots are used for PBR material properties
+	//slot 7
+	triangle_array[36 * i + 28] = pathTracingMaterialList[materialNumber].albedoTextureID; // r or x
+	triangle_array[36 * i + 29] = pathTracingMaterialList[materialNumber].opacity; // g or y
+	triangle_array[36 * i + 30] = pathTracingMaterialList[materialNumber].metalness; // b or z
+	triangle_array[36 * i + 31] = pathTracingMaterialList[materialNumber].roughness; // a or w
 
-		if (i >= triangleMaterialMarkers[materialNumber])
-			materialNumber++;
+	//slot 8 - NEW: Emission data
+	triangle_array[36 * i + 32] = pathTracingMaterialList[materialNumber].emission.r; // r or x
+	triangle_array[36 * i + 33] = pathTracingMaterialList[materialNumber].emission.g; // g or y
+	triangle_array[36 * i + 34] = pathTracingMaterialList[materialNumber].emission.b; // b or z
+	triangle_array[36 * i + 35] = pathTracingMaterialList[materialNumber].emissiveIntensity; // a or w
 
-		//slot 6
-		triangle_array[32 * i + 24] = pathTracingMaterialList[materialNumber].type; // r or x
-		triangle_array[32 * i + 25] = pathTracingMaterialList[materialNumber].color.r; // g or y
-		triangle_array[32 * i + 26] = pathTracingMaterialList[materialNumber].color.g; // b or z
-		triangle_array[32 * i + 27] = pathTracingMaterialList[materialNumber].color.b; // a or w
+	triangle_b_box_min.copy(triangle_b_box_min.min(vp0));
+	triangle_b_box_max.copy(triangle_b_box_max.max(vp0));
+	triangle_b_box_min.copy(triangle_b_box_min.min(vp1));
+	triangle_b_box_max.copy(triangle_b_box_max.max(vp1));
+	triangle_b_box_min.copy(triangle_b_box_min.min(vp2));
+	triangle_b_box_max.copy(triangle_b_box_max.max(vp2));
 
-		//slot 7
-		triangle_array[32 * i + 28] = pathTracingMaterialList[materialNumber].albedoTextureID; // r or x
-		triangle_array[32 * i + 29] = pathTracingMaterialList[materialNumber].opacity; // g or y
-		triangle_array[32 * i + 30] = pathTracingMaterialList[materialNumber].metalness; // b or z
-		triangle_array[32 * i + 31] = pathTracingMaterialList[materialNumber].roughness; // a or w
+	triangle_b_box_centroid.copy(triangle_b_box_min).add(triangle_b_box_max).multiplyScalar(0.5);
+	//triangle_b_box_centroid.copy(vp0).add(vp1).add(vp2).multiplyScalar(0.3333);
 
-		triangle_b_box_min.copy(triangle_b_box_min.min(vp0));
-		triangle_b_box_max.copy(triangle_b_box_max.max(vp0));
-		triangle_b_box_min.copy(triangle_b_box_min.min(vp1));
-		triangle_b_box_max.copy(triangle_b_box_max.max(vp1));
-		triangle_b_box_min.copy(triangle_b_box_min.min(vp2));
-		triangle_b_box_max.copy(triangle_b_box_max.max(vp2));
+	aabb_array[9 * i + 0] = triangle_b_box_min.x;
+	aabb_array[9 * i + 1] = triangle_b_box_min.y;
+	aabb_array[9 * i + 2] = triangle_b_box_min.z;
+	aabb_array[9 * i + 3] = triangle_b_box_max.x;
+	aabb_array[9 * i + 4] = triangle_b_box_max.y;
+	aabb_array[9 * i + 5] = triangle_b_box_max.z;
+	aabb_array[9 * i + 6] = triangle_b_box_centroid.x;
+	aabb_array[9 * i + 7] = triangle_b_box_centroid.y;
+	aabb_array[9 * i + 8] = triangle_b_box_centroid.z;
 
-		triangle_b_box_centroid.copy(triangle_b_box_min).add(triangle_b_box_max).multiplyScalar(0.5);
-		//triangle_b_box_centroid.copy(vp0).add(vp1).add(vp2).multiplyScalar(0.3333);
+	totalWork[i] = i;
 
-		aabb_array[9 * i + 0] = triangle_b_box_min.x;
-		aabb_array[9 * i + 1] = triangle_b_box_min.y;
-		aabb_array[9 * i + 2] = triangle_b_box_min.z;
-		aabb_array[9 * i + 3] = triangle_b_box_max.x;
-		aabb_array[9 * i + 4] = triangle_b_box_max.y;
-		aabb_array[9 * i + 5] = triangle_b_box_max.z;
-		aabb_array[9 * i + 6] = triangle_b_box_centroid.x;
-		aabb_array[9 * i + 7] = triangle_b_box_centroid.y;
-		aabb_array[9 * i + 8] = triangle_b_box_centroid.z;
-
-		totalWork[i] = i;
-
-	} // end for (let i = 0; i < total_number_of_triangles; i++)
+} // end for (let i = 0; i < total_number_of_triangles; i++)
 
 	console.time("BvhGeneration");
 	console.log("BvhGeneration...");

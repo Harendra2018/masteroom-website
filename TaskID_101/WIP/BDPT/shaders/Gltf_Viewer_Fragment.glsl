@@ -18,7 +18,7 @@ uniform vec3 uAreaLightV3[8];
 uniform vec3 uAreaLightNormal[8];
 uniform vec3 uAreaLightEmission[8];
 
-#define INV_TEXTURE_WIDTH 0.00048828125
+
 
 vec3 rayOrigin, rayDirection;
 vec3 hitNormal, hitEmission, hitColor;
@@ -37,11 +37,15 @@ Box box;
 
 #include <pathtracing_quad_intersect>
 
-// AreaLight.glsl - Area light shader code for MULTIPLE lights
-
-// Area light constants
+#define INV_TEXTURE_WIDTH 0.00048828125
+#define DIFF 1
+#define REFR 2
+#define SPEC 3
+#define EMIT 4
+#define AREA_LIGHT_TYPE 5  // Changed from 3!
 #define MAX_AREA_LIGHTS 8
-#define AREA_LIGHT_TYPE 3
+
+
 
 // Area light structure
 struct Quad {
@@ -256,7 +260,7 @@ float SceneIntersect(int sampleLight)
 		}
 
 		// Leaf node - triangle intersection
-		id = 8.0 * currentBoxNodeData0.x;
+		id = 9.0 * currentBoxNodeData0.x; // Changed from 8.0 to 9.0
 		uv0 = ivec2( mod(id + 0.0, 2048.0), (id + 0.0) * INV_TEXTURE_WIDTH );
 		uv1 = ivec2( mod(id + 1.0, 2048.0), (id + 1.0) * INV_TEXTURE_WIDTH );
 		uv2 = ivec2( mod(id + 2.0, 2048.0), (id + 2.0) * INV_TEXTURE_WIDTH );
@@ -278,39 +282,55 @@ float SceneIntersect(int sampleLight)
 	}
 
 	// Full triangle data lookup
-	if (triangleLookupNeeded == TRUE)
+if (triangleLookupNeeded == TRUE)
+{
+	uv0 = ivec2( mod(triangleID + 0.0, 2048.0), floor((triangleID + 0.0) * INV_TEXTURE_WIDTH) );
+	uv1 = ivec2( mod(triangleID + 1.0, 2048.0), floor((triangleID + 1.0) * INV_TEXTURE_WIDTH) );
+	uv2 = ivec2( mod(triangleID + 2.0, 2048.0), floor((triangleID + 2.0) * INV_TEXTURE_WIDTH) );
+	uv3 = ivec2( mod(triangleID + 3.0, 2048.0), floor((triangleID + 3.0) * INV_TEXTURE_WIDTH) );
+	uv4 = ivec2( mod(triangleID + 4.0, 2048.0), floor((triangleID + 4.0) * INV_TEXTURE_WIDTH) );
+	uv5 = ivec2( mod(triangleID + 5.0, 2048.0), floor((triangleID + 5.0) * INV_TEXTURE_WIDTH) );
+	uv6 = ivec2( mod(triangleID + 6.0, 2048.0), floor((triangleID + 6.0) * INV_TEXTURE_WIDTH) );
+	uv7 = ivec2( mod(triangleID + 7.0, 2048.0), floor((triangleID + 7.0) * INV_TEXTURE_WIDTH) );
+	
+	// NEW: Add uv8 for emission slot
+	ivec2 uv8;
+	vec4 vd8;
+	uv8 = ivec2( mod(triangleID + 8.0, 2048.0), floor((triangleID + 8.0) * INV_TEXTURE_WIDTH) );
+	
+	vd0 = texelFetch(tTriangleTexture, uv0, 0);
+	vd1 = texelFetch(tTriangleTexture, uv1, 0);
+	vd2 = texelFetch(tTriangleTexture, uv2, 0);
+	vd3 = texelFetch(tTriangleTexture, uv3, 0);
+	vd4 = texelFetch(tTriangleTexture, uv4, 0);
+	vd5 = texelFetch(tTriangleTexture, uv5, 0);
+	vd6 = texelFetch(tTriangleTexture, uv6, 0);
+	vd7 = texelFetch(tTriangleTexture, uv7, 0);
+	vd8 = texelFetch(tTriangleTexture, uv8, 0); // NEW: Fetch emission data
+	
+	triangleW = 1.0 - triangleU - triangleV;
+	hitNormal = normalize(triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
+	hitColor = vd6.yzw;
+	hitOpacity = vd7.y;
+	hitUV = triangleW * vec2(vd4.zw) + triangleU * vec2(vd5.xy) + triangleV * vec2(vd5.zw);
+	hitType = int(vd6.x);
+	hitAlbedoTextureID = int(vd7.x);
+	hitObjectID = float(objectCount);
+	hitMetalness = vd7.z;
+	hitRoughness = vd7.w;
+	
+	// NEW: Handle emission based on material type
+	// vd8.rgb = emission color, vd8.a = emissive intensity
+	if (hitType == 4) // EMIT type (emissive material)
 	{
-		uv0 = ivec2( mod(triangleID + 0.0, 2048.0), floor((triangleID + 0.0) * INV_TEXTURE_WIDTH) );
-		uv1 = ivec2( mod(triangleID + 1.0, 2048.0), floor((triangleID + 1.0) * INV_TEXTURE_WIDTH) );
-		uv2 = ivec2( mod(triangleID + 2.0, 2048.0), floor((triangleID + 2.0) * INV_TEXTURE_WIDTH) );
-		uv3 = ivec2( mod(triangleID + 3.0, 2048.0), floor((triangleID + 3.0) * INV_TEXTURE_WIDTH) );
-		uv4 = ivec2( mod(triangleID + 4.0, 2048.0), floor((triangleID + 4.0) * INV_TEXTURE_WIDTH) );
-		uv5 = ivec2( mod(triangleID + 5.0, 2048.0), floor((triangleID + 5.0) * INV_TEXTURE_WIDTH) );
-		uv6 = ivec2( mod(triangleID + 6.0, 2048.0), floor((triangleID + 6.0) * INV_TEXTURE_WIDTH) );
-		uv7 = ivec2( mod(triangleID + 7.0, 2048.0), floor((triangleID + 7.0) * INV_TEXTURE_WIDTH) );
-		
-		vd0 = texelFetch(tTriangleTexture, uv0, 0);
-		vd1 = texelFetch(tTriangleTexture, uv1, 0);
-		vd2 = texelFetch(tTriangleTexture, uv2, 0);
-		vd3 = texelFetch(tTriangleTexture, uv3, 0);
-		vd4 = texelFetch(tTriangleTexture, uv4, 0);
-		vd5 = texelFetch(tTriangleTexture, uv5, 0);
-		vd6 = texelFetch(tTriangleTexture, uv6, 0);
-		vd7 = texelFetch(tTriangleTexture, uv7, 0);
-
-		triangleW = 1.0 - triangleU - triangleV;
-		hitNormal = normalize(triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
-		hitEmission = vec3(0);
-		hitColor = vd6.yzw;
-		hitOpacity = vd7.y;
-		hitUV = triangleW * vec2(vd4.zw) + triangleU * vec2(vd5.xy) + triangleV * vec2(vd5.zw);
-		hitType = int(vd6.x);
-		hitAlbedoTextureID = int(vd7.x);
-		hitObjectID = float(objectCount);
-		hitMetalness = vd7.z;
-		hitRoughness = vd7.w;
+		hitEmission = vd8.rgb * vd8.a; // emission color * intensity
 	}
-	objectCount++;
+	else
+	{
+		hitEmission = vec3(0); // Non-emissive materials
+	}
+}
+objectCount++;
 
 	// Ground plane intersection
 	d = BoxIntersect( box.minCorner, box.maxCorner, rayOrigin, rayDirection, n, isRayExiting );
@@ -685,7 +705,8 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 void SetupScene(void)
 {
 	// Ground plane
-	box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), vec3(0), vec3(0.45), DIFF);
+	 box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), 
+              vec3(0), vec3(0.45), DIFF);
 
 	// Initialize all area lights
 	SetupAreaLight();
