@@ -28,7 +28,7 @@ areaLightManager.addLight(secondAreaLight);
 
 // Add a third area light
 let thirdAreaLight = new AreaLight();
-thirdAreaLight.setPosition(-10, 90, 63.2);
+thirdAreaLight.setPosition(-10, 38.1, 63.2);
 thirdAreaLight.setRotation(0,0.19,0);
 thirdAreaLight.setScale(4,1,4);
 thirdAreaLight.setColor(1, 0.7, 0.38); // Red-tinted
