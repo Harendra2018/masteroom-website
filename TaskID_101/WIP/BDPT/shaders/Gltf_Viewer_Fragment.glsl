@@ -18,8 +18,6 @@ uniform vec3 uAreaLightV3[8];
 uniform vec3 uAreaLightNormal[8];
 uniform vec3 uAreaLightEmission[8];
 
-
-
 vec3 rayOrigin, rayDirection;
 vec3 hitNormal, hitEmission, hitColor;
 vec2 hitUV;
@@ -34,7 +32,6 @@ struct Box { vec3 minCorner; vec3 maxCorner; vec3 emission; vec3 color; int type
 Box box;
 
 #include <pathtracing_random_functions>
-
 #include <pathtracing_quad_intersect>
 
 #define INV_TEXTURE_WIDTH 0.00048828125
@@ -42,10 +39,8 @@ Box box;
 #define REFR 2
 #define SPEC 3
 #define EMIT 4
-#define AREA_LIGHT_TYPE 5  // Changed from 3!
+#define AREA_LIGHT_TYPE 5
 #define MAX_AREA_LIGHTS 8
-
-
 
 // Area light structure
 struct Quad {
@@ -157,13 +152,9 @@ float GetTotalAreaLightPower()
 }
 
 #include <pathtracing_calc_fresnel_reflectance>
-
 #include <pathtracing_sphere_intersect>
-
 #include <pathtracing_box_intersect>
-
 #include <pathtracing_boundingbox_intersect>
-
 #include <pathtracing_bvhTriangle_intersect>
 
 vec2 stackLevels[28];
@@ -282,55 +273,55 @@ float SceneIntersect(int sampleLight)
 	}
 
 	// Full triangle data lookup
-if (triangleLookupNeeded == TRUE)
-{
-	uv0 = ivec2( mod(triangleID + 0.0, 2048.0), floor((triangleID + 0.0) * INV_TEXTURE_WIDTH) );
-	uv1 = ivec2( mod(triangleID + 1.0, 2048.0), floor((triangleID + 1.0) * INV_TEXTURE_WIDTH) );
-	uv2 = ivec2( mod(triangleID + 2.0, 2048.0), floor((triangleID + 2.0) * INV_TEXTURE_WIDTH) );
-	uv3 = ivec2( mod(triangleID + 3.0, 2048.0), floor((triangleID + 3.0) * INV_TEXTURE_WIDTH) );
-	uv4 = ivec2( mod(triangleID + 4.0, 2048.0), floor((triangleID + 4.0) * INV_TEXTURE_WIDTH) );
-	uv5 = ivec2( mod(triangleID + 5.0, 2048.0), floor((triangleID + 5.0) * INV_TEXTURE_WIDTH) );
-	uv6 = ivec2( mod(triangleID + 6.0, 2048.0), floor((triangleID + 6.0) * INV_TEXTURE_WIDTH) );
-	uv7 = ivec2( mod(triangleID + 7.0, 2048.0), floor((triangleID + 7.0) * INV_TEXTURE_WIDTH) );
-	
-	// NEW: Add uv8 for emission slot
-	ivec2 uv8;
-	vec4 vd8;
-	uv8 = ivec2( mod(triangleID + 8.0, 2048.0), floor((triangleID + 8.0) * INV_TEXTURE_WIDTH) );
-	
-	vd0 = texelFetch(tTriangleTexture, uv0, 0);
-	vd1 = texelFetch(tTriangleTexture, uv1, 0);
-	vd2 = texelFetch(tTriangleTexture, uv2, 0);
-	vd3 = texelFetch(tTriangleTexture, uv3, 0);
-	vd4 = texelFetch(tTriangleTexture, uv4, 0);
-	vd5 = texelFetch(tTriangleTexture, uv5, 0);
-	vd6 = texelFetch(tTriangleTexture, uv6, 0);
-	vd7 = texelFetch(tTriangleTexture, uv7, 0);
-	vd8 = texelFetch(tTriangleTexture, uv8, 0); // NEW: Fetch emission data
-	
-	triangleW = 1.0 - triangleU - triangleV;
-	hitNormal = normalize(triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
-	hitColor = vd6.yzw;
-	hitOpacity = vd7.y;
-	hitUV = triangleW * vec2(vd4.zw) + triangleU * vec2(vd5.xy) + triangleV * vec2(vd5.zw);
-	hitType = int(vd6.x);
-	hitAlbedoTextureID = int(vd7.x);
-	hitObjectID = float(objectCount);
-	hitMetalness = vd7.z;
-	hitRoughness = vd7.w;
-	
-	// NEW: Handle emission based on material type
-	// vd8.rgb = emission color, vd8.a = emissive intensity
-	if (hitType == 4) // EMIT type (emissive material)
+	if (triangleLookupNeeded == TRUE)
 	{
-		hitEmission = vd8.rgb * vd8.a; // emission color * intensity
+		uv0 = ivec2( mod(triangleID + 0.0, 2048.0), floor((triangleID + 0.0) * INV_TEXTURE_WIDTH) );
+		uv1 = ivec2( mod(triangleID + 1.0, 2048.0), floor((triangleID + 1.0) * INV_TEXTURE_WIDTH) );
+		uv2 = ivec2( mod(triangleID + 2.0, 2048.0), floor((triangleID + 2.0) * INV_TEXTURE_WIDTH) );
+		uv3 = ivec2( mod(triangleID + 3.0, 2048.0), floor((triangleID + 3.0) * INV_TEXTURE_WIDTH) );
+		uv4 = ivec2( mod(triangleID + 4.0, 2048.0), floor((triangleID + 4.0) * INV_TEXTURE_WIDTH) );
+		uv5 = ivec2( mod(triangleID + 5.0, 2048.0), floor((triangleID + 5.0) * INV_TEXTURE_WIDTH) );
+		uv6 = ivec2( mod(triangleID + 6.0, 2048.0), floor((triangleID + 6.0) * INV_TEXTURE_WIDTH) );
+		uv7 = ivec2( mod(triangleID + 7.0, 2048.0), floor((triangleID + 7.0) * INV_TEXTURE_WIDTH) );
+		
+		// NEW: Add uv8 for emission slot
+		ivec2 uv8;
+		vec4 vd8;
+		uv8 = ivec2( mod(triangleID + 8.0, 2048.0), floor((triangleID + 8.0) * INV_TEXTURE_WIDTH) );
+		
+		vd0 = texelFetch(tTriangleTexture, uv0, 0);
+		vd1 = texelFetch(tTriangleTexture, uv1, 0);
+		vd2 = texelFetch(tTriangleTexture, uv2, 0);
+		vd3 = texelFetch(tTriangleTexture, uv3, 0);
+		vd4 = texelFetch(tTriangleTexture, uv4, 0);
+		vd5 = texelFetch(tTriangleTexture, uv5, 0);
+		vd6 = texelFetch(tTriangleTexture, uv6, 0);
+		vd7 = texelFetch(tTriangleTexture, uv7, 0);
+		vd8 = texelFetch(tTriangleTexture, uv8, 0); // NEW: Fetch emission data
+		
+		triangleW = 1.0 - triangleU - triangleV;
+		hitNormal = normalize(triangleW * vec3(vd2.yzw) + triangleU * vec3(vd3.xyz) + triangleV * vec3(vd3.w, vd4.xy));
+		hitColor = vd6.yzw;
+		hitOpacity = vd7.y;
+		hitUV = triangleW * vec2(vd4.zw) + triangleU * vec2(vd5.xy) + triangleV * vec2(vd5.zw);
+		hitType = int(vd6.x);
+		hitAlbedoTextureID = int(vd7.x);
+		hitObjectID = float(objectCount);
+		hitMetalness = vd7.z;
+		hitRoughness = vd7.w;
+		
+		// NEW: Handle emission based on material type
+		// vd8.rgb = emission color, vd8.a = emissive intensity
+		if (hitType == 4) // EMIT type (emissive material)
+		{
+			hitEmission = vd8.rgb * vd8.a; // emission color * intensity
+		}
+		else
+		{
+			hitEmission = vec3(0); // Non-emissive materials
+		}
 	}
-	else
-	{
-		hitEmission = vec3(0); // Non-emissive materials
-	}
-}
-objectCount++;
+	objectCount++;
 
 	// Ground plane intersection
 	d = BoxIntersect( box.minCorner, box.maxCorner, rayOrigin, rayDirection, n, isRayExiting );
@@ -369,7 +360,6 @@ objectCount++;
 	
 	return t;
 }
-
 
 vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float objectID, out float pixelSharpness )
 {
@@ -494,12 +484,65 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 		// === PATH CONNECTION: Check if we can join with light path ===
 		if (hitType == DIFF && sampleLight == TRUE)
 		{
+			// CORRECTED: Shadow ray transmission for area lights
+			vec3 shadowTransmission = vec3(1.0);
+			bool hitOpaqueSurface = false;
+			
+			// We've already traced to the surface, check what we hit
+			if (t < INFINITY) {
+				// Check if there are transparent objects between us and the light
+				// We need to re-trace with transparency checks
+				vec3 savedRayOrigin = rayOrigin;
+				vec3 savedRayDirection = rayDirection;
+				
+				rayOrigin = x + nl * epsIntersect;
+				rayDirection = normalize(lightHitPos - x);
+				float distanceToLight = distance(x, lightHitPos);
+				
+				int maxTransparentBounces = 3;
+				for (int i = 0; i < maxTransparentBounces; i++) {
+					float shadowT = SceneIntersect(TRUE); // TRUE = shadow ray, don't hit lights
+					
+					if (shadowT < distanceToLight) {
+						if (hitOpacity < 0.99) {
+							// Transparent surface
+							float glassOpacity = hitOpacity;
+							vec3 glassColor = hitColor;
+							
+							if (glassOpacity < 0.01) {
+								shadowTransmission *= vec3(1.0);
+							} else {
+								float transmissionAmount = 1.0 - (glassOpacity * 0.5);
+								vec3 colorTint = mix(vec3(1.0), glassColor, glassOpacity);
+								shadowTransmission *= colorTint * transmissionAmount;
+							}
+							
+							// Continue through glass
+							vec3 transparentHitPoint = rayOrigin + rayDirection * shadowT;
+							rayOrigin = transparentHitPoint + rayDirection * epsIntersect;
+							distanceToLight = distance(rayOrigin, lightHitPos);
+						} else {
+							// Opaque surface blocks light
+							hitOpaqueSurface = true;
+							break;
+						}
+					} else {
+						// Clear path to light
+						break;
+					}
+				}
+				
+				// Restore ray state
+				rayOrigin = savedRayOrigin;
+				rayDirection = savedRayDirection;
+			}
+			
 			ableToJoinPaths = abs(t - lightHitDistance) < 0.5 ? TRUE : FALSE;
 			
-			if (ableToJoinPaths == TRUE)
+			if (ableToJoinPaths == TRUE && !hitOpaqueSurface)
 			{
 				weight = max(0.0, dot(n, -rayDirection));
-				accumCol += mask * lightHitEmission * weight;
+				accumCol += mask * lightHitEmission * weight * shadowTransmission;
 			}
 
 			if (willNeedReflectionRay == TRUE)
@@ -558,7 +601,7 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 			surfaceColor = max(surfaceColor, vec3(0.9));
 		}
 
-		// === GLASS/TRANSPARENT MATERIAL ===
+		// === CORRECTED GLASS/TRANSPARENT MATERIAL (from your working code) ===
 		if (surfaceOpacity < 0.99)
 		{
 			bounceIsSpecular = TRUE;
@@ -571,8 +614,9 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 			vec3 refractionNormal = n;
 			bool entering = dot(n, -rayDirection) > 0.0;
 
-			// Thin glass detection
+			// Detect thin glass by checking if we immediately hit another surface
 			bool isThinGlass = false;
+			float glassThickness = 0.0;
 			if (entering) {
 				vec3 testRayOrigin = x - refractionNormal * epsIntersect;
 				vec3 testRayDirection = rayDirection;
@@ -588,25 +632,48 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 				
 				if (testT < 0.05) {
 					isThinGlass = true;
+					glassThickness = testT;
 				}
 			}
 
+			// Get roughness for glass
+			float glassRoughness = clamp(surfaceRoughness + uRoughness, 0.0, 1.0);
+
 			if (isThinGlass) {
+				// Thin glass approximation
 				float cosThetaI = abs(dot(-rayDirection, glassN));
 				float Rs = (nc - nt) / (nc + nt);
 				float reflectance = Rs * Rs + (1.0 - Rs * Rs) * pow(1.0 - cosThetaI, 5.0);
 				
-				if (rand() < reflectance) {
-					rayDirection = reflect(rayDirection, glassN);
+				// Mix reflectance with opacity for proper alpha blending
+				float effectiveReflectance = mix(0.0, reflectance, surfaceOpacity);
+				
+				if (rand() < effectiveReflectance) {
+					// Reflect with roughness
+					vec3 reflectedDir = reflect(rayDirection, glassN);
+					if (glassRoughness > 0.001) {
+						reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
+					}
+					rayDirection = normalize(reflectedDir);
 					rayOrigin = x + glassN * epsIntersect;
-					mask *= surfaceColor * reflectance;
+					mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity) * effectiveReflectance / max(effectiveReflectance, 0.001);
 				} else {
-					rayDirection = rayDirection;
+					// Pass through with color absorption based on opacity and thickness
+					vec3 transmittedDir = rayDirection;
+					if (glassRoughness > 0.001) {
+						transmittedDir = randomDirectionInSpecularLobe(transmittedDir, glassRoughness * glassRoughness * 0.5);
+					}
+					rayDirection = normalize(transmittedDir);
 					rayOrigin = x + rayDirection * (epsIntersect * 3.0);
-					mask *= surfaceColor * (1.0 - reflectance);
+					
+					// Beer's law absorption - more opacity = more color absorption
+					float absorptionDistance = glassThickness * 100.0;
+					vec3 absorption = exp(-absorptionDistance * (1.0 - surfaceColor) * (surfaceOpacity * 2.0));
+					mask *= absorption;
 				}
 			}
 			else {
+				// Thick glass - full refraction model
 				if (!entering) {
 					float tmp = nc;
 					nc = nt;
@@ -618,27 +685,47 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 				float sin2ThetaT = eta * eta * (1.0 - cosThetaI * cosThetaI);
 
 				if (sin2ThetaT > 1.0) {
-					rayDirection = reflect(rayDirection, glassN);
+					// Total internal reflection with roughness
+					vec3 reflectedDir = reflect(rayDirection, glassN);
+					if (glassRoughness > 0.001) {
+						reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
+					}
+					rayDirection = normalize(reflectedDir);
 					rayOrigin = x + glassN * epsIntersect;
-					mask *= surfaceColor;
+					mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity);
 				}
 				else {
+					// Fresnel
 					float cosThetaT = sqrt(1.0 - sin2ThetaT);
 					float Rs = (nc * cosThetaI - nt * cosThetaT) / (nc * cosThetaI + nt * cosThetaT);
 					float Rp = (nt * cosThetaI - nc * cosThetaT) / (nt * cosThetaI + nc * cosThetaT);
 					float reflectance = (Rs * Rs + Rp * Rp) * 0.5;
-					float P = 0.25 + 0.5 * reflectance;
+					
+					// Mix reflectance with opacity
+					float P = 0.25 + 0.5 * mix(0.0, reflectance, surfaceOpacity);
 
 					if (rand() < P) {
-						rayDirection = reflect(rayDirection, glassN);
+						// Reflect with roughness
+						vec3 reflectedDir = reflect(rayDirection, glassN);
+						if (glassRoughness > 0.001) {
+							reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
+						}
+						rayDirection = normalize(reflectedDir);
 						rayOrigin = x + glassN * epsIntersect;
-						mask *= surfaceColor * (reflectance / P);
+						mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity) * (reflectance / max(P, 0.001));
 					}
 					else {
+						// Refract with roughness and color absorption
 						vec3 refracted = refract(rayDirection, refractionNormal, eta);
-						rayDirection = refracted;
+						if (glassRoughness > 0.001) {
+							refracted = randomDirectionInSpecularLobe(refracted, glassRoughness * glassRoughness);
+						}
+						rayDirection = normalize(refracted);
 						rayOrigin = x - refractionNormal * epsIntersect;
-						mask *= surfaceColor * ((1.0 - reflectance) / (1.0 - P));
+						
+						// Apply color absorption through glass based on opacity
+						vec3 colorFilter = mix(vec3(1.0), surfaceColor, surfaceOpacity);
+						mask *= colorFilter * ((1.0 - reflectance) / max((1.0 - P), 0.001));
 					}
 				}
 			}
@@ -705,7 +792,7 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 void SetupScene(void)
 {
 	// Ground plane
-	 box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), 
+	box = Box( vec3(-100000, -1, -100000), vec3(100000, 0, 100000), 
               vec3(0), vec3(0.45), DIFF);
 
 	// Initialize all area lights
