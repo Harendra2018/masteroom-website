@@ -309,101 +309,139 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 			surfaceColor = max(surfaceColor, vec3(0.9));
 		}
 
-		// === GLASS/TRANSPARENT MATERIAL HANDLING ===
-		if (surfaceOpacity < 0.99)
-		{
-			bounceIsSpecular = TRUE;
-			
-			float ior = 1.5;
-			float nc = 1.0;
-			float nt = ior;
-			
-			vec3 glassN = nl;
-			vec3 refractionNormal = n;
-			bool entering = dot(n, -rayDirection) > 0.0;
+// === GLASS/TRANSPARENT MATERIAL HANDLING ===
+if (surfaceOpacity < 0.99)
+{
+	bounceIsSpecular = TRUE;
+	
+	float ior = 1.5;
+	float nc = 1.0;
+	float nt = ior;
+	
+	vec3 glassN = nl;
+	vec3 refractionNormal = n;
+	bool entering = dot(n, -rayDirection) > 0.0;
 
-			// Detect thin glass by checking if we immediately hit another surface
-			bool isThinGlass = false;
-			if (entering) {
-				vec3 testRayOrigin = x - refractionNormal * epsIntersect;
-				vec3 testRayDirection = rayDirection;
-				vec3 savedOrigin = rayOrigin;
-				vec3 savedDirection = rayDirection;
-				
-				rayOrigin = testRayOrigin;
-				rayDirection = testRayDirection;
-				float testT = SceneIntersect();
-				
-				rayOrigin = savedOrigin;
-				rayDirection = savedDirection;
-				
-				// If we hit something very close (less than 0.1 units), it's thin glass
-				if (testT < 0.05) {
-					isThinGlass = true;
-				}
+	// Detect thin glass by checking if we immediately hit another surface
+	bool isThinGlass = false;
+	float glassThickness = 0.0;
+	if (entering) {
+		vec3 testRayOrigin = x - refractionNormal * epsIntersect;
+		vec3 testRayDirection = rayDirection;
+		vec3 savedOrigin = rayOrigin;
+		vec3 savedDirection = rayDirection;
+		
+		rayOrigin = testRayOrigin;
+		rayDirection = testRayDirection;
+		float testT = SceneIntersect();
+		
+		rayOrigin = savedOrigin;
+		rayDirection = savedDirection;
+		
+		if (testT < 0.05) {
+			isThinGlass = true;
+			glassThickness = testT;
+		}
+	}
+
+	// Get roughness for glass
+	float glassRoughness = clamp(surfaceRoughness + uRoughness, 0.0, 1.0);
+
+	// Handle alpha transparency with proper color absorption
+	float alphaRandom = rand();
+	
+	if (isThinGlass) {
+		// Thin glass approximation
+		float cosThetaI = abs(dot(-rayDirection, glassN));
+		float Rs = (nc - nt) / (nc + nt);
+		float reflectance = Rs * Rs + (1.0 - Rs * Rs) * pow(1.0 - cosThetaI, 5.0);
+		
+		// Mix reflectance with opacity for proper alpha blending
+		float effectiveReflectance = mix(0.0, reflectance, surfaceOpacity);
+		
+		if (rand() < effectiveReflectance) {
+			// Reflect with roughness
+			vec3 reflectedDir = reflect(rayDirection, glassN);
+			if (glassRoughness > 0.001) {
+				reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
 			}
+			rayDirection = normalize(reflectedDir);
+			rayOrigin = x + glassN * epsIntersect;
+			mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity) * effectiveReflectance / max(effectiveReflectance, 0.001);
+		} else {
+			// Pass through with color absorption based on opacity and thickness
+			vec3 transmittedDir = rayDirection;
+			if (glassRoughness > 0.001) {
+				transmittedDir = randomDirectionInSpecularLobe(transmittedDir, glassRoughness * glassRoughness * 0.5);
+			}
+			rayDirection = normalize(transmittedDir);
+			rayOrigin = x + rayDirection * (epsIntersect * 3.0);
+			
+			// Beer's law absorption - more opacity = more color absorption
+			float absorptionDistance = glassThickness * 100.0; // Scale factor
+			vec3 absorption = exp(-absorptionDistance * (1.0 - surfaceColor) * (surfaceOpacity * 2.0));
+			mask *= absorption;
+		}
+	}
+	else {
+		// Thick glass - full refraction model
+		if (!entering) {
+			float tmp = nc;
+			nc = nt;
+			nt = tmp;
+		}
 
-			if (isThinGlass) {
-				// Thin glass approximation - simple blend of reflection and transmission
-				float cosThetaI = abs(dot(-rayDirection, glassN));
-				float Rs = (nc - nt) / (nc + nt);
-				float reflectance = Rs * Rs + (1.0 - Rs * Rs) * pow(1.0 - cosThetaI, 5.0);
-				
-				if (rand() < reflectance) {
-					// Reflect
-					rayDirection = reflect(rayDirection, glassN);
-					rayOrigin = x + glassN * epsIntersect;
-					mask *= surfaceColor * reflectance;
-				} else {
-					// Pass through with minimal refraction
-					rayDirection = rayDirection;
-					rayOrigin = x + rayDirection * (epsIntersect * 3.0);
-					mask *= surfaceColor * (1.0 - reflectance);
+		float eta = nc / nt;
+		float cosThetaI = abs(dot(rayDirection, glassN));
+		float sin2ThetaT = eta * eta * (1.0 - cosThetaI * cosThetaI);
+
+		if (sin2ThetaT > 1.0) {
+			// Total internal reflection with roughness
+			vec3 reflectedDir = reflect(rayDirection, glassN);
+			if (glassRoughness > 0.001) {
+				reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
+			}
+			rayDirection = normalize(reflectedDir);
+			rayOrigin = x + glassN * epsIntersect;
+			mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity);
+		}
+		else {
+			// Fresnel
+			float cosThetaT = sqrt(1.0 - sin2ThetaT);
+			float Rs = (nc * cosThetaI - nt * cosThetaT) / (nc * cosThetaI + nt * cosThetaT);
+			float Rp = (nt * cosThetaI - nc * cosThetaT) / (nt * cosThetaI + nc * cosThetaT);
+			float reflectance = (Rs * Rs + Rp * Rp) * 0.5;
+			
+			// Mix reflectance with opacity
+			float P = 0.25 + 0.5 * mix(0.0, reflectance, surfaceOpacity);
+
+			if (rand() < P) {
+				// Reflect with roughness
+				vec3 reflectedDir = reflect(rayDirection, glassN);
+				if (glassRoughness > 0.001) {
+					reflectedDir = randomDirectionInSpecularLobe(reflectedDir, glassRoughness * glassRoughness);
 				}
+				rayDirection = normalize(reflectedDir);
+				rayOrigin = x + glassN * epsIntersect;
+				mask *= mix(vec3(1.0), surfaceColor, surfaceOpacity) * (reflectance / max(P, 0.001));
 			}
 			else {
-				// Thick glass - full refraction model
-				if (!entering) {
-					float tmp = nc;
-					nc = nt;
-					nt = tmp;
+				// Refract with roughness and color absorption
+				vec3 refracted = refract(rayDirection, refractionNormal, eta);
+				if (glassRoughness > 0.001) {
+					refracted = randomDirectionInSpecularLobe(refracted, glassRoughness * glassRoughness);
 				}
-
-				float eta = nc / nt;
-				float cosThetaI = abs(dot(rayDirection, glassN));
-				float sin2ThetaT = eta * eta * (1.0 - cosThetaI * cosThetaI);
-
-				if (sin2ThetaT > 1.0) {
-					// Total internal reflection
-					rayDirection = reflect(rayDirection, glassN);
-					rayOrigin = x + glassN * epsIntersect;
-					mask *= surfaceColor;
-				}
-				else {
-					// Fresnel
-					float cosThetaT = sqrt(1.0 - sin2ThetaT);
-					float Rs = (nc * cosThetaI - nt * cosThetaT) / (nc * cosThetaI + nt * cosThetaT);
-					float Rp = (nt * cosThetaI - nc * cosThetaT) / (nt * cosThetaI + nc * cosThetaT);
-					float reflectance = (Rs * Rs + Rp * Rp) * 0.5;
-					float P = 0.25 + 0.5 * reflectance;
-
-					if (rand() < P) {
-						// Reflect
-						rayDirection = reflect(rayDirection, glassN);
-						rayOrigin = x + glassN * epsIntersect;
-						mask *= surfaceColor * (reflectance / P);
-					}
-					else {
-						// Refract
-						vec3 refracted = refract(rayDirection, refractionNormal, eta);
-						rayDirection = refracted;
-						rayOrigin = x - refractionNormal * epsIntersect;
-						mask *= surfaceColor * ((1.0 - reflectance) / (1.0 - P));
-					}
-				}
+				rayDirection = normalize(refracted);
+				rayOrigin = x - refractionNormal * epsIntersect;
+				
+				// Apply color absorption through glass based on opacity
+				vec3 colorFilter = mix(vec3(1.0), surfaceColor, surfaceOpacity);
+				mask *= colorFilter * ((1.0 - reflectance) / max((1.0 - P), 0.001));
 			}
-			continue;
 		}
+	}
+	continue;
+}		
 
 		// === PRINCIPLED BSDF (for opaque materials) ===
 		vec3 N = nl;
@@ -424,74 +462,102 @@ vec3 CalculateRadiance( out vec3 objectNormal, out vec3 objectColor, out float o
 		float specularProbability = clamp(max(max(F.r, F.g), F.b), 0.05, 0.95);
 
 		// === NEXT EVENT ESTIMATION (Direct Sun Lighting) ===
-		vec3 L = uSunDirection;
-		float LoN = max(dot(L, N), 0.0);
+vec3 L = uSunDirection;
+float LoN = max(dot(L, N), 0.0);
 
-		if (LoN > 0.0 && uSunLightIntensity > 0.0)
-		{
-			// Save ray state
-			vec3 savedRayOrigin = rayOrigin;
-			vec3 savedRayDirection = rayDirection;
+if (LoN > 0.0 && uSunLightIntensity > 0.0)
+{
+	// Save ray state
+	vec3 savedRayOrigin = rayOrigin;
+	vec3 savedRayDirection = rayDirection;
 
-			// Cast shadow ray
-			float shadowEpsilon = epsIntersect * 2.0;
-			rayOrigin = X + N * shadowEpsilon;
-			rayDirection = L;
+	// Cast shadow ray
+	float shadowEpsilon = epsIntersect * 2.0;
+	rayOrigin = X + N * shadowEpsilon;
+	rayDirection = L;
 
-			float shadowT = SceneIntersect();
+	float shadowT = SceneIntersect();
 
-			// Pass through transparent surfaces in shadow rays
-			int maxTransparentBounces = 3;
-			for (int i = 0; i < maxTransparentBounces; i++) {
-				if (shadowT < INFINITY && hitOpacity < 0.99) {
-					vec3 transparentHitPoint = rayOrigin + rayDirection * shadowT;
-					rayOrigin = transparentHitPoint + rayDirection * epsIntersect;
-					shadowT = SceneIntersect();
+	// Accumulate transmission through transparent surfaces
+	vec3 shadowTransmission = vec3(1.0);
+	bool hitOpaqueSurface = false;
+	int maxTransparentBounces = 3;
+	
+	for (int i = 0; i < maxTransparentBounces; i++) {
+		if (shadowT < INFINITY) {
+			// Check if we hit a transparent surface
+			if (hitOpacity < 0.99) {
+				vec3 glassColor = hitColor;
+				float glassOpacity = hitOpacity;
+				
+				// For very low opacity (nearly invisible), treat as if nothing is there
+				if (glassOpacity < 0.01) {
+					// Almost invisible - let all light through
+					shadowTransmission *= vec3(1.0);
 				} else {
-					break;
+					// Calculate transmission based on opacity
+					// Low opacity = more light passes through with less color filtering
+					// High opacity = less light passes through with more color filtering
+					float transmissionAmount = 1.0 - (glassOpacity * 0.5); // 50% blocking at full opacity
+					vec3 colorTint = mix(vec3(1.0), glassColor, glassOpacity);
+					shadowTransmission *= colorTint * transmissionAmount;
 				}
+				
+				// Continue shadow ray through the glass
+				vec3 transparentHitPoint = rayOrigin + rayDirection * shadowT;
+				rayOrigin = transparentHitPoint + rayDirection * epsIntersect;
+				shadowT = SceneIntersect();
+			} else {
+				// Hit an opaque surface - we're in shadow
+				hitOpaqueSurface = true;
+				break;
 			}
-
-			// Restore ray state
-			rayOrigin = savedRayOrigin;
-			rayDirection = savedRayDirection;
-
-			// Check if surface is light/spec
-			if (surfaceType == LIGHT || surfaceType == SPEC)
-				shadowT = INFINITY;
-
-			vec3 H = normalize(V + L);
-			float HoN = max(dot(H, N), 0.0);
-			float HoV = max(dot(H, V), 0.0);
-
-			// Diffuse BRDF
-			vec3 diffuseBRDF = kD * surfaceColor * ONE_OVER_PI;
-
-			// Specular BRDF (GGX)
-			float alpha = rough * rough;
-			float alpha2 = alpha * alpha;
-			float denom = (HoN * HoN) * (alpha2 - 1.0) + 1.0;
-			float D = alpha2 / (PI * denom * denom);
-
-			vec3 F_H = F0 + (1.0 - F0) * pow(1.0 - HoV, 5.0);
-
-			float k = (rough + 1.0) * (rough + 1.0) / 8.0;
-			float G_V = VoN / (VoN * (1.0 - k) + k);
-			float G_L = LoN / (LoN * (1.0 - k) + k);
-			float G = G_V * G_L;
-
-			vec3 specularBRDF = (D * F_H * G) / max(4.0 * VoN * LoN, 0.001);
-
-			// Combined BRDF
-			vec3 brdf = diffuseBRDF + specularBRDF;
-
-			// Apply shadow
-			if (shadowT == INFINITY)
-			{
-				vec3 directContribution = mask * brdf * uSunColor * uSunLightIntensity * LoN;
-				accumCol += clamp(directContribution, vec3(0.0), vec3(5.0));
-			}
+		} else {
+			// No hit - clear path to sun
+			break;
 		}
+	}
+
+	// Restore ray state
+	rayOrigin = savedRayOrigin;
+	rayDirection = savedRayDirection;
+
+	// Check if surface is light/spec (these don't cast shadows)
+	if (surfaceType == LIGHT || surfaceType == SPEC)
+		hitOpaqueSurface = false;
+
+	vec3 H = normalize(V + L);
+	float HoN = max(dot(H, N), 0.0);
+	float HoV = max(dot(H, V), 0.0);
+
+	// Diffuse BRDF
+	vec3 diffuseBRDF = kD * surfaceColor * ONE_OVER_PI;
+
+	// Specular BRDF (GGX)
+	float alpha = rough * rough;
+	float alpha2 = alpha * alpha;
+	float denom = (HoN * HoN) * (alpha2 - 1.0) + 1.0;
+	float D = alpha2 / (PI * denom * denom);
+
+	vec3 F_H = F0 + (1.0 - F0) * pow(1.0 - HoV, 5.0);
+
+	float k = (rough + 1.0) * (rough + 1.0) / 8.0;
+	float G_V = VoN / (VoN * (1.0 - k) + k);
+	float G_L = LoN / (LoN * (1.0 - k) + k);
+	float G = G_V * G_L;
+
+	vec3 specularBRDF = (D * F_H * G) / max(4.0 * VoN * LoN, 0.001);
+
+	// Combined BRDF
+	vec3 brdf = diffuseBRDF + specularBRDF;
+
+	// Apply lighting if not blocked by opaque surface
+	if (!hitOpaqueSurface)
+	{
+		vec3 directContribution = mask * brdf * uSunColor * uSunLightIntensity * LoN * shadowTransmission;
+		accumCol += clamp(directContribution, vec3(0.0), vec3(5.0));
+	}
+}
 
 		// === PATH CONTINUATION (Indirect Lighting) ===
 		if (rand() < specularProbability)
