@@ -1,12 +1,12 @@
 const properties = [
   {
     id: 'property1',
-    name: 'Luxury Villa',
+    name: 'New House',
     price: 1200000,
-    location: 'Beverly Hills',
-    bedrooms: 4,
-    bathrooms: 3,
-    size: 2500,
+    location: 'Bandarawela',
+    bedrooms: 5,
+    bathrooms: 2,
+    size: 890,
     description: 'Spacious modern home with panoramic views',
     image: 'assets/interior-design-neoclassical-style-with-furnishings-decor.jpg',
     taskId: 'TaskID_101'
