@@ -19,12 +19,12 @@ function configureLights(lightManager) {
 
 
     
-    let orbLight = new SphereLight();
-    orbLight.setPosition(-60, 80, -60);
-    orbLight.setRadius(5.0);
-    orbLight.setColor(0.0, 0.2, 1); 
-    orbLight.setIntensity(6.0);
-    lightManager.addLight(orbLight);
+    //let orbLight = new SphereLight();
+    //orbLight.setPosition(-60, 80, -60);
+    //orbLight.setRadius(5.0);
+   // orbLight.setColor(0.0, 0.2, 1); 
+   // orbLight.setIntensity(6.0);
+   // lightManager.addLight(orbLight);
 
     
     let panelLight = new DiskLight();
@@ -38,7 +38,7 @@ function configureLights(lightManager) {
     // Return references for GUI controls
     return {
         keyLight: keyLight,
-		orbLight: orbLight,
+		//orbLight: orbLight,
 		panelLight,panelLight
 		
 	 };
