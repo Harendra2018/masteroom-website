@@ -92,16 +92,16 @@ let roof_Object = {
 function init_GUI() 
 {
 	hdr_ExposureObject = {
-		hdrExposure: 3.0
+		hdrExposure: 1.0
 	}
 	skyLight_IntensityObject = {
-		skyLightIntensity: 0.6
+		skyLightIntensity: 1.0
 	}
 	sun_AngleObject = {
-		sunAngle: 0.2
+		sunAngle: 0.94
 	}
 	sunLight_IntensityObject = {
-		sunLightIntensity: 2.0
+		sunLightIntensity: 5.0
 	}
 	sun_ColorObject = {
 		sunColor: [1.0, 0.98, 0.92]
@@ -116,6 +116,19 @@ function init_GUI()
 	cameraSpeed_Object = {
 		cameraFlightSpeed: 60
 	}
+
+	aperture_Controller = gui.add(aperture_Object, 'apertureSize', 0, 100).step(0.1).onChange(() =>
+	{
+		apertureChanged = true;
+	});
+	focus_Controller = gui.add(focus_Object, 'focusDistance', 1, 1000).step(1).onChange(() =>
+	{
+		focusChanged = true;
+	});
+	cameraSpeed_Controller = gui.add(cameraSpeed_Object, 'cameraFlightSpeed', 1, 500).step(1).onChange(() =>
+	{
+		cameraSpeedChanged = true;
+	});
 
 	hdr_ExposureController = gui.add(hdr_ExposureObject, 'hdrExposure', 0, 10).step(10 / 100).onChange(() =>
 	{
@@ -138,19 +151,6 @@ function init_GUI()
 		sunColorChanged = true;
 	});
 
-	aperture_Controller = gui.add(aperture_Object, 'apertureSize', 0, 100).step(0.1).onChange(() =>
-	{
-		apertureChanged = true;
-	});
-	focus_Controller = gui.add(focus_Object, 'focusDistance', 1, 1000).step(1).onChange(() =>
-	{
-		focusChanged = true;
-	});
-	cameraSpeed_Controller = gui.add(cameraSpeed_Object, 'cameraFlightSpeed', 1, 500).step(1).onChange(() =>
-	{
-		cameraSpeedChanged = true;
-	});
-
 	// Floor selection - dynamically create options from availableFloors
 	const floorOptions = availableFloors.map(f => f.name).concat(["All Floors"]);
 	floor_Controller = gui.add(floor_Object, 'floor', floorOptions).onChange((value) => {
@@ -162,6 +162,15 @@ function init_GUI()
 	roof_Controller = gui.add(roof_Object, 'showRoof').name('Show Roof').onChange((value) => {
 		console.log("Roof toggled: " + value);
 		reloadModels();
+	});
+
+	// FPS Counter toggle - at the end of GUI
+	const fpsCounter_Object = {
+		showFPS: false
+	};
+
+	const fpsCounter_Controller = gui.add(fpsCounter_Object, 'showFPS').name('Show FPS').onChange((value) => {
+		toggleStats(value);
 	});
 
 } // end function init_GUI()
@@ -802,13 +811,13 @@ function initSceneData()
 	EPS_intersect = 0.001;
 
 	// set camera's field of view
-	worldCamera.fov = 40;
+	worldCamera.fov = 60;
 	focusDistance = 100.0;
 
 	// position and orient camera
-	cameraControlsObject.position.set(160, 20, 150);
+	cameraControlsObject.position.set(105, 95, 105);
 	// turn right
-	cameraControlsPitchObject.rotation.x = 0.15;
+	cameraControlsPitchObject.rotation.x = -0.35;
 	// look downward
 	cameraControlsYawObject.rotation.y = Math.PI / 4;
 
@@ -907,7 +916,7 @@ function updateVariablesAndUniforms()
 	}
 
 	// INFO
-	cameraInfoElement.innerHTML = "FOV: " + worldCamera.fov + " / Aperture: " + apertureSize.toFixed(2) + " / FocusDistance: " + focusDistance + "<br>" + "Samples: " + sampleCounter;
+	cameraInfoElement.innerHTML = "FOV: " + worldCamera.fov + " / Aperture: " + apertureSize.toFixed(2) + "<br>" + "FocusDistance: " + focusDistance + " / Samples: " + sampleCounter;
 
 
 } // end function updateVariablesAndUniforms()

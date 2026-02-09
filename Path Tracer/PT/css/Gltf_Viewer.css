@@ -32,8 +32,7 @@ html, body {
 	display: inline-block;
 	font-family: monospace;
 	top: 10px;
-	left: 50%;
-	transform: translateX(-50%);
+	left: 10px;
 	pointer-events: none;
 	z-index: 1001;
 }
@@ -54,6 +53,15 @@ html, body {
 	user-select: none;
 }
 
+/* Stats FPS counter - positioned at bottom left, above cameraInfo */
+#container > .stats {
+	position: fixed !important;
+	left: 3% !important;
+	bottom: 70px !important;
+	top: auto !important;
+	z-index: 1001;
+}
+
 #samples {
 	position: absolute;
 	left: 1em;
@@ -63,14 +71,15 @@ html, body {
 }
 
 .lil-gui.root {
-	--background-color: transparent;
-	--text-color: white;
 	--title-background-color: transparent;
-	--widget-color: rgba(255, 255, 255, 0.1);
+	--background-color: #10275a00;
+	--text-color: #ffffff;
+	--widget-color: rgba(27, 40, 65, 0.438);
 	--hover-color: rgba(255, 255, 255, 0.2);
 	--focus-color: rgba(255, 255, 255, 0.3);
-	--number-color: #1fcd6c;
+	--number-color: #00e6ee;
 	--string-color: #f6d865;
+	z-index: 1;
 }
 
 .lil-gui.root .title {
