@@ -1,8 +1,8 @@
 const properties = [
   {
     id: 'property1',
-    name: 'New House',
-    price: 1200000,
+    name: 'Luxury Villa',
+    price: 23000,
     location: 'Bandarawela',
     bedrooms: 5,
     bathrooms: 2,
