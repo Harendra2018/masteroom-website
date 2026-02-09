@@ -381,6 +381,11 @@ function init()
 		titleElement.style.display = 'flex';
 		titleElement.style.alignItems = 'center';
 	}
+	
+	// Remove the chevron (collapse/expand arrow) from the title
+	const style = document.createElement('style');
+	style.textContent = '.lil-gui .title:before { display: none !important; } .lil-gui.root { padding-top: 4px !important; }';
+	document.head.appendChild(style);
 
 	gui.domElement.style.userSelect = "none";
 	gui.domElement.style.MozUserSelect = "none";
@@ -511,11 +516,24 @@ function initTHREEjs()
 
 	stats = new Stats();
 	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0px';
+	stats.domElement.style.bottom = '70px';
+	stats.domElement.style.top = 'auto';
+	stats.domElement.style.left = '3%';
 	stats.domElement.style.cursor = "default";
 	stats.domElement.style.userSelect = "none";
 	stats.domElement.style.MozUserSelect = "none";
+	// Start hidden by default
+	stats.domElement.style.display = 'none';
 	container.appendChild(stats.domElement);
+
+	// Function to toggle stats visibility
+	function toggleStats(show) {
+		if (stats && stats.domElement) {
+			stats.domElement.style.display = show ? 'block' : 'none';
+		}
+	}
+	// Make toggleStats globally accessible
+	window.toggleStats = toggleStats;
 
 
 	clock = new THREE.Clock();

@@ -236,6 +236,15 @@ function init_GUI()
 		reloadModels();
 	});
 
+	// FPS Counter toggle - at the end of GUI
+	const fpsCounter_Object = {
+		showFPS: false
+	};
+
+	const fpsCounter_Controller = gui.add(fpsCounter_Object, 'showFPS').name('Show FPS').onChange((value) => {
+		toggleStats(value);
+	});
+
 } // end function init_GUI()
 
 
@@ -921,13 +930,13 @@ function initSceneData()
 	EPS_intersect = 0.001;
 
 	// set camera's field of view
-	worldCamera.fov = 40;
+	worldCamera.fov = 60;
 	focusDistance = 100.0;
 
 	// position and orient camera
-	cameraControlsObject.position.set(160, 20, 150);
+	cameraControlsObject.position.set(105, 95, 105);
 	// turn right
-	cameraControlsPitchObject.rotation.x = 0.15;
+	cameraControlsPitchObject.rotation.x = -0.35;
 	// look downward
 	cameraControlsYawObject.rotation.y = Math.PI / 4;
 
@@ -979,7 +988,7 @@ function updateVariablesAndUniforms()
 	}
 
 	// INFO
-	cameraInfoElement.innerHTML = "FOV: " + worldCamera.fov + " / Aperture: " + apertureSize.toFixed(2) + " / FocusDistance: " + focusDistance + "<br>" + "Samples: " + sampleCounter;
+	cameraInfoElement.innerHTML = "FOV: " + worldCamera.fov + " / Aperture: " + apertureSize.toFixed(2) + "<br>" + "FocusDistance: " + focusDistance + " / Samples: " + sampleCounter;
 } // end function updateVariablesAndUniforms()
 
 
