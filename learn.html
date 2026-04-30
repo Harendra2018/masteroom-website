@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNJFPMVYQR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KNJFPMVYQR');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>MetaRoom3D Learn HUB - Video Tutorials & Guides</title>
+  <meta name="title" content="MetaRoom3D Learn HUB - Video Tutorials & Guides">
+  <meta name="description" content="Welcome to the MetaRoom3D Learn HUB. Step-by-step video tutorials and guides for AI Align Tool, Blender Editor plugin, and Hotspot Editor.">
+  <meta name="keywords" content="metaroom3d, tutorial, learn, 3d dollhouse tutorial, blender plugin tutorial, hotspot editor tutorial, virtual tour guide, property listing tutorial">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://metaroom3d.com/learn.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://metaroom3d.com/learn.html">
+  <meta property="og:title" content="MetaRoom3D Learn HUB">
+  <meta property="og:description" content="Step-by-step video tutorials for creating 3D virtual property tours">
+  <meta property="og:image" content="https://metaroom3d.com/assets/Logo.svg">
+  
+  <!-- Stylesheets and Favicon -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
+  
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4983613090498651"
+       crossorigin="anonymous"></script>
+
+  <style>
+    .video-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 5px 14px;
+      background: #0D236E;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .video-link:hover {
+      background: #00F2FF;
+      color: #0D236E;
+    }
+    .video-link .play-icon {
+      font-size: 0.9rem;
+    }
+
+    /* ── Video Modal ── */
+    #video-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.88);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    #video-modal.active {
+      display: flex;
+    }
+    #video-modal .modal-inner {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    }
+    #video-modal video {
+      width: 100%;
+      display: block;
+      max-height: 80vh;
+      background: #000;
+    }
+    #video-modal .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    #video-modal .modal-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ── Mobile fix: lesson cards with thumbnails ── */
+    .tutorial-track {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .lesson-thumb {
+      position: relative;
+      flex-shrink: 0;
+      width: 320px;
+      height: 180px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .lesson-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+
+      .lesson-thumb {
+        width: 100% !important;
+        height: 200px !important;
+        flex-shrink: unset !important;
+      }
+    }
+  </style>
+</head>
+<body class="learn-page">
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/Logo.svg" alt="MetaRoom3D Logo">
+      </div>
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="learn.html" class="active">Learn</a></li>
+          <li><a href="submit.html">Submit</a></li>
+        </ul>
+        <div class="hamburger">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="page-hero learn-hub-hero" style="
+    position: relative;
+    overflow: hidden;
+  ">
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline style="
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    " poster="assets/learn-hub-hero.png">
+      <source src="assets/Learn HUB intro.mp4" type="video/mp4">
+    </video>
+
+    <!-- Overlay -->
+    <div style="
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(5,15,50,0.55) 0%, rgba(0,0,0,0.2) 100%);
+      z-index: 1;
+    "></div>
+
+    <!-- Content -->
+    <div class="container" style="position: relative; z-index: 2;">
+      <img src="assets/LearnHUB-logo.svg" alt="MetaRoom3D Learn HUB" style="max-width: 420px; width: 100%; height: auto; margin-bottom: 1rem;">
+      <p style="font-size: 1.1rem; opacity: 0.88;">
+        Master the art of creating immersive 3D dollhouse tours with our step-by-step tutorials
+      </p>
+    </div>
+  </section>
+
+  <!-- Tutorial Tracks -->
+  <section class="tutorial-section">
+    <div class="container">
+
+      <!-- Track 1: MetaRoom3D AI Align Video Tutorials -->
+      <div class="tutorial-track">
+        <div class="track-header">
+          <div class="track-icon">
+            <img src="assets/A4 - 42.svg" alt="AI Align Tool Icon" width="60" height="60">
+          </div>
+          <div class="track-title">
+            <h2>Track 1: MetaRoom3D AI Align Video Tutorials</h2>
+            <p>Learn to capture 360° images and use the AI Align Tool to prepare your panoramas for 3D modelling</p>
+          </div>
+          <div class="track-badge beginner">Beginner</div>
+        </div>
+
+        <div class="lesson-list">
+
+          <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
+            <!-- Thumbnail with overlay button -->
+            <div class="lesson-thumb" onclick="openVideoModal('Download/video_tutorials/1.mp4')">
+              <img src="Download/video_tutorials/1_thmb.JPG" alt="Tutorial 01 Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <!-- Dark overlay -->
+              <div style="position: absolute; inset: 0; background: rgba(5,15,50,0.45);"></div>
+              <!-- MetaRoom3D Learn HUB badge -->
+              <div style="position: absolute; top: 8px; left: 8px;">
+                <img src="assets/LearnHUB-logo.svg" alt="MetaRoom3D Learn HUB" style="height: 28px; width: auto;">
+              </div>
+              <!-- Watch Video button -->
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                <span style="
+                  background: rgba(0,0,0,0.55);
+                  color: #fff;
+                  border: 2px solid rgba(255,255,255,0.7);
+                  border-radius: 20px;
+                  padding: 5px 14px;
+                  font-size: 0.8rem;
+                  font-weight: 700;
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  backdrop-filter: blur(2px);
+                ">▶ Watch Video</span>
+              </div>
+            </div>
+            <!-- Lesson number + content -->
+            <div style="display: flex; align-items: flex-start; gap: 14px; flex: 1;">
+              <div class="lesson-number">01</div>
+              <div class="lesson-content">
+                <h3>Tutorial 01 – Image Capturing</h3>
+                <p>Learn how to capture panoramic images of a property using a 360° camera, ready for processing with the AI Align Tool</p>
+                <span class="lesson-duration">Video</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
+            <!-- Thumbnail with overlay button -->
+            <div class="lesson-thumb" onclick="openVideoModal('Download/video_tutorials/2.mp4')">
+              <img src="Download/video_tutorials/2_thmb.JPG" alt="Tutorial 02 Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <!-- Dark overlay -->
+              <div style="position: absolute; inset: 0; background: rgba(5,15,50,0.45);"></div>
+              <!-- MetaRoom3D Learn HUB badge -->
+              <div style="position: absolute; top: 8px; left: 8px;">
+                <img src="assets/LearnHUB-logo.svg" alt="MetaRoom3D Learn HUB" style="height: 28px; width: auto;">
+              </div>
+              <!-- Watch Video button -->
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                <span style="
+                  background: rgba(0,0,0,0.55);
+                  color: #fff;
+                  border: 2px solid rgba(255,255,255,0.7);
+                  border-radius: 20px;
+                  padding: 5px 14px;
+                  font-size: 0.8rem;
+                  font-weight: 700;
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  backdrop-filter: blur(2px);
+                ">▶ Watch Video</span>
+              </div>
+            </div>
+            <!-- Lesson number + content -->
+            <div style="display: flex; align-items: flex-start; gap: 14px; flex: 1;">
+              <div class="lesson-number">02</div>
+              <div class="lesson-content">
+                <h3>Tutorial 02 – MetaRoom3D AI Align</h3>
+                <p>Use the AI Align Tool to automatically detect floor boundaries and align your panoramas for accurate 3D modelling</p>
+                <span class="lesson-duration">Video</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="track-cta">
+          <a href="tools.html" class="cta-button secondary">⬇ Download AI Align Tool</a>
+        </div>
+      </div>
+
+      <!-- Track 2: MetaRoom3D Editor (Blender Plugin) -->
+      <div class="tutorial-track">
+        <div class="track-header">
+          <div class="track-icon">
+            <img src="assets/A4 - 40.svg" alt="MetaRoom3D Editor Icon" width="60" height="60">
+          </div>
+          <div class="track-title">
+            <h2>Track 2: MetaRoom3D Editor (Blender Plugin)</h2>
+            <p>Learn to create 3D dollhouse models from panorama images using Blender</p>
+          </div>
+          <div class="track-badge beginner">Beginner</div>
+        </div>
+        
+        <div class="lesson-list">
+          <div class="lesson-card">
+            <div class="lesson-number">01</div>
+            <div class="lesson-content">
+              <h3>Installing Blender 4.5.2 LTS</h3>
+              <p>Download and install the recommended Blender version for MetaRoom3D Editor</p>
+              <span class="lesson-duration">5 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">02</div>
+            <div class="lesson-content">
+              <h3>Installing the MetaRoom3D Editor Plugin</h3>
+              <p>Learn how to install and enable the MetaRoom3D Editor addon in Blender</p>
+              <span class="lesson-duration">8 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">03</div>
+            <div class="lesson-content">
+              <h3>Understanding the Plugin UI</h3>
+              <p>Navigate the plugin interface: Add Pano Cam, Toggle Backface, Panorama Rotation, Unwrap, Bake</p>
+              <span class="lesson-duration">10 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">04</div>
+            <div class="lesson-content">
+              <h3>Importing Your First Panorama &amp; Aligning the Floor</h3>
+              <p>Import a panoramic image and correctly position the floor plane</p>
+              <span class="lesson-duration">12 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">05</div>
+            <div class="lesson-content">
+              <h3>Extruding Walls from the Floor Plane</h3>
+              <p>Create 3D walls by extruding from your aligned floor plan</p>
+              <span class="lesson-duration">15 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">06</div>
+            <div class="lesson-content">
+              <h3>Adding Edge Loops &amp; Cutting Door Openings</h3>
+              <p>Refine your model topology and create door and window openings</p>
+              <span class="lesson-duration">15 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">07</div>
+            <div class="lesson-content">
+              <h3>Unwrapping Textures</h3>
+              <p>Properly UV unwrap your model for texture application</p>
+              <span class="lesson-duration">10 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">08</div>
+            <div class="lesson-content">
+              <h3>Baking &amp; Exporting as .glb</h3>
+              <p>Finalize your model by baking textures and exporting to glTF format</p>
+              <span class="lesson-duration">10 min</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="track-cta">
+          <a href="Download/MetaRoom3D Editor Beginner Tutorial.pdf" class="cta-button" download>
+            📄 Download Tutorial PDF
+          </a>
+          <a href="Download/MetaRoom3D Editor_v2_0_1.zip" class="cta-button secondary" download>
+            ⬇ Download Plugin
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 3: MetaRoom3D Hotspot Editor -->
+      <div class="tutorial-track">
+        <div class="track-header">
+          <div class="track-icon">
+            <img src="assets/A4 - 43.svg" alt="Hotspot Editor Icon" width="60" height="60">
+          </div>
+          <div class="track-title">
+            <h2>Track 3: MetaRoom3D Hotspot Editor</h2>
+            <p>Add interactive navigation hotspots to connect your 3D rooms together</p>
+          </div>
+          <div class="track-badge intermediate">Intermediate</div>
+        </div>
+        
+        <div class="lesson-list">
+          <div class="lesson-card">
+            <div class="lesson-number">01</div>
+            <div class="lesson-content">
+              <h3>Installing &amp; Launching the Hotspot Editor</h3>
+              <p>Download and install the Hotspot Editor on Windows</p>
+              <span class="lesson-duration">5 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">02</div>
+            <div class="lesson-content">
+              <h3>Loading Your Exported .glb File</h3>
+              <p>Import the 3D model you created with MetaRoom3D Editor</p>
+              <span class="lesson-duration">5 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">03</div>
+            <div class="lesson-content">
+              <h3>Placing Navigation Hotspots Between Rooms</h3>
+              <p>Create clickable hotspots that allow users to navigate between different rooms</p>
+              <span class="lesson-duration">15 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">04</div>
+            <div class="lesson-content">
+              <h3>Adding Info Labels &amp; Room Names</h3>
+              <p>Add descriptive labels and room names to enhance user experience</p>
+              <span class="lesson-duration">10 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">05</div>
+            <div class="lesson-content">
+              <h3>Previewing Your Virtual Tour</h3>
+              <p>Test your virtual tour in preview mode before exporting</p>
+              <span class="lesson-duration">8 min</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">06</div>
+            <div class="lesson-content">
+              <h3>Exporting the Final Tour Package</h3>
+              <p>Export your complete virtual tour ready for submission to MetaRoom3D.com</p>
+              <span class="lesson-duration">8 min</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="track-cta">
+          <a href="Download/MetaRoom3D Hotspot Editor Setup 1.0.0.exe" class="cta-button" download>
+            ⬇ Download Hotspot Editor
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 4: Full Floor Plan (Coming Soon) -->
+      <div class="tutorial-track coming-soon">
+        <div class="track-header">
+          <div class="track-icon">
+            <svg viewBox="0 0 100 100" width="60" height="60">
+              <rect x="15" y="30" width="70" height="50" fill="#6366f1" rx="4"/>
+              <rect x="20" y="35" width="25" height="20" fill="#a5b4fc" rx="2"/>
+              <rect x="50" y="35" width="30" height="20" fill="#a5b4fc" rx="2"/>
+              <rect x="20" y="60" width="30" height="15" fill="#a5b4fc" rx="2"/>
+              <rect x="55" y="60" width="20" height="15" fill="#a5b4fc" rx="2"/>
+              <rect x="10" y="20" width="20" height="15" fill="#818cf8" rx="2"/>
+              <rect x="70" y="20" width="20" height="15" fill="#818cf8" rx="2"/>
+            </svg>
+          </div>
+          <div class="track-title">
+            <h2>Track 4: Full Floor Plan to Path-Traced Tour</h2>
+            <p>Create photorealistic path-traced renders from scratch using floor plans</p>
+          </div>
+          <div class="track-badge advanced">Advanced</div>
+        </div>
+        
+        <div class="lesson-list">
+          <div class="lesson-card">
+            <div class="lesson-number">01</div>
+            <div class="lesson-content">
+              <h3>Drawing Your Floor Plan in Blender</h3>
+              <p>Create accurate 2D floor plans from architectural drawings</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">02</div>
+            <div class="lesson-content">
+              <h3>Modeling Walls, Doors &amp; Windows</h3>
+              <p>Build 3D architecture from your floor plan with proper construction</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">03</div>
+            <div class="lesson-content">
+              <h3>Adding Furniture &amp; Materials</h3>
+              <p>Apply realistic materials and furnish your virtual property</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">04</div>
+            <div class="lesson-content">
+              <h3>Setting Up Lights for Path Tracing</h3>
+              <p>Configure lighting for high-quality path-traced rendering</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">05</div>
+            <div class="lesson-content">
+              <h3>Running the MetaRoom3D Path Tracer</h3>
+              <p>Use our path tracing engine for photorealistic results</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+          
+          <div class="lesson-card">
+            <div class="lesson-number">06</div>
+            <div class="lesson-content">
+              <h3>Exporting &amp; Submitting to MetaRoom3D.com</h3>
+              <p>Package your path-traced tour for publishing</p>
+              <span class="lesson-duration">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="track-cta">
+          <span class="coming-soon-notice">📺 Video tutorials coming soon!</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Submission CTA -->
+  <section class="submission-cta">
+    <div class="container">
+      <h2>Ready to Publish Your Property?</h2>
+      <p>Once you've completed your virtual tour, submit it to MetaRoom3D.com and reach thousands of potential buyers</p>
+      <div class="cta-buttons">
+        <a href="submit.html" class="cta-button">Submit Your Property</a>
+        <a href="tools.html" class="cta-button secondary">Get the Tools</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/Logo_white.svg" alt="MetaRoom3D Logo">
+        </div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="tools.html">Tools</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="submit.html">Submit</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <p>&copy; 2026 MetaRoom3D. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Video Modal -->
+  <div id="video-modal" role="dialog" aria-modal="true" aria-label="Video Player">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeVideoModal()" aria-label="Close video">✕</button>
+      <video id="modal-video" controls playsinline></video>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script>
+    const videoModal = document.getElementById('video-modal');
+    const modalVideo = document.getElementById('modal-video');
+
+    function openVideoModal(src) {
+      modalVideo.src = src;
+      videoModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      modalVideo.play();
+    }
+
+    function closeVideoModal() {
+      modalVideo.pause();
+      modalVideo.src = '';
+      videoModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on backdrop click
+    videoModal.addEventListener('click', function(e) {
+      if (e.target === videoModal) closeVideoModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeVideoModal();
+    });
+  </script>
+</body>
+</html>
