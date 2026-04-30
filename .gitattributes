@@ -1,1 +1,2 @@
 assets/Learn[[:space:]]HUB[[:space:]]intro.mp4 filter=lfs diff=lfs merge=lfs -text
+Download/video_tutorials/*.mp4 filter=lfs diff=lfs merge=lfs -text
