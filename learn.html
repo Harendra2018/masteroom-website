@@ -82,12 +82,6 @@
       overflow: hidden;
       box-shadow: 0 24px 80px rgba(0,0,0,0.7);
     }
-    #video-modal video {
-      width: 100%;
-      display: block;
-      max-height: 80vh;
-      background: #000;
-    }
     #video-modal .modal-close {
       position: absolute;
       top: 10px;
@@ -170,17 +164,12 @@
     position: relative;
     overflow: hidden;
   ">
-    <!-- Background Video -->
-    <video autoplay muted loop playsinline style="
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-      " poster="assets/learn-hub-hero.png">
-      <source src="assets/Learn HUB intro.mp4" type="video/mp4">
-    </video>
+    <!-- Background Video (YouTube) -->
+    <iframe src="https://www.youtube.com/embed/V8-tSAtWXiw?autoplay=1&mute=1&loop=1&playlist=V8-tSAtWXiw&controls=0&disablekb=1&modestbranding=1&playsinline=1"
+      style="position:absolute; inset:0; width:100%; height:100%; border:0; pointer-events:none; z-index:0;"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
 
     <!-- Overlay -->
     <div style="
@@ -220,7 +209,7 @@
 
           <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
             <!-- Thumbnail with overlay button -->
-            <div class="lesson-thumb" onclick="openVideoModal('Download/video_tutorials/1.mp4')">
+            <div class="lesson-thumb" onclick="openVideoModal('zb9omxmE_mI')">
               <img src="Download/video_tutorials/1_thmb.JPG" alt="Tutorial 01 Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
               <!-- Dark overlay -->
               <div style="position: absolute; inset: 0; background: rgba(5,15,50,0.45);"></div>
@@ -258,7 +247,7 @@
 
           <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
             <!-- Thumbnail with overlay button -->
-            <div class="lesson-thumb" onclick="openVideoModal('Download/video_tutorials/2.mp4')">
+            <div class="lesson-thumb" onclick="openVideoModal('vJc8Wpk-Q_M')">
               <img src="Download/video_tutorials/2_thmb.JPG" alt="Tutorial 02 Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
               <!-- Dark overlay -->
               <div style="position: absolute; inset: 0; background: rgba(5,15,50,0.45);"></div>
@@ -598,7 +587,13 @@
   <div id="video-modal" role="dialog" aria-modal="true" aria-label="Video Player">
     <div class="modal-inner">
       <button class="modal-close" onclick="closeVideoModal()" aria-label="Close video">✕</button>
-      <video id="modal-video" controls playsinline></video>
+      <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+        <iframe id="modal-iframe"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
     </div>
   </div>
 
@@ -606,18 +601,16 @@
   <script src="script.js"></script>
   <script>
     const videoModal = document.getElementById('video-modal');
-    const modalVideo = document.getElementById('modal-video');
+    const modalIframe = document.getElementById('modal-iframe');
 
-    function openVideoModal(src) {
-      modalVideo.src = src;
+    function openVideoModal(youtubeId) {
+      modalIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
       videoModal.classList.add('active');
       document.body.style.overflow = 'hidden';
-      modalVideo.play();
     }
 
     function closeVideoModal() {
-      modalVideo.pause();
-      modalVideo.src = '';
+      modalIframe.src = '';   // stops playback instantly
       videoModal.classList.remove('active');
       document.body.style.overflow = '';
     }
