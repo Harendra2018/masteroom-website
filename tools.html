@@ -35,6 +35,28 @@
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4983613090498651"
        crossorigin="anonymous"></script>
+
+  <style>
+    .page-hero.tools-hero {
+      background-image: url('assets/tools.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    .page-hero.tools-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(5, 15, 50, 0.65) 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+
+    .page-hero.tools-hero .container {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body class="tools-page">
   <!-- Header -->
@@ -61,7 +83,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="page-hero">
+  <section class="page-hero tools-hero">
     <div class="container">
       <h1>Free Tools for Creating 3D Virtual Tours</h1>
       <p>Download our professional software and start creating immersive 3D dollhouse property tours today</p>
