@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /3DViewer_v1_5_3/
-Disallow: /assets/
+
 
 Sitemap: https://metaroom3d.com/sitemap.xml
