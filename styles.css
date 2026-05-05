@@ -154,6 +154,21 @@ ul {
     color: #2563eb;
 }
 
+/* Submit nav button */
+.nav-submit-btn {
+    background: #00F2FF;
+    color: #0D236E !important;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-submit-btn:hover {
+    background: #0D236E;
+    color: #00F2FF !important;
+}
+
 /* Hamburger Menu */
 .hamburger {
     display: none;
