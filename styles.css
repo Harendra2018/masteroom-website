@@ -1248,8 +1248,8 @@ ul {
 }
 
 .tool-icon {
-    width: 100px;
-    height: 100px;
+    width: 320px;
+    height: 280px;
     display: flex;
     align-items: center;
     justify-content: center;
