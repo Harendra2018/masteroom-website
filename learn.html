@@ -137,14 +137,18 @@
         padding: 20px 16px !important;
       }
 
-      .support-card {
-        padding: 20px 16px !important;
-      }
-
       .support-card-buttons {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-      }
+	  flex-direction: row !important;
+	  flex-wrap: wrap !important;
+	  gap: 10px !important;
+	}
+	.support-card-buttons a,
+	.support-card-buttons button {
+	  flex: 1 1 calc(50% - 10px) !important;
+	  min-width: 120px !important;
+	  text-align: center !important;
+	  box-sizing: border-box !important;
+	}
     }
   </style>
 </head>
@@ -565,7 +569,7 @@
              onmouseout="this.style.background='#0D236E';this.style.color='#fff';">
             ✉️ Report an Issue
           </a>
-          <a href="https://www.facebook.com/metaroom3d" target="_blank" rel="noopener"
+          <a href="https://www.facebook.com/profile.php?id=61587342502217" target="_blank" rel="noopener"
              style="
                display: inline-flex;
                align-items: center;
