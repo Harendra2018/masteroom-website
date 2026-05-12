@@ -132,6 +132,19 @@
         height: 200px !important;
         flex-shrink: unset !important;
       }
+
+      .whats-new-card {
+        padding: 20px 16px !important;
+      }
+
+      .support-card {
+        padding: 20px 16px !important;
+      }
+
+      .support-card-buttons {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+      }
     }
   </style>
 </head>
@@ -196,11 +209,61 @@
     <div class="container" style="position: relative; z-index: 2;">
       <img src="assets/LearnHUB-logo.svg" alt="MetaRoom3D Learn HUB" style="max-width: 420px; width: 100%; height: auto; margin-bottom: 1rem;">
       <p style="font-size: 1.1rem; opacity: 0.88;">
-       Master the art of creating immersive 3D dollhouse tours<br>
-  with our step-by-step tutorials
+        Master the art of creating immersive 3D dollhouse tours<br>
+        with our step-by-step tutorials
       </p>
     </div>
   </section>
+
+  <!-- ── What's New ── -->
+  <div style="max-width: 1100px; margin: 0 auto; padding: 32px 20px 0;">
+    <div class="whats-new-card" style="
+      background: linear-gradient(135deg, #0D236E 0%, #0a1a52 100%);
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: #fff;
+    ">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <span style="font-size: 1.5rem;">🔔</span>
+        <h2 style="margin: 0; font-size: 1.3rem; color: #fff;">What's New</h2>
+        <span style="
+          background: #00F2FF;
+          color: #0D236E;
+          font-size: 0.7rem;
+          font-weight: 700;
+          padding: 2px 10px;
+          border-radius: 20px;
+          margin-left: 4px;
+        ">UPDATED</span>
+      </div>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px;">
+
+        <!-- Update entry: Track 1 Tut 02 -->
+        <li style="display: flex; gap: 14px; align-items: flex-start;">
+          <span style="
+            background: rgba(0,242,255,0.15);
+            color: #00F2FF;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 2px;
+          ">Track 1 · Tut 02</span>
+          <div>
+            <strong style="font-size: 0.92rem;">AI Align – Re-uploaded with fixes</strong>
+            <p style="margin: 3px 0 0; font-size: 0.82rem; opacity: 0.75; line-height: 1.6;">
+              Added the missing Anaconda3 environment variable setup step for Windows.
+              Walkthrough updated to the latest MetaRoom3D AI Align interface.
+            </p>
+          </div>
+        </li>
+
+        <!-- Add future update entries below in the same <li> format -->
+
+      </ul>
+    </div>
+  </div>
 
   <!-- Tutorial Tracks -->
   <section class="tutorial-section">
@@ -283,6 +346,20 @@
                 <h3>Tutorial 02 – MetaRoom3D AI Align</h3>
                 <p>Use the AI Align Tool to automatically detect floor boundaries and align your panoramas for accurate 3D modelling</p>
                 <span class="lesson-duration">Video</span>
+                <!-- Updated badge -->
+                <span style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 5px;
+                  margin-left: 8px;
+                  background: #e8f9ff;
+                  color: #0077aa;
+                  font-size: 0.72rem;
+                  font-weight: 700;
+                  padding: 2px 10px;
+                  border-radius: 20px;
+                  border: 1px solid #b3e8f8;
+                ">🔄 Updated</span>
               </div>
             </div>
           </div>
@@ -438,11 +515,73 @@
         </div>
         
         <div class="track-cta">
-		  <a href="https://drive.google.com/uc?export=download&id=162hVNG_fWJ8dhJVBvZOmNO7jPWGOJf0-" class="cta-button" target="_blank" rel="noopener">
+          <a href="https://drive.google.com/uc?export=download&id=162hVNG_fWJ8dhJVBvZOmNO7jPWGOJf0-" class="cta-button" target="_blank" rel="noopener">
             📄 Download Tutorial PDF
           </a>
           <a href="https://drive.google.com/uc?export=download&id=1gZl5ufqmnSuxKmM7zQtmQSgoMjtDLlGI" class="cta-button" target="_blank" rel="noopener">
             ⬇ Download Hotspot Editor
+          </a>
+        </div>
+      </div>
+
+      <!-- ── Support / Issues Card ── -->
+      <div class="support-card" style="
+        border: 2px solid rgba(13,35,110,0.15);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-top: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8f9ff;
+      ">
+        <div style="flex: 1; min-width: 240px;">
+          <h3 style="margin: 0 0 8px; font-size: 1.1rem; color: #0D236E;">
+            🛠️ Need Help with a Tutorial Step?
+          </h3>
+          <p style="margin: 0; font-size: 0.88rem; color: #555; line-height: 1.6;">
+            Having trouble installing a tool or following a step? Submit your issue and we'll 
+            help you get unstuck. Include your OS, the tutorial number, and a brief description.
+          </p>
+        </div>
+        <div class="support-card-buttons" style="display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;">
+          <a href="mailto:support@metaroom3d.com?subject=Tutorial%20Issue%20Report"
+             style="
+               display: inline-flex;
+               align-items: center;
+               gap: 8px;
+               padding: 10px 22px;
+               background: #0D236E;
+               color: #fff;
+               border-radius: 24px;
+               font-size: 0.85rem;
+               font-weight: 600;
+               text-decoration: none;
+               transition: background 0.2s;
+             "
+             onmouseover="this.style.background='#00F2FF';this.style.color='#0D236E';"
+             onmouseout="this.style.background='#0D236E';this.style.color='#fff';">
+            ✉️ Report an Issue
+          </a>
+          <a href="https://www.facebook.com/metaroom3d" target="_blank" rel="noopener"
+             style="
+               display: inline-flex;
+               align-items: center;
+               gap: 8px;
+               padding: 10px 22px;
+               background: #1877F2;
+               color: #fff;
+               border-radius: 24px;
+               font-size: 0.85rem;
+               font-weight: 600;
+               text-decoration: none;
+               transition: background 0.2s;
+             "
+             onmouseover="this.style.background='#1460c8';"
+             onmouseout="this.style.background='#1877F2';">
+            💬 Ask on Facebook
           </a>
         </div>
       </div>
