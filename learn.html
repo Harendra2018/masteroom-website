@@ -138,17 +138,17 @@
       }
 
       .support-card-buttons {
-	  flex-direction: row !important;
-	  flex-wrap: wrap !important;
-	  gap: 10px !important;
-	}
-	.support-card-buttons a,
-	.support-card-buttons button {
-	  flex: 1 1 calc(50% - 10px) !important;
-	  min-width: 120px !important;
-	  text-align: center !important;
-	  box-sizing: border-box !important;
-	}
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+.support-card-buttons a,
+.support-card-buttons button {
+  width: 100% !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+}
     }
   </style>
 </head>
