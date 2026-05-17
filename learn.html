@@ -7,7 +7,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-KNJFPMVYQR');
   </script>
   <meta charset="UTF-8">
@@ -104,6 +103,106 @@
       background: rgba(255,255,255,0.2);
     }
 
+    /* ── Ad Slots ── */
+    .ad-slot {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .ad-slot-inner {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ad-slot-inner a {
+      display: block;
+      line-height: 0;
+    }
+    .ad-slot-inner img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      transition: opacity 0.2s;
+    }
+    .ad-slot-inner a:hover img {
+      opacity: 0.92;
+    }
+    .ad-label {
+      display: block;
+      font-size: 0.68rem;
+      color: #aaa;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    /* Placeholder shown when image is missing */
+    .ad-slot-placeholder {
+      width: 100%;
+      min-height: 90px;
+      background: #f0f2f8;
+      border: 2px dashed #c8cde8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9aa0c0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Track educational content block ── */
+    .track-edu-block {
+      background: #f4f6ff;
+      border-left: 4px solid #00F2FF;
+      border-radius: 0 12px 12px 0;
+      padding: 22px 28px;
+      margin: 0 0 28px 0;
+      color: #333;
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+    .track-edu-block h4 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: #0D236E;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .track-edu-block p {
+      margin: 0 0 12px;
+    }
+    .track-edu-block p:last-child {
+      margin-bottom: 0;
+    }
+    .track-edu-block ol {
+      margin: 10px 0 12px 20px;
+      padding: 0;
+    }
+    .track-edu-block ol li {
+      margin-bottom: 6px;
+    }
+    .track-edu-block .edu-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(0,242,255,0.08);
+      border: 1px solid rgba(0,242,255,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-size: 0.87rem;
+      color: #0a4060;
+    }
+    .track-edu-block .edu-note span {
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
     /* ── Mobile fix: lesson cards with thumbnails ── */
     .tutorial-track {
       max-width: 100%;
@@ -126,29 +225,29 @@
         align-items: stretch !important;
         gap: 12px !important;
       }
-
       .lesson-thumb {
         width: 100% !important;
         height: 200px !important;
         flex-shrink: unset !important;
       }
-
       .whats-new-card {
         padding: 20px 16px !important;
       }
-
+      .track-edu-block {
+        padding: 18px 18px !important;
+      }
       .support-card-buttons {
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-.support-card-buttons a,
-.support-card-buttons button {
-  width: 100% !important;
-  text-align: center !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  justify-content: center !important;
-}
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+      .support-card-buttons a,
+      .support-card-buttons button {
+        width: 100% !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
     }
   </style>
 </head>
@@ -263,9 +362,18 @@
           </div>
         </li>
 
-        <!-- Add future update entries below in the same <li> format -->
-
       </ul>
+    </div>
+  </div>
+
+  <!-- Ad Slot 1 — Below What's New -->
+  <div class="ad-slot">
+    <span class="ad-label">Sponsored</span>
+    <div class="ad-slot-inner">
+      <a href="#" target="_blank" rel="noopener sponsored">
+        <img src="Download/ads/1.jpg" alt="Advertisement"
+             onerror="this.closest('.ad-slot-inner').innerHTML='<div class=\'ad-slot-placeholder\'>Ad Space · 1.jpg</div>'">
+      </a>
     </div>
   </div>
 
@@ -273,7 +381,9 @@
   <section class="tutorial-section">
     <div class="container">
 
-      <!-- Track 1: MetaRoom3D AI Align Video Tutorials -->
+      <!-- ═══════════════════════════════════════════════════════
+           Track 1: MetaRoom3D AI Align Video Tutorials
+      ════════════════════════════════════════════════════════ -->
       <div class="tutorial-track">
         <div class="track-header">
           <div class="track-icon">
@@ -284,6 +394,17 @@
             <p>Learn to capture 360° images and use the AI Align Tool to prepare your panoramas for 3D modelling</p>
           </div>
           <div class="track-badge beginner">Beginner</div>
+        </div>
+
+        <!-- ── Track 1 Educational Content ── -->
+        <div class="track-edu-block">
+          <h4>What you'll learn in this track</h4>
+          <p>Before you can start building a 3D dollhouse model, you need clean, well-positioned panorama images captured at each camera station inside the property. Tutorial 01 covers the image capturing workflow — how to position your 360° camera correctly in each room, maintain a consistent height across all shots, and name your files in a way the AI Align Tool can process efficiently.</p>
+          <p>Tutorial 02 covers the AI Align Tool itself. This Windows application takes your raw equirectangular panoramas and automatically detects where the floor boundary sits in each image. Getting this alignment right is critical — an incorrectly placed floor line will cause your Blender floor plane to sit at the wrong height, meaning all your wall extrusions will be off further down the workflow. The tool lets you preview each detection result before saving, and outputs alignment data that the MetaRoom3D Editor plugin reads when you import the panorama into Blender.</p>
+          <div class="edu-note">
+            <span>⚠️</span>
+            <p style="margin:0;"><strong>Windows users:</strong> Before running the AI Align Tool for the first time, make sure your Anaconda3 environment variable is correctly configured in your system settings. This is a common first-run issue — Tutorial 02 was updated to include this setup step.</p>
+          </div>
         </div>
 
         <div class="lesson-list">
@@ -350,7 +471,6 @@
                 <h3>Tutorial 02 – MetaRoom3D AI Align</h3>
                 <p>Use the AI Align Tool to automatically detect floor boundaries and align your panoramas for accurate 3D modelling</p>
                 <span class="lesson-duration">Video</span>
-                <!-- Updated badge -->
                 <span style="
                   display: inline-flex;
                   align-items: center;
@@ -375,7 +495,20 @@
         </div>
       </div>
 
-      <!-- Track 2: MetaRoom3D Editor (Blender Plugin) -->
+      <!-- Ad Slot 2 — Between Track 1 and Track 2 -->
+      <div class="ad-slot" style="padding: 0;">
+        <span class="ad-label">Sponsored</span>
+        <div class="ad-slot-inner">
+          <a href="#" target="_blank" rel="noopener sponsored">
+            <img src="Download/ads/2.jpg" alt="Advertisement"
+                 onerror="this.closest('.ad-slot-inner').innerHTML='<div class=\'ad-slot-placeholder\'>Ad Space · 2.jpg</div>'">
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           Track 2: MetaRoom3D Editor (Blender Plugin)
+      ════════════════════════════════════════════════════════ -->
       <div class="tutorial-track">
         <div class="track-header">
           <div class="track-icon">
@@ -387,7 +520,28 @@
           </div>
           <div class="track-badge beginner">Beginner</div>
         </div>
-        
+
+        <!-- ── Track 2 Educational Content ── -->
+        <div class="track-edu-block">
+          <h4>What you'll learn in this track</h4>
+          <p>Tutorial 01 walks you through installing Blender 4.5.2 LTS and the MetaRoom3D Editor plugin. The plugin installs via <strong>Edit &gt; Preferences &gt; Add-ons &gt; Install from Disk</strong> — point it at the downloaded .zip file and it appears as MetaRoom3D Editor v2.0.1 in the N panel on the right side of Blender's 3D viewport. Before importing any panorama, set your viewport shading to <strong>Rendered mode</strong> — this is the most common beginner mistake and will prevent you from seeing the panorama texture correctly if skipped.</p>
+          <p>Tutorial 02 covers the complete 3D dollhouse modeling workflow from a single panorama:</p>
+          <ol>
+            <li><strong>Add Pano Camera</strong> — imports your panorama as a sphere-projected image with a virtual camera placed at the centre of the room.</li>
+            <li><strong>Floor alignment</strong> — switch to top-down (Z axis) view, select the floor plane edges, and use the Move Tool to match the floor boundaries visible in the panorama.</li>
+            <li><strong>Panorama Rotation</strong> — use the Z Rotation slider in the MetaRoom3D panel to rotate the image until walls run parallel with the X/Y grid axes. Hold Shift for fine-grained adjustments.</li>
+            <li><strong>Wall extrusion</strong> — select all floor edges in Edit Mode, press E to extrude, press Esc immediately, then move the new edges up the Z axis to ceiling height.</li>
+            <li><strong>Connect Backface</strong> — makes the inner faces of the walls visible so you can see inside the room model.</li>
+            <li><strong>Door openings</strong> — use Ctrl+R to add edge loops at door positions, switch to face select mode, and delete the door face polygons.</li>
+            <li><strong>Unwrap and Bake</strong> — project the panorama texture correctly onto the 3D geometry surfaces.</li>
+            <li><strong>Export as .glb</strong> — File &gt; Export &gt; gLTF 2.0, named <code>floor1.glb</code> or <code>floor2.glb</code>, ready for the Hotspot Editor.</li>
+          </ol>
+          <div class="edu-note">
+            <span>💡</span>
+            <p style="margin:0;">You can verify your room at any point by selecting the correct Pano Cam in the Scene Collection and pressing <strong>Numpad 0</strong> to enter 360° camera view. Double-tap R to enter orbit mode, then double-tap R again to exit. Press Numpad 0 again to return to the normal viewport.</p>
+          </div>
+        </div>
+
         <div class="lesson-list">
 
           <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
@@ -457,18 +611,28 @@
           </div>
 
         </div>
-        
+
         <div class="track-cta">
-          <a href="https://drive.google.com/uc?export=download&id=1eP7xN7qCAi2IYe0kYT3HPv7rISpJNbZI" class="cta-button" target="_blank" rel="noopener">
-            📄 Download Tutorial PDF
-          </a>
           <a href="https://drive.google.com/uc?export=download&id=1JIzVAdguh5DQDE-T0AQBw1L2BjyaSG2u" class="cta-button secondary" target="_blank" rel="noopener">
             ⬇ Download Plugin
           </a>
         </div>
       </div>
 
-      <!-- Track 3: MetaRoom3D Hotspot Editor -->
+      <!-- Ad Slot 3 — Between Track 2 and Track 3 -->
+      <div class="ad-slot" style="padding: 0;">
+        <span class="ad-label">Sponsored</span>
+        <div class="ad-slot-inner">
+          <a href="#" target="_blank" rel="noopener sponsored">
+            <img src="Download/ads/3.jpg" alt="Advertisement"
+                 onerror="this.closest('.ad-slot-inner').innerHTML='<div class=\'ad-slot-placeholder\'>Ad Space · 3.jpg</div>'">
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           Track 3: MetaRoom3D Hotspot Editor
+      ════════════════════════════════════════════════════════ -->
       <div class="tutorial-track">
         <div class="track-header">
           <div class="track-icon">
@@ -480,7 +644,19 @@
           </div>
           <div class="track-badge beginner">Beginner</div>
         </div>
-        
+
+        <!-- ── Track 3 Educational Content ── -->
+        <div class="track-edu-block">
+          <h4>What you'll learn in this track</h4>
+          <p>Once you have your exported .glb floor files from Track 2, the Hotspot Editor is what transforms them into a fully navigable virtual tour. The app has two main areas: a left sidebar containing all project controls, and a main viewport that displays a live equirectangular panorama you can look around in real time.</p>
+          <p>To start a new project, click <strong>Choose Files</strong> under the Select Folder section and load all your panorama images at once. They appear as thumbnail previews in the sidebar for quick switching. If you are continuing a previous session, use <strong>Import Configuration</strong> at the top of the sidebar to load a saved <code>hotspot-config.js</code> file — this restores all your previously created hotspot connections automatically without any re-work.</p>
+          <p>Adding a hotspot between two rooms is a two-step process. First, select the source panorama (e.g. Living Room) and right-click in the viewer at the spot where you want the navigation arrow to appear — typically in front of a doorway. A blue dot marks the placement and can be freely dragged to reposition. Then, in the <strong>Edit Hotspot</strong> panel, use the Linked Panorama dropdown to choose the destination room (e.g. Front Door). The viewer automatically switches to the destination panorama so you can immediately add the return hotspot pointing back — creating a two-way connection between rooms.</p>
+          <div class="edu-note">
+            <span>⌨️</span>
+            <p style="margin:0;"><strong>Useful keyboard shortcuts:</strong> Ctrl+N adds a new hotspot, Ctrl+S saves the current hotspot, Delete removes the selected hotspot, and Ctrl+E exports the configuration file. When your full tour is linked up, click <strong>Export hotspot-config.js</strong> at the bottom of the sidebar to generate the package ready for submission.</p>
+          </div>
+        </div>
+
         <div class="lesson-list">
 
           <div class="lesson-card" style="display: flex; align-items: center; gap: 20px; padding: 16px;">
@@ -517,12 +693,9 @@
           </div>
 
         </div>
-        
+
         <div class="track-cta">
-          <a href="https://drive.google.com/uc?export=download&id=162hVNG_fWJ8dhJVBvZOmNO7jPWGOJf0-" class="cta-button" target="_blank" rel="noopener">
-            📄 Download Tutorial PDF
-          </a>
-          <a href="https://drive.google.com/uc?export=download&id=1gZl5ufqmnSuxKmM7zQtmQSgoMjtDLlGI" class="cta-button" target="_blank" rel="noopener">
+          <a href="https://drive.google.com/uc?export=download&id=1gZl5ufqmnSuxKmM7zQtmQSgoMjtDLlGI" class="cta-button secondary" target="_blank" rel="noopener">
             ⬇ Download Hotspot Editor
           </a>
         </div>
