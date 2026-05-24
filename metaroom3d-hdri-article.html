@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>From Hollywood to Your Living Room — MetaRoom3D</title>
+<meta name="description" content="How MetaRoom3D took a 30-year-old film VFX technique — the chrome ball HDRI capture — and rebuilt it for modern real estate visualization." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0b0c0e;
+    --bg-2:     #111316;
+    --bg-3:     #181b1f;
+    --text:     #e4dfd6;
+    --muted:    #7a7872;
+    --accent:   #c09a52;
+    --accent-d: #8a6c35;
+    --rule:     rgba(255,255,255,0.08);
+    --serif:    'Cormorant Garamond', Georgia, serif;
+    --sans:     'DM Sans', system-ui, sans-serif;
+    --mono:     'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.75;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── NAV BAR ─────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 56px;
+    background: rgba(11,12,14,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .nav-tag {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── HERO ────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 0 6rem;
+    margin-top: 56px;
+    overflow: hidden;
+  }
+  .hero-orb {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -54%);
+    width: min(520px, 80vw);
+    height: min(520px, 80vw);
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 38%,
+      #e8d4a4 0%,
+      #c09a52 14%,
+      #8a6835 28%,
+      #3d2e14 46%,
+      #1a1208 62%,
+      #0a0906 80%,
+      transparent 100%
+    );
+    opacity: 0.38;
+    filter: blur(2px);
+  }
+  .hero-orb::after {
+    content: '';
+    position: absolute;
+    top: 12%; left: 20%;
+    width: 28%; height: 22%;
+    border-radius: 50%;
+    background: rgba(255,245,220,0.55);
+    filter: blur(18px);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+    opacity: 0.5;
+  }
+  .hero-content {
+    position: relative;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+  }
+  .hero-kicker {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-d);
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 2.2rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 6vw, 4.8rem);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: #f0ebe2;
+    margin-bottom: 1.6rem;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.18rem);
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .hero-meta {
+    display: flex; align-items: center; justify-content: center;
+    gap: 2rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 0.5rem; }
+  .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--accent-d); }
+
+  /* ─── ARTICLE BODY ────────────────────────────────── */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 2rem 8rem;
+  }
+
+  /* Lead paragraph */
+  .lead {
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 2.5vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.65;
+    color: #d8d2c8;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  p { margin-bottom: 1.6rem; color: #b8b3aa; font-weight: 300; }
+  p:last-child { margin-bottom: 0; }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: #e8e2d8;
+    margin: 4rem 0 1.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 3rem 0 1rem;
+  }
+
+  /* Pull quote */
+  blockquote {
+    border-left: 2px solid var(--accent);
+    margin: 3rem 0;
+    padding: 0.5rem 0 0.5rem 2rem;
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2.2vw, 1.45rem);
+    font-style: italic;
+    color: #cec8bc;
+    line-height: 1.55;
+  }
+
+  /* Callout box */
+  .callout {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 1.5rem 1.8rem;
+    margin: 2.5rem 0;
+  }
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.7rem;
+  }
+  .callout p { color: #a8a39a; font-size: 0.95rem; margin-bottom: 0; }
+
+  /* Steps */
+  .steps { margin: 2rem 0 2.5rem; counter-reset: step; }
+  .step {
+    display: grid; grid-template-columns: 48px 1fr;
+    gap: 1rem; margin-bottom: 1.6rem; align-items: start;
+  }
+  .step-num {
+    counter-increment: step;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-d);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body strong {
+    display: block;
+    font-weight: 500;
+    color: #ddd8ce;
+    font-size: 0.97rem;
+    margin-bottom: 0.3rem;
+  }
+  .step-body p { font-size: 0.93rem; margin: 0; color: #8a8680; }
+
+  /* Divider */
+  .rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 4rem 0;
+  }
+
+  /* Pill badge */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(192, 154, 82, 0.1);
+    border: 1px solid rgba(192, 154, 82, 0.25);
+    padding: 3px 10px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  /* Highlight box for the stitching app section */
+  .feature-panel {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-panel::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,154,82,0.07) 0%, transparent 70%);
+  }
+  .feature-panel h3 {
+    margin-top: 0;
+    font-size: 0.85rem;
+  }
+  .feature-panel p { font-size: 0.95rem; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .feature-item {
+    padding: 1rem 1.2rem;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .feature-item strong {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #ccc7bc;
+    margin-bottom: 0.3rem;
+  }
+  .feature-item span {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* CTA */
+  .cta-section {
+    margin-top: 6rem;
+    padding: 4rem 2.5rem;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,154,82,0.08) 0%, transparent 70%);
+  }
+  .cta-section h2 {
+    margin-top: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  .cta-section p { max-width: 480px; margin: 0 auto 2rem; font-size: 0.97rem; }
+  .btn {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #0b0c0e;
+    background: var(--accent);
+    padding: 13px 28px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent-d);
+    margin-left: 12px;
+  }
+  .btn-ghost:hover { background: rgba(192,154,82,0.07); opacity: 1; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Scroll fade-in */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 1.25rem; }
+    .hero { padding-bottom: 4rem; }
+    .hero-meta { flex-direction: column; gap: 0.8rem; }
+    .article-wrap { padding: 0 1.25rem 5rem; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .btn-ghost { margin: 0.75rem 0 0; display: block; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.metaroom3d.com" class="nav-logo">MetaRoom3D</a>
+  <span class="nav-tag">Insights &amp; Guides</span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <span class="hero-kicker">HDRI Capture · Chrome Ball · The Origin Story</span>
+    <h1>From Hollywood to<br/><em>Your Living Room</em></h1>
+    <p class="hero-sub">
+      How MetaRoom3D took a 30-year-old film VFX technique — the humble chrome ball — and rebuilt it for the modern era of property visualization.
+    </p>
+    <div class="hero-meta">
+      <span>MetaRoom3D Team</span>
+      <span class="dot"></span>
+      <span>10 min read</span>
+      <span class="dot"></span>
+      <span>HDRI &amp; Lighting</span>
+    </div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article class="article-wrap">
+
+  <p class="lead reveal">
+    Before every major visual effects shot, before a CG spaceship could land convincingly on a real street or a digital creature could prowl through a real forest, a cinematographer would place a single, perfectly polished sphere on the set and take a photograph. That sphere — the chrome ball — was the lighting bible for an entire scene.
+  </p>
+
+  <h2 class="reveal">A Tool Born on Film Sets</h2>
+
+  <p class="reveal">
+    The chrome ball HDRI technique traces its roots to the early 1990s, when visual effects studios were grappling with a deceptively simple problem: how do you light a computer-generated object so it looks like it genuinely belongs in a filmed scene?
+  </p>
+
+  <p class="reveal">
+    The answer came from a mirror. A highly polished metal sphere — typically a chrome Christmas ornament or a machined steel ball — reflects the entire surrounding environment in a single image. Because its surface is curved, it captures nearly 180 degrees of the scene in one shot: the sky above, the walls beside, the floor below, the camera operator ahead. Rotate the sphere slightly and photograph again, and you have close to a full 360-degree record of all the light, colour, and intensity information in that environment.
+  </p>
+
+  <blockquote class="reveal">
+    "The chrome ball doesn't lie. It sees the light exactly as it is — not how you remember it or imagine it. That's why VFX supervisors trusted it above everything else."
+  </blockquote>
+
+  <p class="reveal">
+    That captured data is an <strong>HDRI</strong> — a High Dynamic Range Image — one that records not just colours but actual luminance values across an enormous range of stops, from deep shadow to blazing highlight. Feed that image into a 3D rendering engine as an environment light source, and your virtual objects respond to the real-world illumination as though they were physically present. The results are dramatically more convincing than anything a CG artist could light by hand.
+  </p>
+
+  <hr class="rule reveal" />
+
+  <h2 class="reveal">The Traditional Workflow — and Its Frustrations</h2>
+
+  <p class="reveal">
+    The classic chrome ball workflow, as studios refined it over decades, follows a predictable pattern. You place the ball on a stand in the location you want to capture, then shoot the ball from multiple angles — typically from the front and slightly above — to give the stitching software enough overlapping data to reconstruct a full equirectangular panorama.
+  </p>
+
+  <h3 class="reveal">The standard capture steps</h3>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <strong>Position the chrome ball</strong>
+        <p>Mount the sphere on a tripod at the approximate eye level of the scene. Adjust height and position so it sits in the zone of interest — the area whose lighting you need to replicate.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <strong>Shoot a bracket of exposures</strong>
+        <p>Photograph the ball across a wide range of exposures — typically seven or more — to capture both the blown-out specular highlight of the light source and the deep shadow regions simultaneously. This is what produces the "high dynamic range" of the HDR image.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <strong>Rotate and repeat</strong>
+        <p>Spin the ball slightly on its stand, or move the camera position, and shoot a second set of brackets. Multiple viewpoints are needed to resolve the region where the camera itself appears as a reflection in the ball's surface.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <strong>Manual stitching</strong>
+        <p>Load all exposures into specialist software — PTGui, HDR Shop, or similar — and manually align, merge, and project the reflections into a single equirectangular panorama. An experienced operator could spend 30 to 90 minutes on a single location.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <strong>Remove the tripod</strong>
+        <p>The stand that held the ball always appears in the bottom of the sphere's reflection. Every stitched HDRI needs a manual retouch pass to clone it out — sometimes a trivial fix, sometimes a careful piece of work depending on the floor texture.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout reveal">
+    <span class="callout-label">The real cost</span>
+    <p>On a typical film VFX shoot, a dedicated HDR technician might capture a dozen locations in a day. Each one cost 30–90 minutes of post-processing time before it was usable. For a small production house or an independent creative capturing fifty properties a month, that overhead quickly becomes the bottleneck in the entire pipeline.</p>
+  </div>
+
+  <p class="reveal">
+    The technique worked beautifully — and still does. No consumer 360-degree camera comes close to matching the dynamic range or spatial accuracy of a properly shot chrome ball set. But the workflow surrounding it had remained stubbornly manual for three decades. Until recently, that was simply the cost of entry.
+  </p>
+
+  <hr class="rule reveal" />
+
+  <h2 class="reveal">Why We Chose to Modernise It <span class="badge">MetaRoom3D</span></h2>
+
+  <p class="reveal">
+    When the MetaRoom3D team set out to build a physically accurate lighting pipeline for real estate visualization, we faced the same choice every rendering studio faces: buy a dedicated 360 camera, use a fisheye lens rig, or work with the chrome ball. Each has trade-offs.
+  </p>
+
+  <p class="reveal">
+    Consumer 360 cameras are convenient but spectrally compressed — the sensor's native dynamic range is rarely more than 12 stops, and the automatic tone mapping pipeline inside the camera throws away exactly the luminance data you need to light a scene correctly. Fisheye lens rigs give better control but require precise geometric calibration and a completely different capture workflow. The chrome ball, by contrast, works with any DSLR or mirrorless camera that a photographer already owns, delivers provably film-grade dynamic range, and places zero constraints on the capture environment.
+  </p>
+
+  <blockquote class="reveal">
+    The chrome ball doesn't require new hardware. It requires a better workflow around the hardware you already have.
+  </blockquote>
+
+  <p class="reveal">
+    That insight became the foundation of our approach. Rather than asking property photographers to adopt new equipment, we designed a system that fits into how they already work — and eliminated the manual steps that made the technique impractical at scale.
+  </p>
+
+  <hr class="rule reveal" />
+
+  <h2 class="reveal">The MetaRoom3D Stitching Application</h2>
+
+  <p class="reveal">
+    Our in-house stitching tool was built with a single principle: the photographer's job ends at the shutter. Everything after the shoot should be automatic.
+  </p>
+
+  <div class="feature-panel reveal">
+    <h3>What the stitching app does</h3>
+    <p>
+      The application takes the raw exposure brackets from a standard chrome ball shoot and handles the full processing pipeline — HDR merge, spherical projection, seam correction, and tripod removal — without manual intervention on any step.
+    </p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <strong>Auto HDR merge</strong>
+        <span>Brackets are aligned and merged using luminance weighting that preserves the full dynamic range without ghosting or halo artefacts around specular highlights.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Reflection unwrapping</strong>
+        <span>The spherical reflection geometry is solved automatically from the ball's detected contour, projecting to an equirectangular panorama without manual warping control points.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Multi-shot fusion</strong>
+        <span>When brackets from two or more ball orientations are provided, the tool fuses them to resolve the camera-occlusion zone, eliminating the photographer's reflection entirely.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Tripod inpainting</strong>
+        <span>The stand region at the nadir of the panorama is filled automatically using an inpainting model trained on architectural floor textures — wood, tile, concrete, carpet.</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal">
+    A complete location that previously required up to 90 minutes of careful manual work in PTGui or Photoshop now processes in under two minutes. For a capture team working across an entire property — living room, kitchen, each bedroom, hallway, exterior — that difference compounds significantly across a working day.
+  </p>
+
+  <h3 class="reveal">Integration with MetaRoom3D</h3>
+  <p class="reveal">
+    The output HDRI drops directly into the MetaRoom3D rendering pipeline. Each 3D virtual tour is lit using the captured environment — meaning the virtual furniture, surfaces, and spatial geometry in your dollhouse tour are illuminated by the actual light that was present in the room during the shoot. Specular reflections, shadow directions, and colour temperature are all physically correct, not approximated.
+  </p>
+
+  <hr class="rule reveal" />
+
+  <h2 class="reveal">Why the Old Technique Still Wins</h2>
+
+  <p class="reveal">
+    There is a temptation, when building new technology, to reach for new tools. We spent time evaluating dedicated HDR 360 cameras, multi-camera rigs, and even machine-learning-based lighting estimation from ordinary photographs. None of them matched the chrome ball's combination of accuracy, portability, and cost.
+  </p>
+
+  <p class="reveal">
+    The physics is straightforward: a mirror sphere captures all incoming radiance without the compression, tone mapping, or spectral clipping introduced by a camera sensor trying to render a pleasing JPEG. The data in those raw brackets is the closest a photographer can get to the ground truth of the light field without specialist laboratory equipment. Thirty years of film VFX work is built on that fact.
+  </p>
+
+  <div class="callout reveal">
+    <span class="callout-label">What's changed</span>
+    <p>The technique itself has not changed. What we changed is everything around it — the processing pipeline, the integration, and the time cost. The chrome ball is still the right tool. It just no longer needs to be a slow one.</p>
+  </div>
+
+  <p class="reveal">
+    For property visualization specifically, the accuracy matters more than it might seem. A virtual tour in which the kitchen lighting looks convincingly warm in the afternoon or the bathroom tiles read correctly under diffuse overcast light is far more persuasive to a prospective buyer than one that is merely pleasant to navigate. Physically correct lighting is one of the clearest signals of quality that a viewer registers, even when they cannot articulate exactly why one tour looks better than another.
+  </p>
+
+  <hr class="rule reveal" />
+
+  <h2 class="reveal">Capturing an HDRI for MetaRoom3D: A Practical Overview</h2>
+
+  <p class="reveal">
+    For photographers working with MetaRoom3D, the capture protocol is minimal. You need a chrome ball of at least 100mm diameter, a tripod, and a camera capable of shooting RAW files. The sequence is as follows:
+  </p>
+
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <strong>Place the ball at scene centre</strong>
+        <p>Position the ball on its stand roughly where you would stand to shoot the room's hero shot. This ensures the HDRI captures the light as it reads from the primary viewpoint.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <strong>Shoot seven bracketed exposures</strong>
+        <p>From 0 EV, bracket in 1.5-stop increments to ±4.5 EV. Use a remote shutter or 2-second timer to eliminate camera shake. Shoot RAW; JPEG will not carry the necessary dynamic range.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <strong>Rotate 90 degrees and repeat</strong>
+        <p>Turn the ball or reposition the camera by 90 degrees and shoot a second bracket set. This second set allows the stitcher to resolve your camera's reflection and produce a clean nadir.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body">
+        <strong>Upload to the MetaRoom3D stitching tool</strong>
+        <p>Drag your RAW files into the application, assign them to their shot positions, and let the pipeline run. Your finished equirectangular HDRI is ready in minutes, already cleaned and tripod-free.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="rule reveal" />
+
+  <div class="cta-section reveal">
+    <h2>Ready to try it on your property?</h2>
+    <p>The MetaRoom3D stitching tool is available as part of our capture workflow. Request early access or get in touch to discuss your project.</p>
+    <a href="https://www.metaroom3d.com" class="btn">Visit MetaRoom3D</a>
+    <a href="mailto:hello@metaroom3d.com" class="btn btn-ghost">Get in touch</a>
+  </div>
+
+</article>
+
+<footer>
+  &copy; 2025 MetaRoom3D &nbsp;·&nbsp; All rights reserved
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
