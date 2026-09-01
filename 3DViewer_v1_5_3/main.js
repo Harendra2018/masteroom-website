@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { HotspotManager } from './hotspots.js';
 import { PanoramaManager } from './panorama.js';
 import { FloorManager, FloorConfigurations } from './FloorManager.js';
+import { VideoHotspotManager } from './video-hotspot.js';
 
 class RoomViewer {
   constructor() {
@@ -148,8 +149,7 @@ class RoomViewer {
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.enabled = false; // no shadow-casting lights remain (ambient only)
 
     // In mini mode, set clear color to white to remove black space
     if (this.isMiniMode) {
@@ -163,6 +163,15 @@ class RoomViewer {
     }
 
     container.appendChild(this.renderer.domElement);
+
+    // CSS3D layer for YouTube panels. Shares this.camera, so FOV zoom and
+    // drag-look stay in sync with the WebGL scene automatically -- there is
+    // no per-frame syncing to do and nothing can drift. Hidden by default;
+    // only shown while a panorama is open, because CSS3D content cannot be
+    // occluded by WebGL geometry (fine inside a photo sphere, wrong in the
+    // dollhouse view).
+    this.videoHotspots = new VideoHotspotManager(container, this.camera);
+    this.videoHotspots.hide();
 
     // In mini mode, ensure canvas fills the container
     if (this.isMiniMode) {
@@ -189,11 +198,6 @@ class RoomViewer {
   initLights() {
     const light1 = new THREE.AmbientLight(0xffffff, 2);
     this.scene.add(light1);
-
-    const light2 = new THREE.DirectionalLight(0xffffff, 2);
-    light2.position.set(5,5,5);
-    light2.castShadow = true;
-    this.scene.add(light2);
   }
 
   initBackground() {
@@ -709,7 +713,9 @@ class RoomViewer {
   }
 
   toggleDollhouseView() {
-    if (this.panoramaManager.isActive()) return;
+    if (this.panoramaManager.isActive()) {
+      this.panoramaManager.exitPanorama();
+    }
 
     // Always switch to dollhouse view when button is pressed
     this.dollhouseView = true;
@@ -722,7 +728,9 @@ class RoomViewer {
   }
 
   toggleFloorPlanView() {
-    if (this.panoramaManager.isActive()) return;
+    if (this.panoramaManager.isActive()) {
+      this.panoramaManager.exitPanorama();
+    }
 
     // Always switch to floor plan view when button is pressed
     this.floorPlanView = true;
@@ -930,7 +938,7 @@ class RoomViewer {
     }
 
     if (this.panoramaManager.isActive())
-      this.hotspotManager.animateHotspots();
+      this.hotspotManager.animateHotspots(this.activeCamera);
 
     // Update labels when not in panorama mode and ensure they're properly managed
     if (!this.panoramaManager.isActive()) {
@@ -946,6 +954,12 @@ class RoomViewer {
 
     this.controls.update();
     this.renderer.render(this.scene, this.activeCamera);
+
+    // Drawn after the WebGL pass so the panels sit over the panorama.
+    if (this.videoHotspots && this.panoramaManager.isActive()) {
+      this.videoHotspots.camera = this.activeCamera;
+      this.videoHotspots.render();
+    }
   }
 
   hideUIMiniMode() {

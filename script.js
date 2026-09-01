@@ -219,6 +219,145 @@ function openBDPTView(taskFolder) {
   window.location.href = `Path Tracer/BDPT/Path Traycer.html?taskId=${taskFolder}`;
 }
 
+// Pricing plan monthly/annual toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const pricingToggle = document.getElementById('pricingToggle');
+
+    function syncPricingCtaLinks(period) {
+        document.querySelectorAll('.pricing-cta[data-plan]').forEach(link => {
+            const plan = link.dataset.plan;
+            link.href = `checkout.html?plan=${plan}&period=${period}`;
+        });
+    }
+
+    // Set initial links to match the default (monthly) toggle state
+    syncPricingCtaLinks('monthly');
+
+    if (pricingToggle) {
+        pricingToggle.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[data-period]');
+            if (!btn) return;
+
+            const period = btn.dataset.period;
+
+            pricingToggle.querySelectorAll('button').forEach(b => {
+                b.classList.toggle('active', b === btn);
+            });
+
+            document.querySelectorAll('.pricing-card .price').forEach(priceEl => {
+                priceEl.style.display = (priceEl.dataset.period === period) ? 'block' : 'none';
+            });
+
+            syncPricingCtaLinks(period);
+        });
+    }
+});
+
+// Click-to-load demo canvases (avoids loading heavy WebGL contexts on page load),
+// with a Stop button to unload them again and free up GPU/CPU.
+document.addEventListener('DOMContentLoaded', function() {
+
+    function setupClickToLoadDemo({ wrapId, posterId, playBtnId, stopBtnId, title, getSrc }) {
+        const wrap = document.getElementById(wrapId);
+        const poster = document.getElementById(posterId);
+        const playBtn = document.getElementById(playBtnId);
+        const stopBtn = document.getElementById(stopBtnId);
+        if (!wrap || !poster || !playBtn) return null;
+
+        let iframe = null;
+
+        function load() {
+            if (iframe) return; // already loaded
+            iframe = document.createElement('iframe');
+            iframe.className = 'demo-frame';
+            iframe.title = title;
+            iframe.src = getSrc();
+            wrap.appendChild(iframe);
+            poster.style.display = 'none';
+            if (stopBtn) stopBtn.hidden = false;
+        }
+
+        function unload() {
+            if (!iframe) return;
+            iframe.remove();
+            iframe = null;
+            poster.style.display = 'flex';
+            if (stopBtn) stopBtn.hidden = true;
+        }
+
+        playBtn.addEventListener('click', load);
+        if (stopBtn) stopBtn.addEventListener('click', unload);
+
+        return {
+            isLoaded: () => !!iframe,
+            updateSrc: () => { if (iframe) iframe.src = getSrc(); }
+        };
+    }
+
+    // 3D Viewer demo
+    setupClickToLoadDemo({
+        wrapId: 'viewerFrameWrap',
+        posterId: 'viewerPoster',
+        playBtnId: 'viewerPlayBtn',
+        stopBtnId: 'viewerStopBtn',
+        title: 'MetaRoom3D 3D Viewer Demo',
+        getSrc: () => document.getElementById('viewerFrameWrap').dataset.src
+    });
+
+    // Path Tracer demo (PT/BDPT mode selectable before AND after loading)
+    let ptMode = 'pt';
+    const ptWrap = document.getElementById('ptFrameWrap');
+    const ptToggle = document.getElementById('ptToggle');
+
+    const ptDemo = setupClickToLoadDemo({
+        wrapId: 'ptFrameWrap',
+        posterId: 'ptPoster',
+        playBtnId: 'ptPlayBtn',
+        stopBtnId: 'ptStopBtn',
+        title: 'MetaRoom3D Path Tracer Demo',
+        getSrc: () => ptMode === 'bdpt' ? ptWrap.dataset.srcBdpt : ptWrap.dataset.srcPt
+    });
+
+    if (ptToggle && ptDemo) {
+        ptToggle.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[data-mode]');
+            if (!btn) return;
+
+            ptMode = btn.dataset.mode;
+            ptToggle.querySelectorAll('button').forEach(b => {
+                b.classList.toggle('active', b === btn);
+            });
+
+            // If already loaded, switch it live; otherwise the chosen mode
+            // is remembered for when Play is clicked.
+            ptDemo.updateSrc();
+        });
+    }
+});
+
+// Scroll-reveal: fade/slide elements in the first time they enter the viewport
+document.addEventListener('DOMContentLoaded', function() {
+    const revealEls = document.querySelectorAll('.scroll-reveal');
+    if (!revealEls.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        // Fallback: just show everything if the browser can't observe
+        revealEls.forEach(el => el.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+});
+
 // Hamburger menu functionality
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
@@ -241,72 +380,144 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Hero image slideshow
-let currentImageIndex = 0;
-const heroImageElement = document.querySelector('.hero-image');
-const slides = document.querySelectorAll('.slide');
-const paginationDots = document.querySelectorAll('.pagination-dot');
-const totalImages = 5;
-let autoSlideInterval;
+// Hero PNG-sequence playback (true alpha transparency, no video codec needed)
+(function() {
+  const canvas = document.querySelector('.hero-video');
+  if (!canvas) {
+    console.warn('[hero-pngs] No element with class "hero-video" found.');
+    return;
+  }
+  if (canvas.tagName !== 'CANVAS') {
+    console.warn('[hero-pngs] .hero-video element is not a <canvas>:', canvas.tagName);
+    return;
+  }
 
-function updateActiveDot() {
-    // Update pagination dots
-    paginationDots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentImageIndex);
-    });
-}
+  const ctx = canvas.getContext('2d');
+  const frameCount = parseInt(canvas.dataset.frames, 10) || 0;
+  const fps = parseInt(canvas.dataset.fps, 10) || 30;
+  const prefix = canvas.dataset.src || '';
+  const pad = parseInt(canvas.dataset.pad, 10) || 4;
+  const start = parseInt(canvas.dataset.start, 10) || 0;
+  const frameDuration = 1000 / fps;
 
-function changeHeroImage(newIndex = null) {
-    // Remove active class from current slide
-    slides[currentImageIndex].classList.remove('active');
+  console.log(`[hero-pngs] Loading ${frameCount} frames from "${prefix}" starting at ${start}, pad ${pad}`);
 
-    if (newIndex !== null) {
-        currentImageIndex = newIndex;
+  if (!frameCount) {
+    console.warn('[hero-pngs] data-frames is 0 or missing on the canvas element.');
+    return;
+  }
+
+  function frameSrc(i) {
+    return `${prefix}${String(i).padStart(pad, '0')}.png`;
+  }
+
+  const images = [];
+  let settledCount = 0;
+  let loadedOk = 0;
+  let started = false;
+
+  function checkStart() {
+    // Start playback as soon as ANY frame is ready, don't wait on failed ones
+    if (!started && loadedOk > 0) {
+      started = true;
+      resizeCanvas();
+      requestAnimationFrame(loop);
+    }
+    if (settledCount === frameCount && loadedOk === 0) {
+      console.error('[hero-pngs] All frame requests failed. Check the path/filenames — e.g. does ' +
+        frameSrc(start) + ' actually resolve in the browser address bar?');
+    }
+  }
+
+  for (let i = start; i < start + frameCount; i++) {
+    const img = new Image();
+    const src = frameSrc(i);
+    img.onload = () => {
+      loadedOk++;
+      settledCount++;
+      checkStart();
+    };
+    img.onerror = () => {
+      settledCount++;
+      console.error('[hero-pngs] Failed to load frame:', src);
+      checkStart();
+    };
+    img.src = src;
+    images.push(img);
+  }
+
+  // Logical (CSS-pixel) canvas size, kept separate from the actual backing
+  // store size below. All draw math uses these so it's unaffected by DPR.
+  let logicalWidth = 0;
+  let logicalHeight = 0;
+
+  function resizeCanvas() {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!w || !h) {
+      console.warn('[hero-pngs] Canvas has zero size (clientWidth/clientHeight). ' +
+        'The .hero container likely has no resolved height yet — check styles.css for .hero height/min-height.');
+    }
+
+    // Setting canvas.width/height (even to the same numeric CSS size, since
+    // the backing store is DPR-scaled) always wipes the canvas — mobile
+    // browsers fire 'resize' just from the address bar hiding/showing while
+    // scrolling, which was clearing the frame and showing as a flicker.
+    // Skip the reset entirely when the logical size hasn't actually changed.
+    if (w === logicalWidth && h === logicalHeight) return;
+
+    logicalWidth = w;
+    logicalHeight = h;
+
+    // Render at the screen's actual pixel density (capped at 3x so huge
+    // frames don't tank perf on very-high-DPR phones) instead of just the
+    // CSS size — otherwise mobile screens upscale a lower-res buffer and
+    // the sequence looks soft/blurry.
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+
+  function drawContain(img) {
+    if (!img.complete || !img.naturalWidth || !logicalWidth || !logicalHeight) return;
+    const canvasRatio = logicalWidth / logicalHeight;
+    const imgRatio = img.width / img.height;
+    let dw, dh, dx, dy;
+    if (imgRatio > canvasRatio) {
+      dw = logicalWidth;
+      dh = dw / imgRatio;
+      dx = 0;
+      dy = (logicalHeight - dh) / 2;
     } else {
-        currentImageIndex = (currentImageIndex + 1) % totalImages;
+      dh = logicalHeight;
+      dw = dh * imgRatio;
+      dy = 0;
+      dx = (logicalWidth - dw) / 2;
     }
+    ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
+  }
 
-    // Add active class to new slide
-    slides[currentImageIndex].classList.add('active');
+  let currentFrame = 0;
+  let lastTime = 0;
 
-    // Update transform
-    heroImageElement.style.transform = `translateX(-${currentImageIndex * 20}%)`;
-
-    // Update active dot
-    updateActiveDot();
-}
-
-function startAutoSlide() {
-    autoSlideInterval = setInterval(() => {
-        changeHeroImage();
-    }, 5000);
-}
-
-function stopAutoSlide() {
-    if (autoSlideInterval) {
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = null;
+  function loop(timestamp) {
+    if (timestamp - lastTime >= frameDuration) {
+      const img = images[currentFrame];
+      if (img.complete && img.naturalWidth) {
+        // Only clear once we have a real frame to replace it with, so a
+        // not-yet-loaded/decoded frame (common on slower mobile networks)
+        // never shows up as a blank flash — the last good frame just holds.
+        ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+        drawContain(img);
+      }
+      currentFrame = (currentFrame + 1) % frameCount;
+      lastTime = timestamp;
     }
-}
-
-function resetAutoSlide() {
-    stopAutoSlide();
-    startAutoSlide();
-}
-
-// Add click event listeners to pagination dots
-paginationDots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        if (index !== currentImageIndex) {
-            changeHeroImage(index);
-            resetAutoSlide(); // Reset timer when manually navigating
-        }
-    });
-});
-
-// Initialize
-updateActiveDot();
-startAutoSlide();
+    requestAnimationFrame(loop);
+  }
+})();
 
 // Close modal when clicking outside the content
 window.onclick = function(event) {

@@ -1,11 +1,10 @@
 // Generated Hotspot Configuration
-// This file contains hotspot data created with the Hotspot Editor
+// MetaRoom3D Hotspot Editor — 9/1/2026, 5:47:18 AM
 
-// Panorama Hotspots Data Configuration
 export const hotspotData = [
   {
-    theta: -0.5817,
-    phi: 1.7655,
+    theta: 0.5446,
+    phi: 1.9331,
     radius: 480,
     color: 0xff6600,
     name: 'Dining-Room',
@@ -13,134 +12,17 @@ export const hotspotData = [
     fromRoom: 'Bathroom'
   },
   {
-    theta: 1.3142,
-    phi: 1.6967,
+    theta: 1.0717,
+    phi: 1.9007,
     radius: 480,
     color: 0xff6600,
-    name: 'Bathroom',
-    panoramaImage: 'panos/Bathroom.jpg',
-    fromRoom: 'Dining-Room'
+    name: 'Hallway-2',
+    panoramaImage: 'panos/Hallway-2.jpg',
+    fromRoom: 'Bathroom2'
   },
   {
-    theta: -0.2359,
-    phi: 1.7552,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Kitchen',
-    panoramaImage: 'panos/Kitchen.jpg',
-    fromRoom: 'Dining-Room'
-  },
-  {
-    theta: -2.4815,
-    phi: 1.7714,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Dining-Room',
-    panoramaImage: 'panos/Dining-Room.jpg',
-    fromRoom: 'Kitchen'
-  },
-  {
-    theta: -2.4104,
-    phi: 1.7147,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Bedroom-2',
-    panoramaImage: 'panos/Bedroom-2.jpg',
-    fromRoom: 'Dining-Room'
-  },
-  {
-    theta: -0.5486,
-    phi: 1.6882,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Dining-Room',
-    panoramaImage: 'panos/Dining-Room.jpg',
-    fromRoom: 'Bedroom-2'
-  },
-  {
-    theta: -1.5332,
-    phi: 1.7035,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Living-Room',
-    panoramaImage: 'panos/Living-Room.jpg',
-    fromRoom: 'Dining-Room'
-  },
-  {
-    theta: 1.6044,
-    phi: 1.7226,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Dining-Room',
-    panoramaImage: 'panos/Dining-Room.jpg',
-    fromRoom: 'Living-Room'
-  },
-  {
-    theta: 0.1402,
-    phi: 1.7336,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Living-Room',
-    panoramaImage: 'panos/Living-Room.jpg',
-    fromRoom: 'Foyer'
-  },
-  {
-    theta: 3.0327,
-    phi: 1.7150,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Foyer',
-    panoramaImage: 'panos/Foyer.jpg',
-    fromRoom: 'Living-Room'
-  },
-  {
-    theta: -2.1099,
-    phi: 1.7176,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing',
-    panoramaImage: 'panos/Landing.jpg',
-    fromRoom: 'Foyer'
-  },
-  {
-    theta: -1.6857,
-    phi: 1.9783,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Foyer',
-    panoramaImage: 'panos/Foyer.jpg',
-    fromRoom: 'Landing'
-  },
-  {
-    theta: 2.8168,
-    phi: 1.7013,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Front-Door',
-    panoramaImage: 'panos/Front-Door.jpg',
-    fromRoom: 'Foyer'
-  },
-  {
-    theta: 0.0620,
-    phi: 1.7695,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Foyer',
-    panoramaImage: 'panos/Foyer.jpg',
-    fromRoom: 'Front-Door'
-  },
-  {
-    theta: 0.5537,
-    phi: 1.6944,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Bedroom-1',
-    panoramaImage: 'panos/Bedroom-1.jpg',
-    fromRoom: 'Living-Room'
-  },
-  {
-    theta: 2.5743,
-    phi: 1.6725,
+    theta: -2.5527,
+    phi: 1.8000,
     radius: 480,
     color: 0xff6600,
     name: 'Living-Room',
@@ -148,17 +30,17 @@ export const hotspotData = [
     fromRoom: 'Bedroom-1'
   },
   {
-    theta: -0.3003,
-    phi: 1.7307,
+    theta: 0.6079,
+    phi: 1.7580,
     radius: 480,
     color: 0xff6600,
-    name: 'Bedroom3',
-    panoramaImage: 'panos/Bedroom3.jpg',
-    fromRoom: 'Landing'
+    name: 'Dining-Room',
+    panoramaImage: 'panos/Dining-Room.jpg',
+    fromRoom: 'Bedroom-2'
   },
   {
-    theta: 2.8853,
-    phi: 1.7454,
+    theta: -2.8928,
+    phi: 1.8218,
     radius: 480,
     color: 0xff6600,
     name: 'Landing',
@@ -166,71 +48,8 @@ export const hotspotData = [
     fromRoom: 'Bedroom3'
   },
   {
-    theta: 2.2234,
-    phi: 1.7901,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Hallway-1',
-    panoramaImage: 'panos/Hallway-1.jpg',
-    fromRoom: 'Landing'
-  },
-  {
-    theta: -0.9626,
-    phi: 1.8129,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing',
-    panoramaImage: 'panos/Landing.jpg',
-    fromRoom: 'Hallway-1'
-  },
-  {
-    theta: 3.1290,
-    phi: 1.7677,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing-2',
-    panoramaImage: 'panos/Landing-2.jpg',
-    fromRoom: 'Landing'
-  },
-  {
-    theta: 0.0685,
-    phi: 1.8698,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing',
-    panoramaImage: 'panos/Landing.jpg',
-    fromRoom: 'Landing-2'
-  },
-  {
-    theta: 0.8417,
-    phi: 1.8289,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Hallway-1',
-    panoramaImage: 'panos/Hallway-1.jpg',
-    fromRoom: 'Landing-2'
-  },
-  {
-    theta: -2.0759,
-    phi: 1.8969,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing-2',
-    panoramaImage: 'panos/Landing-2.jpg',
-    fromRoom: 'Hallway-1'
-  },
-  {
-    theta: 2.0696,
-    phi: 1.8224,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Bedroom4',
-    panoramaImage: 'panos/Bedroom4.jpg',
-    fromRoom: 'Landing-2'
-  },
-  {
-    theta: -1.2063,
-    phi: 1.7232,
+    theta: 1.2037,
+    phi: 1.7196,
     radius: 480,
     color: 0xff6600,
     name: 'Landing-2',
@@ -238,35 +57,8 @@ export const hotspotData = [
     fromRoom: 'Bedroom4'
   },
   {
-    theta: -2.0057,
-    phi: 1.7169,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Porch',
-    panoramaImage: 'panos/Porch.jpg',
-    fromRoom: 'Landing-2'
-  },
-  {
-    theta: -1.0716,
-    phi: 1.7718,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Landing-2',
-    panoramaImage: 'panos/Landing-2.jpg',
-    fromRoom: 'Porch'
-  },
-  {
-    theta: 0.1356,
-    phi: 1.7937,
-    radius: 480,
-    color: 0xff6600,
-    name: 'Bedroom5',
-    panoramaImage: 'panos/Bedroom5.jpg',
-    fromRoom: 'Hallway-1'
-  },
-  {
-    theta: -2.4224,
-    phi: 1.7444,
+    theta: 2.4234,
+    phi: 1.7428,
     radius: 480,
     color: 0xff6600,
     name: 'Hallway-1',
@@ -274,8 +66,107 @@ export const hotspotData = [
     fromRoom: 'Bedroom5'
   },
   {
-    theta: 1.7224,
-    phi: 1.7997,
+    theta: -1.2937,
+    phi: 1.7731,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bathroom',
+    panoramaImage: 'panos/Bathroom.jpg',
+    fromRoom: 'Dining-Room'
+  },
+  {
+    theta: 2.3221,
+    phi: 1.8049,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bedroom-2',
+    panoramaImage: 'panos/Bedroom-2.jpg',
+    fromRoom: 'Dining-Room'
+  },
+  {
+    theta: 0.3176,
+    phi: 1.8517,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Kitchen',
+    panoramaImage: 'panos/Kitchen.jpg',
+    fromRoom: 'Dining-Room'
+  },
+  {
+    theta: 1.5229,
+    phi: 1.7852,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Living-Room',
+    panoramaImage: 'panos/Living-Room.jpg',
+    fromRoom: 'Dining-Room'
+  },
+  {
+    theta: -0.0058,
+    phi: 1.7356,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Living-Room',
+    panoramaImage: 'panos/Living-Room.jpg',
+    fromRoom: 'Foyer'
+  },
+  {
+    theta: 1.6170,
+    phi: 1.5538,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing',
+    panoramaImage: 'panos/Landing.jpg',
+    fromRoom: 'Foyer'
+  },
+  {
+    theta: -2.8066,
+    phi: 1.6443,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Front-Door',
+    panoramaImage: 'panos/Front-Door.jpg',
+    fromRoom: 'Foyer'
+  },
+  {
+    theta: -0.0404,
+    phi: 1.6725,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Foyer',
+    panoramaImage: 'panos/Foyer.jpg',
+    fromRoom: 'Front-Door'
+  },
+  {
+    theta: 1.9540,
+    phi: 1.9007,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing-2',
+    panoramaImage: 'panos/Landing-2.jpg',
+    fromRoom: 'Hallway-1'
+  },
+  {
+    theta: 0.9586,
+    phi: 1.9120,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing',
+    panoramaImage: 'panos/Landing.jpg',
+    fromRoom: 'Hallway-1'
+  },
+  {
+    theta: -0.1026,
+    phi: 1.8729,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bedroom5',
+    panoramaImage: 'panos/Bedroom5.jpg',
+    fromRoom: 'Hallway-1'
+  },
+  {
+    theta: -1.6938,
+    phi: 1.8387,
     radius: 480,
     color: 0xff6600,
     name: 'Hallway-2',
@@ -283,8 +174,8 @@ export const hotspotData = [
     fromRoom: 'Hallway-1'
   },
   {
-    theta: -1.7591,
-    phi: 1.8765,
+    theta: 1.9313,
+    phi: 1.9684,
     radius: 480,
     color: 0xff6600,
     name: 'Hallway-1',
@@ -292,8 +183,8 @@ export const hotspotData = [
     fromRoom: 'Hallway-2'
   },
   {
-    theta: 1.0390,
-    phi: 1.9101,
+    theta: -0.9529,
+    phi: 1.8838,
     radius: 480,
     color: 0xff6600,
     name: 'Bathroom2',
@@ -301,17 +192,124 @@ export const hotspotData = [
     fromRoom: 'Hallway-2'
   },
   {
-    theta: -1.0616,
-    phi: 1.8357,
+    theta: 2.3956,
+    phi: 1.8768,
     radius: 480,
     color: 0xff6600,
-    name: 'Hallway-2',
-    panoramaImage: 'panos/Hallway-2.jpg',
-    fromRoom: 'Bathroom2'
+    name: 'Dining-Room',
+    panoramaImage: 'panos/Dining-Room.jpg',
+    fromRoom: 'Kitchen'
+  },
+  {
+    theta: 1.7221,
+    phi: 1.8218,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Foyer',
+    panoramaImage: 'panos/Foyer.jpg',
+    fromRoom: 'Landing'
+  },
+  {
+    theta: 3.0681,
+    phi: 1.7541,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing-2',
+    panoramaImage: 'panos/Landing-2.jpg',
+    fromRoom: 'Landing'
+  },
+  {
+    theta: 0.3082,
+    phi: 1.8443,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bedroom3',
+    panoramaImage: 'panos/Bedroom3.jpg',
+    fromRoom: 'Landing'
+  },
+  {
+    theta: -2.1180,
+    phi: 1.7372,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Hallway-1',
+    panoramaImage: 'panos/Hallway-1.jpg',
+    fromRoom: 'Landing'
+  },
+  {
+    theta: 1.9519,
+    phi: 1.7234,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Porch',
+    panoramaImage: 'panos/Porch.jpg',
+    fromRoom: 'Landing-2'
+  },
+  {
+    theta: -0.7833,
+    phi: 1.7767,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Hallway-1',
+    panoramaImage: 'panos/Hallway-1.jpg',
+    fromRoom: 'Landing-2'
+  },
+  {
+    theta: -2.0614,
+    phi: 1.8669,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bedroom4',
+    panoramaImage: 'panos/Bedroom4.jpg',
+    fromRoom: 'Landing-2'
+  },
+  {
+    theta: 0.5005,
+    phi: 1.7428,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing',
+    panoramaImage: 'panos/Landing.jpg',
+    fromRoom: 'Landing-2'
+  },
+  {
+    theta: -0.6745,
+    phi: 1.8076,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Bedroom-1',
+    panoramaImage: 'panos/Bedroom-1.jpg',
+    fromRoom: 'Living-Room'
+  },
+  {
+    theta: -1.5496,
+    phi: 1.8827,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Dining-Room',
+    panoramaImage: 'panos/Dining-Room.jpg',
+    fromRoom: 'Living-Room'
+  },
+  {
+    theta: -2.9510,
+    phi: 1.7459,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Foyer',
+    panoramaImage: 'panos/Foyer.jpg',
+    fromRoom: 'Living-Room'
+  },
+  {
+    theta: -0.0058,
+    phi: 1.7686,
+    radius: 480,
+    color: 0xff6600,
+    name: 'Landing-2',
+    panoramaImage: 'panos/Landing-2.jpg',
+    fromRoom: 'Porch'
   }
 ];
 
-// Room adjacency system
 export const roomConnections = {
   'Bathroom': ['Dining-Room'],
   'Bathroom2': ['Hallway-2'],
@@ -320,19 +318,19 @@ export const roomConnections = {
   'Bedroom3': ['Landing'],
   'Bedroom4': ['Landing-2'],
   'Bedroom5': ['Hallway-1'],
-  'Dining-Room': ['Bathroom', 'Kitchen', 'Bedroom-2', 'Living-Room'],
+  'Dining-Room': ['Bathroom', 'Bedroom-2', 'Kitchen', 'Living-Room'],
+  'FloorPlan': [],
   'Foyer': ['Living-Room', 'Landing', 'Front-Door'],
   'Front-Door': ['Foyer'],
-  'Hallway-1': ['Landing', 'Landing-2', 'Bedroom5', 'Hallway-2'],
+  'Hallway-1': ['Landing-2', 'Landing', 'Bedroom5', 'Hallway-2'],
   'Hallway-2': ['Hallway-1', 'Bathroom2'],
   'Kitchen': ['Dining-Room'],
-  'Landing-2': ['Landing', 'Hallway-1', 'Bedroom4', 'Porch'],
-  'Landing': ['Foyer', 'Bedroom3', 'Hallway-1', 'Landing-2'],
-  'Living-Room': ['Dining-Room', 'Foyer', 'Bedroom-1'],
+  'Landing-2': ['Porch', 'Hallway-1', 'Bedroom4', 'Landing'],
+  'Landing': ['Foyer', 'Landing-2', 'Bedroom3', 'Hallway-1'],
+  'Living-Room': ['Bedroom-1', 'Dining-Room', 'Foyer'],
   'Porch': ['Landing-2']
 };
 
-// Available panorama images
 export const availablePanoramas = [
   'panos/Bathroom.jpg',
   'panos/Bathroom2.jpg',
@@ -342,6 +340,7 @@ export const availablePanoramas = [
   'panos/Bedroom4.jpg',
   'panos/Bedroom5.jpg',
   'panos/Dining-Room.jpg',
+  'panos/FloorPlan.jpg',
   'panos/Foyer.jpg',
   'panos/Front-Door.jpg',
   'panos/Hallway-1.jpg',
@@ -353,7 +352,6 @@ export const availablePanoramas = [
   'panos/Porch.jpg'
 ];
 
-// 3D Model to Panorama Mapping Configuration
 export const modelToPanoramaMapping = [
   {
     nodeNamePatterns: ['bathroom'],
@@ -402,6 +400,12 @@ export const modelToPanoramaMapping = [
     fallbackIndex: 7,
     panoramaImage: 'panos/Dining-Room.jpg',
     displayName: 'Dining-Room'
+  },
+  {
+    nodeNamePatterns: ['floorplan'],
+    fallbackIndex: 8,
+    panoramaImage: 'panos/FloorPlan.jpg',
+    displayName: 'FloorPlan'
   },
   {
     nodeNamePatterns: ['foyer'],

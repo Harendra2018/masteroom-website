@@ -1,0 +1,25 @@
+name = "metaroom3d-paypal"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+# Sandbox by default. Deploy with --env production for live.
+[vars]
+PAYPAL_ENV = "sandbox"
+
+# Stores: the OAuth token, the product/plan IDs created by /admin/sync-plans,
+# and one record per subscription written by the webhook.
+# Create it first:  wrangler kv namespace create SUBS
+# then paste the id it prints below.
+[[kv_namespaces]]
+binding = "SUBS"
+id = "PASTE_SANDBOX_KV_ID_HERE"
+
+[env.production]
+name = "metaroom3d-paypal"
+
+[env.production.vars]
+PAYPAL_ENV = "live"
+
+[[env.production.kv_namespaces]]
+binding = "SUBS"
+id = "PASTE_LIVE_KV_ID_HERE"

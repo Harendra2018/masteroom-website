@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNJFPMVYQR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KNJFPMVYQR');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta Tags -->
+  <title>Checkout - MetaRoom3D</title>
+  <meta name="title" content="Checkout - MetaRoom3D">
+  <meta name="description" content="Subscribe to a MetaRoom3D software plan — Room Layout Editor and Sphere HDRI production, billed monthly or annually.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://metaroom3d.com/checkout.html">
+
+  <!-- Stylesheets and Favicon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
+
+  <style>
+    .page-hero.checkout-hero {
+      background-image: linear-gradient(rgba(3, 10, 28, 0.85), rgba(3, 10, 28, 0.85)), url('assets/submit.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .checkout-section {
+      padding: 70px 0 100px;
+      background: #f6f8fc;
+    }
+
+    .checkout-card {
+      max-width: 560px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(20, 30, 60, 0.08);
+    }
+
+    .checkout-plan-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #007a99;
+      background: rgba(0, 178, 210, 0.1);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .checkout-card h1 {
+      font-size: 1.7rem;
+      color: #10182b;
+      margin-bottom: 6px;
+    }
+
+    .checkout-plan-desc {
+      color: #667085;
+      margin-bottom: 24px;
+    }
+
+    .checkout-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .checkout-price-row .amount {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #10182b;
+    }
+
+    .checkout-price-row .period {
+      color: #667085;
+      font-size: 1rem;
+    }
+
+    .checkout-billing-note {
+      color: #98a2b3;
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+
+    .checkout-features {
+      list-style: none;
+      margin: 0 0 30px 0;
+      padding: 20px 0;
+      border-top: 1px solid #eef1f6;
+      border-bottom: 1px solid #eef1f6;
+    }
+
+    .checkout-features li {
+      padding: 8px 0 8px 26px;
+      position: relative;
+      color: #344054;
+      font-size: 0.95rem;
+    }
+
+    .checkout-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #00b2d2;
+      font-weight: bold;
+    }
+
+    .billing-toggle-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .billing-toggle-row button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #e2e6ee;
+      background: #fff;
+      color: #344054;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .billing-toggle-row button.active {
+      border-color: #00b2d2;
+      background: rgba(0, 178, 210, 0.08);
+      color: #007a99;
+    }
+
+    .checkout-submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 15px 24px;
+      background: linear-gradient(135deg, #00b2d2 0%, #0a7ea6 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px -8px rgba(0, 178, 210, 0.55);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+    }
+
+    .checkout-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -8px rgba(0, 178, 210, 0.65);
+    }
+
+    .checkout-secure-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      font-size: 0.82rem;
+      color: #98a2b3;
+    }
+
+    .checkout-back-link {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: #667085;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .checkout-back-link:hover {
+      color: #007a99;
+    }
+
+    .checkout-free-note {
+      background: #f0fbfd;
+      border: 1px solid #cdeef5;
+      border-radius: 10px;
+      padding: 16px;
+      color: #0a6f8a;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .checkout-config-warning {
+      display: none;
+      background: #fff4e5;
+      border: 1px solid #ffddb0;
+      color: #92400e;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      margin-bottom: 22px;
+    }
+
+    .checkout-policy-note {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      text-align: center;
+      color: #6b7280;
+      margin: 10px 0 0;
+    }
+    .checkout-policy-note a {
+      color: #0D236E;
+      text-decoration: underline;
+    }
+    #paypal-button-container {
+      min-height: 52px;
+    }
+
+    .checkout-loading {
+      text-align: center;
+      color: #98a2b3;
+      font-size: 0.9rem;
+      padding: 16px 0;
+    }
+
+    .checkout-sandbox-badge {
+      display: none;
+      text-align: center;
+      background: #fff4e5;
+      border: 1px solid #ffddb0;
+      color: #92400e;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .checkout-success {
+      display: none;
+      text-align: center;
+    }
+
+    .checkout-success .tick {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(0, 178, 210, 0.1);
+      color: #007a99;
+      font-size: 1.8rem;
+      line-height: 56px;
+      margin: 0 auto 18px;
+    }
+
+    .checkout-success h2 {
+      font-size: 1.4rem;
+      color: #10182b;
+      margin-bottom: 10px;
+    }
+
+    .checkout-success p {
+      color: #667085;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .checkout-success code {
+      background: #f6f8fc;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.85rem;
+      color: #344054;
+    }
+  </style>
+</head>
+<body class="submit-page">
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo" aria-label="MetaRoom3D Home">
+        <img src="assets/Logo.svg" alt="MetaRoom3D Logo">
+      </a>
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li><a href="products.html">Products</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#pricing" class="nav-buy-btn">BUY</a></li>
+        </ul>
+        <div class="hamburger">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="page-hero checkout-hero">
+    <div class="container">
+      <h1>Checkout</h1>
+      <p>You're one step away from unlocking your MetaRoom3D plan</p>
+    </div>
+  </section>
+
+  <!-- Checkout -->
+  <section class="checkout-section">
+    <div class="container">
+      <div class="checkout-card">
+
+        <div class="checkout-config-warning" id="configWarning">
+          ⚠️ This plan has no PayPal billing plan yet. Run <code>/admin/sync-plans</code> on the payments worker to create it.
+        </div>
+
+        <div class="checkout-sandbox-badge" id="sandboxBadge">Sandbox mode — no real money moves</div>
+
+        <div id="checkoutBody">
+        <span class="checkout-plan-tag" id="planTag">Plan</span>
+        <h1 id="planName">Loading plan…</h1>
+        <p class="checkout-plan-desc" id="planDesc"></p>
+
+        <div class="billing-toggle-row" id="billingToggle">
+          <button type="button" data-period="monthly">Monthly</button>
+          <button type="button" data-period="annual">Annual</button>
+        </div>
+
+        <div class="checkout-price-row">
+          <span class="amount" id="planAmount">—</span>
+          <span class="period" id="planPeriod"></span>
+        </div>
+        <p class="checkout-billing-note" id="planBillingNote"></p>
+
+        <ul class="checkout-features" id="planFeatures"></ul>
+
+        <div class="checkout-free-note" id="freeNote" style="display:none;">
+          This plan is a 7-day free trial of the full manual Room Layout Editor — no payment required to start. We'll follow up before your trial ends so you can choose a plan to continue.
+        </div>
+
+        <div id="paypal-button-container"></div>
+        <div class="checkout-loading" id="checkoutLoading">Loading secure payment…</div>
+        <a href="#" class="checkout-submit-btn" id="checkoutButton" style="display:none;">Continue →</a>
+        <p class="checkout-secure-note" id="secureNote">🔒 Payments and recurring billing are handled by PayPal</p>
+        <p class="checkout-policy-note">
+          Subscriptions renew automatically until cancelled. Cancel any time at no cost.
+          See our <a href="terms.html">Terms &amp; Conditions</a> and
+          <a href="refund.html">Refund Policy</a>.
+        </p>
+
+        <a href="index.html#pricing" class="checkout-back-link">← Back to pricing</a>
+        </div>
+
+        <div class="checkout-success" id="successPanel">
+          <div class="tick">✓</div>
+          <h2>You're subscribed</h2>
+          <p id="successPlanLine"></p>
+          <p>A receipt is on its way from PayPal. We'll email your licence key to the address on your PayPal account within one business day.</p>
+          <p>Reference <code id="successRef"></code></p>
+          <a href="index.html" class="checkout-back-link">← Back to MetaRoom3D</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="assets/Logo_white.svg" alt="MetaRoom3D Logo">
+        </div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorials.html">Tutorials</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms &amp; Conditions</a></li>
+            <li><a href="refund.html">Refund Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <p>&copy; 2026 MetaRoom3D. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    // ============================================================
+    // PAYMENTS — PayPal Subscriptions.
+    //
+    // The only thing to edit here is WORKER_URL. Plan IDs are not
+    // hardcoded: the worker creates the billing plans in PayPal and
+    // this page fetches them from /config at load time, so changing a
+    // price is a worker change, not a website change.
+    //
+    // Nothing secret lives on this page. The client ID is public by
+    // design; the client secret only ever exists as a worker secret.
+    // ============================================================
+    const WORKER_URL = "https://metaroom3d-paypal.metaroom3d.workers.dev";
+
+    const PLANS = {
+      personal: {
+        tag: "7-Day Free Trial",
+        name: "Personal",
+        desc: "Try the full manual Room Layout Editor free for 7 days",
+        free: true,
+        monthly: 0,
+        annual: 0,
+        features: [
+          "Room Layout Editor access",
+          "Up to 2 saved projects",
+          "Standard render quality",
+          "Community support"
+        ]
+      },
+      professional: {
+        tag: "Most Popular",
+        name: "Professional",
+        desc: "For agents and creators shipping tours regularly",
+        monthly: 19,
+        annual: 190,
+        features: [
+          "Everything in Personal",
+          "Unlimited saved projects",
+          "GLB export for room layouts",
+          "High-quality rendering",
+          "Priority email support"
+        ]
+      },
+      studio: {
+        tag: "Teams",
+        name: "Studio",
+        desc: "For teams that need the full render pipeline",
+        monthly: 49,
+        annual: 490,
+        features: [
+          "Everything in Professional",
+          "Path Tracer photoreal rendering",
+          "Bidirectional Path Tracer (BDPT)",
+          "Team seats & shared projects",
+          "Dedicated onboarding"
+        ]
+      },
+      enterprise: {
+        tag: "Business",
+        name: "Enterprise",
+        desc: "Custom seats, volume licensing, and dedicated support",
+        custom: true,
+        features: [
+          "Everything in Studio",
+          "Custom seat & license tiers",
+          "SLA-backed support",
+          "Dedicated account manager"
+        ]
+      },
+      "sphere-personal": {
+        tag: "Starter",
+        name: "Sphere Personal",
+        desc: "Merge, project, and correct a chrome-ball shoot for standard property work",
+        monthly: 9,
+        annual: 90,
+        features: [
+          "Chrome-ball merge, projection & seam correction",
+          "PNG / JPEG / TIFF export up to 4K",
+          "1 seat",
+          "Community support"
+        ]
+      },
+      "sphere-professional": {
+        tag: "Most Popular",
+        name: "Sphere Professional",
+        desc: "For creators who need full-resolution HDRI delivery",
+        monthly: 19,
+        annual: 190,
+        features: [
+          "Everything in Sphere Personal",
+          "High-Res export — full 8K/16K HDRI delivery",
+          "1 seat",
+          "Priority email support"
+        ]
+      },
+      "sphere-studio": {
+        tag: "VFX Pipeline",
+        name: "Sphere Studio",
+        desc: "For teams delivering VFX-grade, color-managed HDRIs",
+        monthly: 49,
+        annual: 490,
+        features: [
+          "Everything in Sphere Professional",
+          "Scene-linear EXR export",
+          "ACES display transforms, OCIO configs & look LUTs",
+          "1 seat",
+          "Dedicated onboarding"
+        ]
+      }
+    };
+
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      let planKey = params.get('plan') || 'professional';
+      if (!PLANS[planKey]) planKey = 'professional';
+      let period = params.get('period') === 'annual' ? 'annual' : 'monthly';
+
+      const plan = PLANS[planKey];
+
+      const els = {
+        tag: document.getElementById('planTag'),
+        name: document.getElementById('planName'),
+        desc: document.getElementById('planDesc'),
+        amount: document.getElementById('planAmount'),
+        period: document.getElementById('planPeriod'),
+        billingNote: document.getElementById('planBillingNote'),
+        features: document.getElementById('planFeatures'),
+        toggle: document.getElementById('billingToggle'),
+        freeNote: document.getElementById('freeNote'),
+        button: document.getElementById('checkoutButton'),
+        warning: document.getElementById('configWarning'),
+        secureNote: document.getElementById('secureNote'),
+        paypal: document.getElementById('paypal-button-container'),
+        loading: document.getElementById('checkoutLoading'),
+        sandbox: document.getElementById('sandboxBadge'),
+        body: document.getElementById('checkoutBody'),
+        success: document.getElementById('successPanel'),
+        successPlanLine: document.getElementById('successPlanLine'),
+        successRef: document.getElementById('successRef')
+      };
+
+      let config = null;      // { env, client_id, currency, plans }
+      let sdkPromise = null;  // resolves once paypal.Buttons exists
+      let buttons = null;     // the currently rendered Buttons instance
+
+      // ---- PayPal JS SDK -------------------------------------------------
+      // vault=true + intent=subscription is what makes this a recurring
+      // agreement rather than a single charge.
+      function loadSdk(clientId, currency) {
+        if (sdkPromise) return sdkPromise;
+        sdkPromise = new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://www.paypal.com/sdk/js'
+            + '?client-id=' + encodeURIComponent(clientId)
+            + '&vault=true&intent=subscription'
+            + '&currency=' + encodeURIComponent(currency || 'USD');
+          s.onload = resolve;
+          s.onerror = () => reject(new Error('PayPal SDK failed to load'));
+          document.head.appendChild(s);
+        });
+        return sdkPromise;
+      }
+
+      function showSuccess(subscriptionId) {
+        els.successPlanLine.textContent =
+          plan.name + ' — billed ' + (period === 'monthly' ? 'monthly' : 'annually') + '.';
+        els.successRef.textContent = subscriptionId;
+        els.body.style.display = 'none';
+        els.warning.style.display = 'none';
+        els.success.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function paymentUnavailable(message) {
+        els.loading.style.display = 'none';
+        els.paypal.innerHTML = '';
+        els.button.style.display = 'flex';
+        els.button.textContent = 'Contact Us to Subscribe →';
+        els.button.href = 'index.html#contact';
+        els.secureNote.textContent = message;
+      }
+
+      async function renderPayPalButtons() {
+        const planIds = (config && config.plans && config.plans[planKey]) || null;
+        const planId = planIds && planIds[period];
+
+        if (buttons) {
+          try { buttons.close(); } catch (e) { /* already gone */ }
+          buttons = null;
+        }
+        els.paypal.innerHTML = '';
+
+        if (!planId) {
+          els.warning.style.display = 'block';
+          paymentUnavailable("Message us and we'll set this plan up for you.");
+          return;
+        }
+
+        els.warning.style.display = 'none';
+        els.button.style.display = 'none';
+        els.loading.style.display = 'block';
+
+        try {
+          await loadSdk(config.client_id, config.currency);
+        } catch (e) {
+          paymentUnavailable("Card payment is temporarily unavailable — message us and we'll get you started.");
+          return;
+        }
+
+        buttons = paypal.Buttons({
+          style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+          createSubscription: function(data, actions) {
+            return actions.subscription.create({
+              plan_id: planId,
+              // Comes back on every webhook, so the worker knows what
+              // was bought without a second lookup.
+              custom_id: planKey + ':' + period,
+              application_context: {
+                brand_name: 'MetaRoom3D',
+                user_action: 'SUBSCRIBE_NOW',
+                shipping_preference: 'NO_SHIPPING'
+              }
+            });
+          },
+          onApprove: function(data) {
+            // The worker's webhook is what actually grants the licence.
+            // This is just the buyer-facing confirmation.
+            showSuccess(data.subscriptionID);
+          },
+          onError: function(err) {
+            console.error('PayPal error', err);
+            paymentUnavailable("Something went wrong with PayPal — message us and we'll sort it out.");
+          }
+        });
+
+        els.loading.style.display = 'none';
+        buttons.render('#paypal-button-container').catch(function(err) {
+          console.error('render failed', err);
+          paymentUnavailable("Card payment is temporarily unavailable — message us and we'll get you started.");
+        });
+      }
+
+      function render() {
+        els.tag.textContent = plan.tag;
+        els.name.textContent = plan.name;
+        els.desc.textContent = plan.desc;
+        els.features.innerHTML = plan.features.map(f => `<li>${f}</li>`).join('');
+
+        if (plan.custom) {
+          els.toggle.style.display = 'none';
+          els.amount.textContent = 'Custom';
+          els.period.textContent = '';
+          els.billingNote.textContent = '';
+          els.freeNote.style.display = 'none';
+          els.paypal.style.display = 'none';
+          els.loading.style.display = 'none';
+          els.button.style.display = 'flex';
+          els.button.textContent = 'Contact Sales →';
+          els.button.href = 'index.html#contact';
+          els.warning.style.display = 'none';
+          els.secureNote.textContent = "We'll get back to you to discuss pricing and setup.";
+          return;
+        }
+
+        if (plan.free) {
+          els.toggle.style.display = 'none';
+          els.amount.textContent = '7 Days Free';
+          els.period.textContent = '';
+          els.billingNote.textContent = 'No credit card required. A paid plan continues after the trial ends.';
+          els.freeNote.style.display = 'block';
+          els.paypal.style.display = 'none';
+          els.loading.style.display = 'none';
+          els.button.style.display = 'flex';
+          els.button.textContent = 'Start Free Trial →';
+          els.button.href = 'index.html#contact';
+          els.warning.style.display = 'none';
+          els.secureNote.textContent = "Message us and we'll set up your trial license.";
+          return;
+        }
+
+        // Paid plan
+        els.toggle.style.display = 'flex';
+        els.toggle.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b.dataset.period === period);
+        });
+
+        const price = plan[period];
+        els.amount.textContent = `$${price}`;
+        els.period.textContent = period === 'monthly' ? '/mo' : '/yr';
+        els.billingNote.textContent = period === 'monthly'
+          ? 'Billed monthly, cancel anytime.'
+          : 'Billed annually (2 months free vs. monthly).';
+        els.freeNote.style.display = 'none';
+        els.paypal.style.display = 'block';
+        els.secureNote.textContent = '🔒 Payments and recurring billing are handled by PayPal';
+
+        renderPayPalButtons();
+      }
+
+      if (els.toggle) {
+        els.toggle.addEventListener('click', function(e) {
+          const btn = e.target.closest('button[data-period]');
+          if (!btn || btn.dataset.period === period) return;
+          period = btn.dataset.period;
+          // Keep the URL honest so a refresh or a shared link lands
+          // on the same billing period.
+          const u = new URL(window.location.href);
+          u.searchParams.set('plan', planKey);
+          u.searchParams.set('period', period);
+          history.replaceState(null, '', u);
+          render();
+        });
+      }
+
+      // Free and custom plans never touch the worker.
+      if (plan.free || plan.custom) {
+        render();
+        return;
+      }
+
+      fetch(WORKER_URL + '/config')
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('config ' + r.status)))
+        .then(cfg => {
+          config = cfg;
+          if (cfg.env === 'sandbox') els.sandbox.style.display = 'block';
+          render();
+        })
+        .catch(err => {
+          console.error('config fetch failed', err);
+          render();
+          paymentUnavailable("We're finishing our payment setup — message us and we'll get you started.");
+        });
+    })();
+  </script>
+</body>
+</html>

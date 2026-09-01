@@ -19,6 +19,7 @@ export class PanoramaManager {
     this.wheelHandler = null; // keep reference for cleanup
     this.startListener = null;
     this.endListener = null;
+    this.userStoppedAutoRotate = false; // true when user has manually paused auto-rotate
 
     // Store original renderer settings
     this.originalToneMappingExposure = this.renderer.toneMappingExposure;
@@ -68,6 +69,74 @@ export class PanoramaManager {
     this.menuBtn.innerHTML = '<img src="textures/left_menu.svg" alt="Menu" class="info-icon">';
     this.menuBtn.style.display = 'none'; // Hidden initially
     document.body.appendChild(this.menuBtn);
+
+    // Create auto-rotate toggle button - sits just below the fullscreen button
+    this.autoRotateBtn = document.createElement('button');
+    this.autoRotateBtn.className = 'autorotate-btn';
+    this.autoRotateBtn.id = 'autoRotateBtn';
+    this.autoRotateBtn.title = 'Stop auto-rotate';
+    this.autoRotateBtn.innerHTML = '<img src="textures/stop_rotate.svg" alt="Stop rotation" class="fullscreen-icon" id="autoRotateIcon">';
+    this.autoRotateBtn.style.display = 'none'; // Hidden until panorama is active
+    this.autoRotateBtn.addEventListener('click', () => this.toggleAutoRotate());
+    document.body.appendChild(this.autoRotateBtn);
+
+    // Create video mute/unmute toggle button - sits just above the
+    // fullscreen button. Only ever shown while the current panorama
+    // actually has a YouTube panel in it (see the three display-toggle
+    // sites below) -- otherwise it'd be a dead button in every other room.
+    this.videoMuteBtn = document.createElement('button');
+    this.videoMuteBtn.className = 'video-mute-btn';
+    this.videoMuteBtn.id = 'videoMuteBtn';
+    this.videoMuteBtn.title = 'Unmute video';
+    this.videoMuteBtn.innerHTML = '<img src="textures/mute.svg" alt="Unmute video" class="fullscreen-icon" id="videoMuteIcon">';
+    this.videoMuteBtn.style.display = 'none'; // Hidden until a panorama with video is active
+    this.videoMuteBtn.addEventListener('click', () => this.toggleVideoMute());
+    document.body.appendChild(this.videoMuteBtn);
+
+    // Keep the button's icon in sync no matter which mute control the
+    // visitor actually used -- this external button, or the small mute
+    // icon on the video panel's own hover controls (video-hotspot.js).
+    if (this.roomViewer && this.roomViewer.videoHotspots) {
+      this.roomViewer.videoHotspots.onMuteChange((muted) => this._updateVideoMuteIcon(muted));
+    }
+  }
+
+  toggleVideoMute() {
+    if (!this.roomViewer || !this.roomViewer.videoHotspots) return;
+    const muted = this.roomViewer.videoHotspots.toggleMuted();
+    this._updateVideoMuteIcon(muted);
+  }
+
+  _updateVideoMuteIcon(muted) {
+    const icon = document.getElementById('videoMuteIcon');
+    if (icon) {
+      icon.src = muted ? 'textures/mute.svg' : 'textures/unmute.svg';
+      icon.alt = muted ? 'Unmute video' : 'Mute video';
+    }
+    if (this.videoMuteBtn) {
+      this.videoMuteBtn.title = muted ? 'Unmute video' : 'Mute video';
+      // Pressed/active visual when muted -- same convention as
+      // .autorotate-btn.active, so the button visibly reflects state.
+      this.videoMuteBtn.classList.toggle('active', muted);
+    }
+  }
+
+  toggleAutoRotate() {
+    this.userStoppedAutoRotate = !this.userStoppedAutoRotate;
+    clearTimeout(this.autoRotateTimeout);
+    this.controls.autoRotate = !this.userStoppedAutoRotate;
+
+    const icon = document.getElementById('autoRotateIcon');
+    if (icon) {
+      // Stopped -> show "rotate" icon (tap to resume). Rotating -> show "stop_rotate" icon (tap to stop).
+      icon.src = this.userStoppedAutoRotate ? 'textures/rotate.svg' : 'textures/stop_rotate.svg';
+      icon.alt = this.userStoppedAutoRotate ? 'Resume rotation' : 'Stop rotation';
+    }
+    if (this.autoRotateBtn) {
+      this.autoRotateBtn.title = this.userStoppedAutoRotate ? 'Resume auto-rotate' : 'Stop auto-rotate';
+      // Pressed/active visual state, handled by the .autorotate-btn.active rule in styles.css
+      this.autoRotateBtn.classList.toggle('active', this.userStoppedAutoRotate);
+    }
   }
 
   createCarousel() {
@@ -414,6 +483,10 @@ createCarouselItems() {
 }
 
   // Method to update hotspot data from HotspotManager
+  setVideoHotspotData(videoHotspotData) {
+    this.videoHotspotData = videoHotspotData || [];
+  }
+
   setHotspotData(hotspotData) {
     this.hotspotData = hotspotData || [];
     console.log('PanoramaManager received hotspot data:', this.hotspotData.length, 'items');
@@ -563,6 +636,9 @@ createCarouselItems() {
         if (fullscreenBtn) {
           fullscreenBtn.style.display = 'flex';
         }
+        if (this.autoRotateBtn) {
+          this.autoRotateBtn.style.display = 'flex';
+        }
 
         // Show menu button
         if (this.menuBtn) {
@@ -578,6 +654,27 @@ createCarouselItems() {
         this.updateCarouselForCurrentPano(imageUrl.split('/').pop());
 
         this.hotspotManager.createPanoramaHotspots(filteredHotspots);
+
+        // Rebuild the YouTube panels for this room. clear() blanks each
+        // iframe src first -- without that, audio from the previous room
+        // keeps playing after the element is detached.
+        if (this.roomViewer && this.roomViewer.videoHotspots) {
+          const panoFile = 'panos/' + imageUrl.split('/').pop();
+          this.roomViewer.videoHotspots.clear();
+          this.roomViewer.videoHotspots.show();
+          (this.videoHotspotData || [])
+            .filter((v) => v.panoramaImage === panoFile)
+            .forEach((v) => this.roomViewer.videoHotspots.addYouTube(v));
+
+          // Only show the toggle in rooms that actually have a video panel.
+          if (this.videoMuteBtn) {
+            const hasVideo = this.roomViewer.videoHotspots.panels.length > 0;
+            this.videoMuteBtn.style.display = hasVideo ? 'flex' : 'none';
+            if (hasVideo) this._updateVideoMuteIcon(this.roomViewer.videoHotspots.muted);
+          }
+        } else if (this.videoMuteBtn) {
+          this.videoMuteBtn.style.display = 'none';
+        }
 
         this.hideRoomElements();
         if (!this.panoramaActive) this.savedView = this.saveCurrentView();
@@ -689,6 +786,12 @@ createCarouselItems() {
     if (this.menuBtn) {
       this.menuBtn.style.display = 'none';
     }
+    if (this.autoRotateBtn) {
+      this.autoRotateBtn.style.display = 'none';
+    }
+    if (this.videoMuteBtn) {
+      this.videoMuteBtn.style.display = 'none';
+    }
     if (this.sidePanel) {
       this.sidePanel.style.display = 'none';
       this.sidePanelVisible = false;
@@ -706,6 +809,12 @@ createCarouselItems() {
     document.querySelector('canvas').style.cursor = 'grab';
     this.panoramaActive = false;
     console.log('Panorama marked as inactive');
+
+    // Stops playback and removes the DOM layer from view.
+    if (this.roomViewer && this.roomViewer.videoHotspots) {
+      this.roomViewer.videoHotspots.clear();
+      this.roomViewer.videoHotspots.hide();
+    }
 
     if (this.wheelHandler) {
       window.removeEventListener('wheel', this.wheelHandler);
@@ -762,7 +871,7 @@ createCarouselItems() {
     };
     window.addEventListener('wheel', this.wheelHandler);
 
-    this.controls.autoRotate = true;
+    this.controls.autoRotate = !this.userStoppedAutoRotate;
     this.controls.autoRotateSpeed = 0.9;
 
     // Remove existing listeners if any
@@ -781,7 +890,7 @@ createCarouselItems() {
       console.log('Panorama: User interaction ended, scheduling auto-rotate restart');
       clearTimeout(this.autoRotateTimeout);
       this.autoRotateTimeout = setTimeout(() => {
-        if (this.panoramaActive) {
+        if (this.panoramaActive && !this.userStoppedAutoRotate) {
           console.log('Panorama: Auto-rotate restarted');
           this.controls.autoRotate = true;
         }
@@ -837,6 +946,7 @@ createCarouselItems() {
       }
       if (hotspotGroup.userData.info) {
         const info = hotspotGroup.userData.info;
+        this.hotspotManager.setHoveredHotspot(hotspotGroup);
         if (this.hotspotTooltip) {
           this.hotspotTooltip.textContent = `${info.name}: ${info.description}`;
           this.hotspotTooltip.style.left = event.clientX + 10 + 'px';
@@ -846,6 +956,7 @@ createCarouselItems() {
         renderer.domElement.style.cursor = 'pointer';
       }
     } else {
+      this.hotspotManager.setHoveredHotspot(null);
       if (this.hotspotTooltip) {
         this.hotspotTooltip.style.display = 'none';
       }
@@ -902,6 +1013,13 @@ createCarouselItems() {
     }
     if (fullscreenBtn) {
       fullscreenBtn.style.display = 'flex';
+    }
+    if (this.autoRotateBtn) {
+      this.autoRotateBtn.style.display = 'flex';
+    }
+    if (this.videoMuteBtn && this.roomViewer && this.roomViewer.videoHotspots) {
+      const hasVideo = this.roomViewer.videoHotspots.panels.length > 0;
+      this.videoMuteBtn.style.display = hasVideo ? 'flex' : 'none';
     }
   }
 

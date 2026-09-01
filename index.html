@@ -13,10 +13,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Primary SEO Meta Tags -->
-  <title>MetaRoom3D - Professional 3D Virtual Tours for Real Estate Worldwide</title>
-  <meta name="title" content="MetaRoom3D - Professional 3D Virtual Tours for Real Estate Worldwide">
-  <meta name="description" content="MetaRoom3D creates immersive 3D virtual tours for real estate properties worldwide. Accurate to ±1cm floor plans. Create, explore and list interactive 3D property tours globally.">
-  <meta name="keywords" content="metaroom3d, metaroom 3d, 3d virtual tours, 3d property tours, real estate virtual tour platform, virtual property viewing, 3d dollhouse tour, interactive property tour, real estate technology, photoreal 3d tours">
+  <title>MetaRoom3D - 3D Room Modelling &amp; HDRI Software for Professionals</title>
+  <meta name="title" content="MetaRoom3D - 3D Room Modelling &amp; HDRI Software for Professionals">
+  <meta name="description" content="Desktop software for 3D spatial work. Turn 360° panoramas into accurate textured room models with the Room Layout Editor, and dual chrome-ball shots into 8K HDRIs with Sphere. Free trial available.">
+  <meta name="keywords" content="metaroom3d, 3d room modelling software, panorama to 3d, 360 panorama software, hdri stitching software, chrome ball hdri, equirectangular panorama, glb export, room layout editor, vfx hdri production, openexr, aces, ocio">
   <meta name="author" content="MetaRoom3D">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://metaroom3d.com/">
@@ -24,47 +24,146 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://metaroom3d.com/">
-  <meta property="og:title" content="MetaRoom3D - Professional 3D Virtual Tours for Real Estate">
-  <meta property="og:description" content="Immersive 3D virtual tours for real estate worldwide. Accurate to ±1cm with interactive 360° exploration.">
-  <meta property="og:image" content="https://metaroom3d.com/assets/interior-design-neoclassical-style-with-furnishings-decor.jpg">
+  <meta property="og:title" content="MetaRoom3D - 3D Room Modelling &amp; HDRI Software">
+  <meta property="og:description" content="Turn 360° panoramas into accurate textured 3D room models, and chrome-ball shots into 8K HDRIs. Desktop software, free trial.">
+  <meta property="og:image" content="https://metaroom3d.com/assets/products-hero.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="MetaRoom3D">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://metaroom3d.com/">
-  <meta property="twitter:title" content="MetaRoom3D - 3D Virtual Tours for Real Estate">
-  <meta property="twitter:description" content="Professional 3D virtual tours for real estate worldwide">
-  <meta property="twitter:image" content="https://metaroom3d.com/assets/interior-design-neoclassical-style-with-furnishings-decor.jpg">
+  <meta property="twitter:title" content="MetaRoom3D - 3D Room Modelling &amp; HDRI Software">
+  <meta property="twitter:description" content="Desktop software for panorama-to-3D room modelling and chrome-ball HDRI production.">
+  <meta property="twitter:image" content="https://metaroom3d.com/assets/products-hero.png">
   
   <!-- Stylesheets and Favicon -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2">
   <link rel="icon" type="image/svg+xml" href="3DViewer_v1_5_3/textures/favicon.svg">
   
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4983613090498651"
      crossorigin="anonymous"></script>
+
+  <style>
+    .scene-wrap {
+      position: relative;
+      background: #030A1C;
+      overflow: hidden;
+      isolation: isolate; /* contains z-index stacking so the grid can't leak above content */
+    }
+    .scene-bg-gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 35% at 50% 10%, rgba(0, 242, 255, 0.07), transparent 60%),
+        linear-gradient(180deg, #030C22 0%, #040F2C 22%, #030A1C 45%, #050D24 75%, #04081a 100%);
+    }
+    .scene-grid {
+      position: absolute;
+      left: -50%;
+      right: -50%;
+      top: 0;
+      height: 160vh; /* bounded to the hero's height so the grid doesn't
+                         stretch down through later sections (Path Tracer,
+                         Pricing) and get distorted by the perspective tilt */
+      z-index: 1;
+      background-image:
+        linear-gradient(rgba(0, 242, 255, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 255, 0.5) 1px, transparent 1px);
+      background-size: 64px 64px;
+      transform: perspective(900px) rotateX(45deg);
+      transform-origin: center center;
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9), transparent 96%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.9), transparent 96%);
+      animation: heroGridScroll 6s linear infinite;
+      pointer-events: none;
+    }
+    /* Everything meant to be readable inside a dark scene-wrap must sit above
+       the animated grid (z-index 1) — otherwise the grid lines paint over
+       images and cards instead of staying behind them as a backdrop. */
+    .scene-wrap > section {
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes heroGridScroll {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 0 64px, 0 64px; }
+    }
+    .hero {
+      position: relative;
+    }
+    .hero-video {
+      position: absolute;
+      top: 34%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: clamp(480px, 65vw, 1300px);
+      height: clamp(480px, 65vw, 1300px);
+      max-width: 130%;
+      max-height: 130%;
+      display: block;
+    }
+    .hero .hero-overlay {
+      z-index: 3;
+    }
+    .hero .slide-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    .hero .slide-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+    }
+    .hero .hero-content {
+      position: absolute;
+      top: 87%;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      z-index: 4;
+      width: min(90%, 700px);
+    }
+
+    /* Full-bleed hero image for the Sphere section — deliberately breaks out
+       of .container's max-width/padding so it spans the full viewport width. */
+    .sphere-hero-image {
+      width: 100vw;
+      margin: 32px calc(50% - 50vw) 48px;
+    }
+    .sphere-hero-image img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero .hero-content {
+        top: 80%;
+        transform: translate(-50%, -100%);
+        width: 92%;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
   <header class="header">
     <div class="container">
-      <div class="logo">
+      <a href="index.html" class="logo" aria-label="MetaRoom3D Home">
         <img src="assets/Logo.svg" alt="MetaRoom3D Logo">
-      </div>
-      <div class="search-bar">
-        <form id="searchForm" action="properties.html" method="get">
-          <input type="text" name="search" placeholder="Search properties by name..." id="searchInput">
-          <button type="submit" class="search-btn">Search</button>
-        </form>
-      </div>
+      </a>
       <nav class="nav">
         <ul class="nav-menu">
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="properties.html">Properties</a></li>
-          <li><a href="learn.html">Learn</a></li>
-		  <li><a href="tools.html">Tools</a></li>
-          <li><a href="submit.html" class="nav-submit-btn">Submit</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="index.html#pricing" class="nav-buy-btn">BUY</a></li>
         </ul>
         <div class="hamburger">
           <span class="hamburger-line"></span>
@@ -75,131 +174,25 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero">
+  <!-- Hero + Pricing share one continuous background scene -->
+  <div class="scene-wrap">
+    <div class="scene-bg-gradient"></div>
+    <div class="scene-grid"></div>
 
-    <div class="hero-image">
-      <div class="slide active bg1-slide">
-        <div class="slide-content">
-          <h1 class="slide-title">Revolutionize Appraisals with<br>3D Tours</h1>
-          <p class="slide-subtitle">Immersive 3D Virtual Tours For Premium Real Estate</p>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <canvas class="hero-video" data-src="assets/pngs/logo_" data-pad="5" data-start="0" data-frames="192" data-fps="30"></canvas>
+      <div class="hero-overlay"></div>
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="slide-title">The Complete Toolkit<br>for 3D Virtual Tours</h1>
+          <p class="slide-subtitle">MetaRoom3D turns your photos into immersive 3D experiences.</p>
+          
         </div>
       </div>
-      <div class="slide bg2-slide">
-        <div class="slide-content">
-          <h1 class="slide-title">Accurate to the Floor Plan<br>Down to ±1 cm</h1>
-          <p class="slide-subtitle">Architecturally precise 3D models built from verified plans, delivering true-to-life dimensions and lighting.</p>
-        </div>
-      </div>
-      <div class="slide bg3-slide">
-        <div class="slide-content">
-          <h1 class="slide-title">Explore Every Detail<br>Before You Visit</h1>
-          <p class="slide-subtitle">Immersive Virtual Experiences</p>
-        </div>
-      </div>
-      <div class="slide bg4-slide">
-        <div class="slide-content">
-          <h1 class="slide-title">Locate Properties<br>with Precision</h1>
-          <p class="slide-subtitle">Find Your Perfect Location</p>
-        </div>
-      </div>
-      <div class="slide bg5-slide">
-        <div class="slide-content">
-          <h1 class="slide-title">All-in-One Digital<br>Appraisal Platform</h1>
-          <p class="slide-subtitle">Complete Property Solutions</p>
-        </div>
-      </div>
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="container">
-      <div class="hero-content">
-        <a href="#gallery" class="cta-button">Explore Gallery</a>
-      </div>
-    </div>
-
-    <!-- Hero Pagination Dots -->
-    <div class="hero-pagination">
-      <div class="pagination-dot active" data-slide="0"></div>
-      <div class="pagination-dot" data-slide="1"></div>
-      <div class="pagination-dot" data-slide="2"></div>
-      <div class="pagination-dot" data-slide="3"></div>
-      <div class="pagination-dot" data-slide="4"></div>
-    </div>
-  </section>
-
-  <!-- Gallery Section -->
-  <section id="gallery" class="gallery">
-    <div class="container">
-      <h2>Featured Properties</h2>
-      <div class="gallery-grid">
-        <!-- Property 1 -->
-        <div class="property-card" data-property="property1">
-          <div class="property-image">
-            <img src="assets/interior-design-neoclassical-style-with-furnishings-decor.jpg" alt="Modern Living Room">
-            <div class="property-overlay">
-              <button class="tour-button" onclick="open3DTour('property1')">Real 3D Tour</button>
-              <button class="tour-button photoreal-button" onclick="openPhotorealView('property1')">Photoreal 3D View</button>
-            </div>
-          </div>
-          <div class="property-info">
-            <h3>Luxury Villa</h3>
-            <div class="property-price">$23,000</div>
-            <div class="property-location">Bandarawela</div>
-            <p>Spacious modern home with panoramic views</p>
-            <div class="property-details">
-              <span>5 Beds</span>
-              <span>2 Baths</span>
-              <span>890 sq ft</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Property 2 -->
-        <div class="property-card" data-property="property2">
-          <div class="property-image">
-            <img src="assets/modern-minimalist-office.jpg" alt="Gourmet Kitchen">
-            <div class="property-overlay">
-              <button class="tour-button" onclick="open3DTour('property2')">Real 3D Tour</button>
-              <button class="tour-button photoreal-button" onclick="openPhotorealView('property2')">Photoreal 3D View</button>
-            </div>
-          </div>
-          <div class="property-info">
-            <h3>Urban Apartment</h3>
-            <div class="property-price">$650,000</div>
-            <div class="property-location">Downtown LA</div>
-            <p>Contemporary living in the heart of the city</p>
-            <div class="property-details">
-              <span>2 Beds</span>
-              <span>2 Baths</span>
-              <span>1,200 sq ft</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Property 3 -->
-        <div class="property-card" data-property="property3">
-          <div class="property-image">
-            <img src="assets/2150683483.jpg" alt="Master Bedroom">
-            <div class="property-overlay">
-              <button class="tour-button" onclick="open3DTour('property3')">Real 3D Tour</button>
-              <button class="tour-button photoreal-button" onclick="openPhotorealView('property3')">Photoreal 3D View</button>
-            </div>
-          </div>
-          <div class="property-info">
-            <h3>Suburban Home</h3>
-            <div class="property-price">$850,000</div>
-            <div class="property-location">Pasadena</div>
-            <p>Perfect family home with modern amenities</p>
-            <div class="property-details">
-              <span>3 Beds</span>
-              <span>2 Baths</span>
-              <span>1,800 sq ft</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
+  <!-- /scene-wrap -->
 
   <!-- Feature Image Section -->
   <section class="feature-image-section">
@@ -210,49 +203,255 @@
     </div>
   </section>
 
-  <!-- About Section -->
-  <section id="about" class="about">
-    <div class="container">
-      <h2>About MetaRoom3D</h2>
-      <div class="about-content">
-        <div class="about-text">
-          <p><strong>MetaRoom3D</strong> is a global platform for professional 3D virtual tours for real estate properties. We specialize in creating immersive, photorealistic 3D virtual tours that bring properties to life, allowing potential buyers to explore homes remotely with unprecedented detail and realism.</p>
-          
-          <p>Our cutting-edge technology captures every detail of your property with architectural precision, accurate to within ±1 centimeter of actual floor plans. Unlike traditional photography or basic 360° panoramas, MetaRoom3D delivers complete interactive experiences that enable buyers to navigate through properties at their own pace, examining rooms from multiple angles and truly understanding spatial relationships before scheduling an in-person visit.</p>
-          
-          <p>Whether you're marketing a luxury villa, a modern city apartment, or a suburban family home, our 3D virtual tours showcase your property in the best possible light while providing the technical accuracy needed for professional real estate appraisals. Experience the future of real estate marketing with MetaRoom3D's interactive 3D tours that engage viewers and convert leads into buyers.</p>
-          
-          <p>We serve real estate agents, property developers, architects, and individual sellers worldwide. Our clients benefit from increased online engagement, reduced time-to-sale, and the ability to market properties to international buyers who can explore homes remotely from anywhere in the world.</p>
+  <!-- Dark scene: 3D Demo + Path Tracer + Pricing share one continuous background -->
+  <div class="scene-wrap">
+    <div class="scene-bg-gradient"></div>
+    <div class="scene-grid"></div>
+
+    <!-- Feature Image Section (duplicate) -->
+    <section class="feature-image-section">
+      <div class="container">
+        <div class="feature-image scroll-reveal">
+          <img src="assets/Frame 24.png" alt="MetaRoom3D Technology">
         </div>
-        <div class="about-features">
-          <div class="feature">
-            <h3>360° Views</h3>
-            <p>Complete panoramic exploration of every room</p>
+      </div>
+    </section>
+
+    <!-- 3D Viewer Demo Section (merged with About) -->
+    <section id="demo" class="demo-section">
+      <div class="container">
+        <div class="pricing-eyebrow">Live Demo</div>
+        <h2 class="demo-heading">See It In 3D</h2>
+        <p class="pricing-subtitle">Every tour below was built entirely inside the Room Layout Editor — capture panoramas, align them with AI, and export a walkable 3D dollhouse tour.</p>
+
+        <div class="demo-frame-wrap" id="viewerFrameWrap" data-src="3DViewer_v1_5_3/index.html?taskId=TaskID_101">
+          <div class="demo-poster" id="viewerPoster" style="--poster-img: url('assets/demo-poster-viewer.jpg');">
+            <button type="button" class="demo-play-btn" id="viewerPlayBtn" aria-label="Load 3D viewer demo">
+              <span class="demo-play-icon">▶</span>
+              <span class="demo-play-label">Load Interactive Demo</span>
+            </button>
           </div>
-          <div class="feature">
-            <h3>Interactive Hotspots</h3>
-            <p>Click to navigate seamlessly between rooms</p>
+          <button type="button" class="demo-stop-btn" id="viewerStopBtn" aria-label="Stop 3D viewer demo" hidden>✕ Stop Demo</button>
+        </div>
+
+        <div class="demo-content">
+          <div class="demo-text">
+            <p><strong>MetaRoom3D</strong> is a global platform for professional 3D virtual tours for real estate properties, accurate to within ±1cm of actual floor plans. Unlike traditional photography or basic 360° panoramas, MetaRoom3D delivers complete interactive experiences that let buyers navigate a property at their own pace.</p>
+            <p>We serve real estate agents, property developers, architects, and individual sellers worldwide — helping them increase online engagement and market properties to buyers anywhere in the world.</p>
           </div>
-          <div class="feature">
-            <h3>Multi-floor Support</h3>
-            <p>Explore entire buildings with accurate floor plans</p>
-          </div>
-          <div class="feature">
-            <h3>Photoreal Quality</h3>
-            <p>True-to-life dimensions and lighting</p>
-          </div>
-          <div class="feature">
-            <h3>±1cm Accuracy</h3>
-            <p>Architecturally precise measurements</p>
-          </div>
-          <div class="feature">
-            <h3>Remote Viewing</h3>
-            <p>Explore properties from anywhere globally</p>
+          <div class="demo-features">
+            <div class="feature-dark">
+              <h3>360° Views</h3>
+              <p>Complete panoramic exploration of every room</p>
+            </div>
+            <div class="feature-dark">
+              <h3>Interactive Hotspots</h3>
+              <p>Click to navigate seamlessly between rooms</p>
+            </div>
+            <div class="feature-dark">
+              <h3>Multi-floor Support</h3>
+              <p>Explore entire buildings with accurate floor plans</p>
+            </div>
+            <div class="feature-dark">
+              <h3>±1cm Accuracy</h3>
+              <p>Architecturally precise measurements</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- Path Tracer Section -->
+    <section id="path-tracer" class="path-tracer-section">
+      <div class="container">
+        <div class="pricing-eyebrow">Photoreal Rendering</div>
+        <h2 class="demo-heading">Path Tracer</h2>
+        <p class="pricing-subtitle">MetaRoom3D's in-house path tracer — built with a custom WebGL bidirectional path tracer supporting BVH acceleration and denoising — rendering hand-crafted scenes in full daylight or night lighting.</p>
+
+        <div class="pt-toggle" id="ptToggle">
+          <button type="button" class="active" data-mode="pt">☀️ Daylight (PT)</button>
+          <button type="button" data-mode="bdpt">🌙 Night (BDPT)</button>
+        </div>
+
+        <div class="demo-frame-wrap" id="ptFrameWrap" data-src-pt="Path Tracer/PT/Path Traycer.html?taskId=TaskID_101" data-src-bdpt="Path Tracer/BDPT/Path Traycer.html?taskId=TaskID_101">
+          <div class="demo-poster" id="ptPoster" style="--poster-img: url('assets/demo-poster-pathtracer.jpg');">
+            <button type="button" class="demo-play-btn" id="ptPlayBtn" aria-label="Load Path Tracer demo">
+              <span class="demo-play-icon">▶</span>
+              <span class="demo-play-label">Load Interactive Demo</span>
+            </button>
+          </div>
+          <button type="button" class="demo-stop-btn" id="ptStopBtn" aria-label="Stop Path Tracer demo" hidden>✕ Stop Demo</button>
+        </div>
+        <p class="pt-note">Scenes above are custom-modeled in Blender/Maya to showcase the renderer. Direct export from the Room Layout Editor into the Path Tracer is in development.</p>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+      <div class="container">
+        <div class="pricing-eyebrow">Subscriptions</div>
+        <h2>Choose Your Plan</h2>
+        <p class="pricing-subtitle">Simple pricing for creators, agents, and studios building in 3D.</p>
+        <p class="pricing-subtitle"><a href="products.html" style="color:#00F2FF;">See the full feature breakdown by edition →</a></p>
+
+        <div class="pricing-toggle" id="pricingToggle">
+          <button type="button" class="active" data-period="monthly">Monthly</button>
+          <button type="button" data-period="annual">Annual</button>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Personal -->
+          <div class="pricing-card">
+            <div class="tier-image">
+              <img src="assets/tier-personal.png" alt="Personal plan">
+            </div>
+            <span class="plan-tag">Individual</span>
+            <h3>Personal</h3>
+            <p class="pricing-tagline">Try the full Room Layout Editor free for 7 days</p>
+            <ul class="pricing-features">
+              <li>Room Layout Editor access</li>
+              <li>Up to 2 saved projects</li>
+              <li>Standard render quality</li>
+              <li>Community support</li>
+            </ul>
+            <div class="price" data-period="monthly">7-Day Trial</div>
+            <div class="price" data-period="annual" style="display:none;">7-Day Trial</div>
+            <a href="checkout.html?plan=personal" class="cta-button secondary pricing-cta" data-plan="personal">Start Free Trial</a>
+          </div>
+
+          <!-- Professional -->
+          <div class="pricing-card featured">
+            <div class="tier-image">
+              <img src="assets/tier-professional.png" alt="Professional plan">
+            </div>
+            <span class="plan-tag">Most Popular</span>
+            <h3>Professional</h3>
+            <p class="pricing-tagline">For agents and creators shipping tours regularly</p>
+            <ul class="pricing-features">
+              <li>Everything in Personal</li>
+              <li>Unlimited saved projects</li>
+              <li>GLB export for room layouts</li>
+              <li>High-quality rendering</li>
+              <li>Priority email support</li>
+            </ul>
+            <div class="price" data-period="monthly">$19<span>/mo</span></div>
+            <div class="price" data-period="annual" style="display:none;">$190<span>/yr</span></div>
+            <a href="checkout.html?plan=professional" class="cta-button pricing-cta" data-plan="professional">Subscribe</a>
+          </div>
+
+          <!-- Studio -->
+          <div class="pricing-card violet">
+            <div class="tier-image">
+              <img src="assets/tier-studio.png" alt="Studio plan">
+            </div>
+            <span class="plan-tag">Teams</span>
+            <h3>Studio</h3>
+            <p class="pricing-tagline">For teams that need the full render pipeline</p>
+            <ul class="pricing-features">
+              <li>Everything in Professional</li>
+              <li>Path Tracer photoreal rendering</li>
+              <li>Bidirectional Path Tracer (BDPT)</li>
+              <li>Team seats & shared projects</li>
+              <li>Dedicated onboarding</li>
+            </ul>
+            <div class="price" data-period="monthly">$49<span>/mo</span></div>
+            <div class="price" data-period="annual" style="display:none;">$490<span>/yr</span></div>
+            <a href="checkout.html?plan=studio" class="cta-button secondary pricing-cta" data-plan="studio">Subscribe</a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="pricing-card">
+            <div class="tier-image">
+              <img src="assets/tier-enterprise.png" alt="Enterprise plan">
+            </div>
+            <span class="plan-tag">Business</span>
+            <h3>Enterprise</h3>
+            <p class="pricing-tagline">Custom seats, volume licensing, and dedicated support</p>
+            <ul class="pricing-features">
+              <li>Everything in Studio</li>
+              <li>Custom seat & license tiers</li>
+              <li>SLA-backed support</li>
+              <li>Dedicated account manager</li>
+            </ul>
+            <div class="price" data-period="monthly">Custom</div>
+            <div class="price" data-period="annual" style="display:none;">Custom</div>
+            <a href="index.html#contact" class="cta-button secondary pricing-cta">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MetaRoom3D Sphere Section -->
+    <section id="sphere" class="demo-section">
+      <div class="container">
+        <div class="pricing-eyebrow">New Product</div>
+      </div>
+
+      <div class="sphere-hero-image">
+        <img src="assets/Sphere.jpg" alt="Glowing chrome sphere being stitched into a spherical HDRI">
+      </div>
+
+      <div class="container">
+        <div class="demo-content">
+          <div class="demo-text">
+            <p><strong>Sphere</strong> turns bracketed chrome-ball photographs into scene-accurate HDRI environment maps — HDR merge, spherical projection, seam correction, and tripod removal, without the manual retouch pass that the classic VFX workflow requires.</p>
+            <p>Load camera raw (DNG) and standard HDR formats straight in, merge your exposure brackets, and export through a scene-linear, color-managed pipeline built for real production work.</p>
+          </div>
+          <div class="demo-features">
+            <div class="feature-dark">
+              <h3>DNG & HDR Input</h3>
+              <p>Load camera raw and standard HDR brackets directly</p>
+            </div>
+            <div class="feature-dark">
+              <h3>HDR Bracket Merge</h3>
+              <p>Combine multiple exposures into one true HDR capture</p>
+            </div>
+            <div class="feature-dark">
+              <h3>ACES / OCIO Pipeline</h3>
+              <p>Scene-linear color management for VFX-grade delivery</p>
+            </div>
+            <div class="feature-dark">
+              <h3>OpenEXR Export</h3>
+              <p>Lossless, industry-standard HDRI output</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="exr-compare">
+          <h3 class="exr-compare-heading">8-bit vs. 32-bit OpenEXR — same exposure move</h3>
+          <p class="exr-compare-note">Same shot, same exposure slider. The 8-bit render clips once it blows out or crushes to black — that detail is gone for good. The 32-bit OpenEXR keeps the full dynamic range, so highlights and shadows stay recoverable no matter how far you push exposure.</p>
+          <div class="exr-compare-grid">
+            <div class="exr-compare-item">
+              <span class="exr-compare-label">8-bit</span>
+              <video src="assets/exr-8bit-exposure.mp4" autoplay loop muted playsinline></video>
+            </div>
+            <div class="exr-compare-item">
+              <span class="exr-compare-label">32-bit OpenEXR</span>
+              <video src="assets/exr-32bit-exposure.mp4" autoplay loop muted playsinline></video>
+            </div>
+          </div>
+        </div>
+
+        <p class="pricing-subtitle"><a href="products.html#sphere" style="color:#00F2FF;">See Sphere plans &amp; pricing →</a></p>
+
+        <!-- OCIO, OpenEXR, ACES, DNG and Radiance HDR marks used with light
+             chips for legibility on the dark background. Confirm each is used
+             per its owner's brand/trademark guidelines before this goes live
+             (see notes above re: ASWF/Linux Foundation and AMPAS marks). -->
+        <div class="logo-strip">
+          <p class="logo-strip-label">Sphere works with your existing HDRI &amp; color pipeline</p>
+          <div class="logo-strip-row">
+            <span class="logo-chip"><img src="assets/openexr-logo.webp" alt="OpenEXR"></span>
+            <span class="logo-chip"><img src="assets/ocio-logo.png" alt="OpenColorIO (OCIO)"></span>
+            <span class="logo-chip"><img src="assets/aces-logo.png" alt="ACES — Academy Color Encoding System"></span>
+            <span class="logo-chip"><img src="assets/dng-logo.jpg" alt="Adobe DNG"></span>
+            <span class="logo-chip"><img src="assets/hdr-logo.jpg" alt="Radiance HDR"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- /scene-wrap -->
 
   <!-- Contact Section -->
   <section id="contact" class="contact">
@@ -285,14 +484,15 @@
 			  <img src="assets/Logo_white.svg" alt="MetaRoom3D Logo">
 			</div>
 			<div class="footer-links">
-			  <ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="properties.html">Properties</a></li>
-				<li><a href="learn.html">Learn</a></li>
-				<li><a href="tools.html">Tools</a></li>
-				<li><a href="submit.html">Submit</a></li>
-				<li><a href="privacy.html">Privacy Policy</a></li>
-			  </ul>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorials.html">Tutorials</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms &amp; Conditions</a></li>
+            <li><a href="refund.html">Refund Policy</a></li>
+          </ul>
 			</div>
 			<div class="footer-social">
 			  <p>&copy; 2026 MetaRoom3D. All rights reserved.</p>
@@ -326,27 +526,56 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "MetaRoom3D",
-    "description": "Global platform for creating and hosting interactive 3D virtual property tours",
-    "url": "https://metaroom3d.com",
+    "name": "MetaRoom3D Room Layout Editor",
+    "description": "Desktop software that turns 360\u00b0 panoramas into accurate textured 3D room models with GLB export.",
+    "url": "https://metaroom3d.com/products.html",
     "logo": "https://metaroom3d.com/assets/Logo.svg",
-    "applicationCategory": "RealEstateApplication",
-    "operatingSystem": "Web",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "Windows",
     "offers": {
       "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
+      "price": "19.00",
+      "priceCurrency": "USD",
+      "url": "https://metaroom3d.com/checkout.html"
     },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+94-077-821-3383",
-      "email": "hvishwajith@gmail.com",
-      "contactType": "customer service"
+    "publisher": {
+      "@type": "Organization",
+      "name": "MetaRoom3D",
+      "url": "https://metaroom3d.com",
+      "logo": "https://metaroom3d.com/assets/Logo.svg",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+94-77-821-3383",
+        "email": "hello@metaroom3d.com",
+        "contactType": "customer service"
+      }
     }
   }
   </script>
 
-  <script src="properties.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MetaRoom3D Sphere",
+    "description": "Desktop software that stitches dual chrome-ball shots into equirectangular 8K HDRI panoramas, with OpenEXR, ACES and OCIO support for VFX scene lighting.",
+    "url": "https://metaroom3d.com/products.html",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "9.00",
+      "priceCurrency": "USD",
+      "url": "https://metaroom3d.com/checkout.html"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "MetaRoom3D",
+      "url": "https://metaroom3d.com"
+    }
+  }
+  </script>
+
   <script src="script.js"></script>
 </body>
 </html>
