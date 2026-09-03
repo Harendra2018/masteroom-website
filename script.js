@@ -383,6 +383,28 @@ document.addEventListener('DOMContentLoaded', function() {
 // Hero animation is now a <video> (assets/logo-hero.webm / .mp4).
 // The old 192-frame PNG canvas loader was removed — it fired 192
 // image requests on load and ran requestAnimationFrame forever.
+//
+// There is no poster image, so for visitors who ask for reduced motion we
+// hold the video on its first frame rather than hiding it (hiding it would
+// leave an empty hero).
+(function () {
+  const v = document.querySelector('video.hero-video');
+  if (!v || !window.matchMedia) return;
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const apply = () => {
+    if (mq.matches) {
+      v.removeAttribute('autoplay');
+      v.pause();
+      try { v.currentTime = 0; } catch (e) { /* not seekable yet */ }
+    } else if (v.paused) {
+      v.play().catch(() => { /* autoplay blocked; first frame still shows */ });
+    }
+  };
+  apply();
+  v.addEventListener('loadeddata', apply);
+  mq.addEventListener ? mq.addEventListener('change', apply)
+                      : mq.addListener(apply);
+})();
 
 // Close modal when clicking outside the content
 window.onclick = function(event) {
