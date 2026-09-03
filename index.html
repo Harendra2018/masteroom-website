@@ -109,6 +109,22 @@
       max-width: 130%;
       max-height: 130%;
       display: block;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-video { display: none; }
+      .hero::after {
+        content: '';
+        position: absolute;
+        top: 34%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: clamp(480px, 65vw, 1300px);
+        height: clamp(480px, 65vw, 1300px);
+        background: url('assets/logo-hero.jpg') center/contain no-repeat;
+      }
     }
     .hero .hero-overlay {
       z-index: 3;
@@ -181,7 +197,12 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-      <canvas class="hero-video" data-src="assets/pngs/logo_" data-pad="5" data-start="0" data-frames="192" data-fps="30"></canvas>
+      <video class="hero-video" autoplay loop muted playsinline
+             preload="metadata" poster="assets/logo-hero.jpg"
+             aria-hidden="true" tabindex="-1">
+        <source src="assets/logo-hero.webm" type="video/webm">
+        <source src="assets/logo-hero.mp4" type="video/mp4">
+      </video>
       <div class="hero-overlay"></div>
       <div class="container">
         <div class="hero-content">
