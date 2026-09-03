@@ -244,6 +244,11 @@ ul {
     transform: rotate(45deg) translate(-5px, -6px);
 }
 
+/* Close (X) sits on the white slide-out menu, so darken the lines */
+.hamburger.active .hamburger-line {
+    background-color: #1a1a1a;
+}
+
 /* Hero Section */
 .hero {
     color: white;
