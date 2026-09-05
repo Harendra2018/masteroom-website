@@ -18,7 +18,7 @@ export const hotspotData = [
     color: 0xff6600,
     name: 'Hallway-2',
     panoramaImage: 'panos/Hallway-2.jpg',
-    fromRoom: 'Bathroom2'
+    fromRoom: 'Bathroom-2'
   },
   {
     theta: -2.5527,
@@ -45,7 +45,7 @@ export const hotspotData = [
     color: 0xff6600,
     name: 'Landing',
     panoramaImage: 'panos/Landing.jpg',
-    fromRoom: 'Bedroom3'
+    fromRoom: 'Bedroom-3'
   },
   {
     theta: 1.2037,
@@ -54,7 +54,7 @@ export const hotspotData = [
     color: 0xff6600,
     name: 'Landing-2',
     panoramaImage: 'panos/Landing-2.jpg',
-    fromRoom: 'Bedroom4'
+    fromRoom: 'Bedroom-4'
   },
   {
     theta: 2.4234,
@@ -63,7 +63,7 @@ export const hotspotData = [
     color: 0xff6600,
     name: 'Hallway-1',
     panoramaImage: 'panos/Hallway-1.jpg',
-    fromRoom: 'Bedroom5'
+    fromRoom: 'Bedroom-5'
   },
   {
     theta: -1.2937,
@@ -160,8 +160,8 @@ export const hotspotData = [
     phi: 1.8729,
     radius: 480,
     color: 0xff6600,
-    name: 'Bedroom5',
-    panoramaImage: 'panos/Bedroom5.jpg',
+    name: 'Bedroom-5',
+    panoramaImage: 'panos/Bedroom-5.jpg',
     fromRoom: 'Hallway-1'
   },
   {
@@ -187,8 +187,8 @@ export const hotspotData = [
     phi: 1.8838,
     radius: 480,
     color: 0xff6600,
-    name: 'Bathroom2',
-    panoramaImage: 'panos/Bathroom2.jpg',
+    name: 'Bathroom-2',
+    panoramaImage: 'panos/Bathroom-2.jpg',
     fromRoom: 'Hallway-2'
   },
   {
@@ -223,8 +223,8 @@ export const hotspotData = [
     phi: 1.8443,
     radius: 480,
     color: 0xff6600,
-    name: 'Bedroom3',
-    panoramaImage: 'panos/Bedroom3.jpg',
+    name: 'Bedroom-3',
+    panoramaImage: 'panos/Bedroom-3.jpg',
     fromRoom: 'Landing'
   },
   {
@@ -259,8 +259,8 @@ export const hotspotData = [
     phi: 1.8669,
     radius: 480,
     color: 0xff6600,
-    name: 'Bedroom4',
-    panoramaImage: 'panos/Bedroom4.jpg',
+    name: 'Bedroom-4',
+    panoramaImage: 'panos/Bedroom-4.jpg',
     fromRoom: 'Landing-2'
   },
   {
