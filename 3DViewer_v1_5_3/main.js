@@ -59,7 +59,7 @@ class RoomViewer {
 
     // Common pano names to try
     const commonNames = [
-      'Bathroom', 'Bedroom 1', 'Bedroom 2', 'Bedroom 3', 'Breakfast Nook',
+      'Bathroom', 'Bathroom 1', 'Bathroom 2', 'Bedroom 1', 'Bedroom 2', 'Bedroom 3', 'Bedroom 4', 'Bedroom 5', 'Bedroom 6', 'Breakfast Nook',
       'Closet', 'Entrance', 'Family Room', 'Hallway', 'Kitchen', 'Laundry Room',
       'Living Room', 'Living Room 2', 'Master Bathroom', 'Master Bedroom',
       'Master Bedroom 2', 'Dining Room', 'Office', 'Garage', 'Patio', 'Garden'
