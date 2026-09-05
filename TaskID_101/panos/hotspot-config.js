@@ -322,23 +322,23 @@ export const roomConnections = {
   'FloorPlan': [],
   'Foyer': ['Living-Room', 'Landing', 'Front-Door'],
   'Front-Door': ['Foyer'],
-  'Hallway-1': ['Landing-2', 'Landing', 'Bedroom5', 'Hallway-2'],
-  'Hallway-2': ['Hallway-1', 'Bathroom2'],
+  'Hallway-1': ['Landing-2', 'Landing', 'Bedroom-5', 'Hallway-2'],
+  'Hallway-2': ['Hallway-1', 'Bathroom-2'],
   'Kitchen': ['Dining-Room'],
-  'Landing-2': ['Porch', 'Hallway-1', 'Bedroom4', 'Landing'],
-  'Landing': ['Foyer', 'Landing-2', 'Bedroom3', 'Hallway-1'],
+  'Landing-2': ['Porch', 'Hallway-1', 'Bedroom-4', 'Landing'],
+  'Landing': ['Foyer', 'Landing-2', 'Bedroom-3', 'Hallway-1'],
   'Living-Room': ['Bedroom-1', 'Dining-Room', 'Foyer'],
   'Porch': ['Landing-2']
 };
 
 export const availablePanoramas = [
   'panos/Bathroom.jpg',
-  'panos/Bathroom2.jpg',
+  'panos/Bathroom-2.jpg',
   'panos/Bedroom-1.jpg',
   'panos/Bedroom-2.jpg',
-  'panos/Bedroom3.jpg',
-  'panos/Bedroom4.jpg',
-  'panos/Bedroom5.jpg',
+  'panos/Bedroom-3.jpg',
+  'panos/Bedroom-4.jpg',
+  'panos/Bedroom-5.jpg',
   'panos/Dining-Room.jpg',
   'panos/Foyer.jpg',
   'panos/Front-Door.jpg',
@@ -359,10 +359,10 @@ export const modelToPanoramaMapping = [
     displayName: 'Bathroom'
   },
   {
-    nodeNamePatterns: ['bathroom2'],
+    nodeNamePatterns: ['bathroom-2'],
     fallbackIndex: 1,
-    panoramaImage: 'panos/Bathroom2.jpg',
-    displayName: 'Bathroom2'
+    panoramaImage: 'panos/Bathroom-2.jpg',
+    displayName: 'Bathroom-2'
   },
   {
     nodeNamePatterns: ['bedroom-1'],
@@ -377,22 +377,22 @@ export const modelToPanoramaMapping = [
     displayName: 'Bedroom-2'
   },
   {
-    nodeNamePatterns: ['bedroom3'],
+    nodeNamePatterns: ['bedroom-3'],
     fallbackIndex: 4,
-    panoramaImage: 'panos/Bedroom3.jpg',
-    displayName: 'Bedroom3'
+    panoramaImage: 'panos/Bedroom-3.jpg',
+    displayName: 'Bedroom-3'
   },
   {
-    nodeNamePatterns: ['bedroom4'],
+    nodeNamePatterns: ['bedroom-4'],
     fallbackIndex: 5,
-    panoramaImage: 'panos/Bedroom4.jpg',
-    displayName: 'Bedroom4'
+    panoramaImage: 'panos/Bedroom-4.jpg',
+    displayName: 'Bedroom-4'
   },
   {
-    nodeNamePatterns: ['bedroom5'],
+    nodeNamePatterns: ['bedroom-5'],
     fallbackIndex: 6,
-    panoramaImage: 'panos/Bedroom5.jpg',
-    displayName: 'Bedroom5'
+    panoramaImage: 'panos/Bedroom-5.jpg',
+    displayName: 'Bedroom-5'
   },
   {
     nodeNamePatterns: ['dining-room'],
