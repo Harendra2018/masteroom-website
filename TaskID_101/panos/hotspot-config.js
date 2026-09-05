@@ -340,7 +340,6 @@ export const availablePanoramas = [
   'panos/Bedroom4.jpg',
   'panos/Bedroom5.jpg',
   'panos/Dining-Room.jpg',
-  'panos/FloorPlan.jpg',
   'panos/Foyer.jpg',
   'panos/Front-Door.jpg',
   'panos/Hallway-1.jpg',
@@ -401,12 +400,7 @@ export const modelToPanoramaMapping = [
     panoramaImage: 'panos/Dining-Room.jpg',
     displayName: 'Dining-Room'
   },
-  {
-    nodeNamePatterns: ['floorplan'],
-    fallbackIndex: 8,
-    panoramaImage: 'panos/FloorPlan.jpg',
-    displayName: 'FloorPlan'
-  },
+ 
   {
     nodeNamePatterns: ['foyer'],
     fallbackIndex: 9,
