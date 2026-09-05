@@ -18,8 +18,8 @@
                 "v": 0.6050269299820467
             }
         ],
-        "name": "Bathroom2",
-        "panoramaImage": "panos/Bathroom2.jpg"
+        "name": "Bathroom-2",
+        "panoramaImage": "panos/Bathroom-2.jpg"
     },
     "Bedroom-1": {
         "hotspots": [
@@ -51,8 +51,8 @@
                 "v": 0.5798922800718133
             }
         ],
-        "name": "Bedroom3",
-        "panoramaImage": "panos/Bedroom3.jpg"
+        "name": "Bedroom-3",
+        "panoramaImage": "panos/Bedroom-3.jpg"
     },
     "Bedroom4": {
         "hotspots": [
@@ -62,8 +62,8 @@
                 "v": 0.547369658946991
             }
         ],
-        "name": "Bedroom4",
-        "panoramaImage": "panos/Bedroom4.jpg"
+        "name": "Bedroom-4",
+        "panoramaImage": "panos/Bedroom-4.jpg"
     },
     "Bedroom5": {
         "hotspots": [
@@ -73,8 +73,8 @@
                 "v": 0.5547576301615799
             }
         ],
-        "name": "Bedroom5",
-        "panoramaImage": "panos/Bedroom5.jpg"
+        "name": "Bedroom-5",
+        "panoramaImage": "panos/Bedroom-5.jpg"
     },
     "Dining-Room": {
         "hotspots": [
@@ -147,7 +147,7 @@
                 "v": 0.6086175942549371
             },
             {
-                "targetRoomId": "Bedroom5",
+                "targetRoomId": "Bedroom-5",
                 "u": 0.48367851972579956,
                 "v": 0.5961724519729614
             },
@@ -168,7 +168,7 @@
                 "v": 0.6265709156193896
             },
             {
-                "targetRoomId": "Bathroom2",
+                "targetRoomId": "Bathroom-2",
                 "u": 0.3483348334833483,
                 "v": 0.599640933572711
             }
@@ -200,7 +200,7 @@
                 "v": 0.5583482944344704
             },
             {
-                "targetRoomId": "Bedroom3",
+                "targetRoomId": "Bedroom-3",
                 "u": 0.549054905490549,
                 "v": 0.5870736086175943
             },
@@ -226,7 +226,7 @@
                 "v": 0.5655296229802513
             },
             {
-                "targetRoomId": "Bedroom4",
+                "targetRoomId": "Bedroom-4",
                 "u": 0.1719171917191719,
                 "v": 0.5942549371633752
             },

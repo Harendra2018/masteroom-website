@@ -312,12 +312,12 @@ export const hotspotData = [
 
 export const roomConnections = {
   'Bathroom': ['Dining-Room'],
-  'Bathroom2': ['Hallway-2'],
+  'Bathroom-2': ['Hallway-2'],
   'Bedroom-1': ['Living-Room'],
   'Bedroom-2': ['Dining-Room'],
-  'Bedroom3': ['Landing'],
-  'Bedroom4': ['Landing-2'],
-  'Bedroom5': ['Hallway-1'],
+  'Bedroom-3': ['Landing'],
+  'Bedroom-4': ['Landing-2'],
+  'Bedroom-5': ['Hallway-1'],
   'Dining-Room': ['Bathroom', 'Bedroom-2', 'Kitchen', 'Living-Room'],
   'FloorPlan': [],
   'Foyer': ['Living-Room', 'Landing', 'Front-Door'],
